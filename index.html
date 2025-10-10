@@ -1,113 +1,189 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calendário de Campanhas Educacionais</title>
-  <!-- Tailwind via CDN (opcional) -->
-  <script src="https://cdn.tailwindcss.com" defer></script>
-  <!-- html2canvas se quiser botão de exportar imagem -->
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendário de Campanhas Educacionais 2026 - CAED</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
   <style>
-    /* Estilos mínimos para visual agradável */
-    body { box-sizing: border-box; margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; }
-    .container { max-width: 1100px; margin: 32px auto; padding: 16px; }
-    .header { text-align: center; margin-bottom: 20px; }
-    .card { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 16px; margin-bottom: 12px; border-left: 6px solid #6d28d9; }
-    .btn { display: inline-block; padding: 8px 12px; border-radius: 8px; cursor: pointer; margin-right:8px; text-decoration:none; color: white; background: #2563eb; }
-    #calendarGrid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 12px; }
-    .month-card { padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); }
-    footer { text-align:center; margin-top: 28px; color: #94a3b8; font-size: 13px; }
+    body { box-sizing: border-box; }
+    .month-card {
+      transition: all 0.3s ease;
+      border-left: 6px solid;
+    }
+    .month-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    .edit-mode {
+      background: rgba(59,130,246,0.1);
+      border: 2px dashed #3b82f6;
+    }
+    .color-picker {
+      width: 40px; height: 40px;
+      border-radius: 50%; border: 3px solid #374151;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .color-picker:hover { transform: scale(1.1); }
   </style>
 </head>
-<body>
-  <div class="container">
-    <header class="header">
-      <h1 style="font-size:28px; margin:0;">Calendário de Campanhas Educacionais 2026</h1>
-      <p style="margin:6px 0 0 0; color:#94a3b8;">Painel de informações e ferramentas</p>
+<body class="bg-gray-900 text-white min-h-full">
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- Cabeçalho -->
+    <header class="text-center mb-8">
+      <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        Calendário de Campanhas Educacionais 2026
+      </h1>
+      <p class="text-gray-400">Painel de informações e ferramentas</p>
     </header>
 
-    <div class="card" id="controls">
-      <button id="editToggle" class="btn">Modo Edição</button>
-      <button id="saveData" class="btn" style="background:#16a34a;">Salvar Alterações</button>
-      <button id="infoToggle" class="btn" style="background:#7c3aed;">Dados Importantes</button>
-      <button id="exportImage" class="btn" style="background:#ea580c;">Exportar Imagem</button>
+    <!-- Botões de controle -->
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <button id="editToggle" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+        Modo Edição
+      </button>
+      <button id="saveData" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+        Salvar Alterações
+      </button>
+      <button id="infoToggle" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+        Dados Importantes
+      </button>
+      <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+        Exportar Imagem
+      </button>
     </div>
 
-    <div id="infoPanel" class="card" style="border-left-color:#7c3aed;">
-      <h2 style="margin-top:0;">Dados Importantes</h2>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:6px;">
-          <h3 style="margin:0 0 6px 0; color:#fbbf24;">Integração Setorial</h3>
-          <p style="margin:0; color:#cbd5e1; font-size:14px;">
-            A integração com outros setores é essencial durante todo o período anual. Implementar ações pedagógicas integradas garante maior impacto.
+    <!-- Painel de informações -->
+    <section id="infoPanel" class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-6 mb-8 border-l-4 border-purple-500">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-purple-200">Dados Importantes</h2>
+        <button id="textSizeToggle" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+          Texto Pequeno
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
+          <h3 class="text-lg font-semibold mb-3 text-yellow-300">Integração Setorial</h3>
+          <p class="text-gray-300 text-sm leading-relaxed">
+            A integração com outros setores é <strong>essencial durante todo o período anual</strong>.
+            Implementar ações pedagógicas integradas garante maior impacto e consistência educacional.
           </p>
         </div>
-        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:6px;">
-          <h3 style="margin:0 0 6px 0; color:#60a5fa;">Produção Audiovisual</h3>
-          <p style="margin:0; color:#cbd5e1; font-size:14px;">
-            Incentivar alunos a produzir imagens e vídeos para as campanhas — protagonismo estudantil aumenta engajamento.
+
+        <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
+          <h3 class="text-lg font-semibold mb-3 text-blue-300">Produção Audiovisual</h3>
+          <p class="text-gray-300 text-sm leading-relaxed">
+            <strong>Durante todo o ano:</strong> Incentivar alunos a produzir imagens e vídeos para as campanhas,
+            fortalecendo o protagonismo estudantil e o engajamento da comunidade escolar.
           </p>
         </div>
       </div>
-    </div>
-
-    <section id="calendarGrid">
-      <!-- Exemplo de mês; gere dinamicamente se quiser -->
-      <div class="month-card card">
-        <h4 style="margin:0 0 8px 0;">Janeiro</h4>
-        <p style="margin:0; color:#cbd5e1;">Sem campanhas definidas</p>
-      </div>
-
-      <div class="month-card card" style="border-left-color:#10b981;">
-        <h4 style="margin:0 0 8px 0;">Junho</h4>
-        <p style="margin:0; color:#cbd5e1;"><strong>26 de Junho:</strong> Prevenção a vícios — teatros e visitas técnicas.</p>
-      </div>
-
-      <!-- Adicione quantos cards/mês você quiser -->
     </section>
 
-    <footer>
+    <!-- Grade de meses -->
+    <section id="calendarGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></section>
+
+    <!-- Rodapé -->
+    <footer class="text-center mt-10 text-gray-400 text-sm">
       Desenvolvido — salve este arquivo como <strong>index.html</strong> na raiz do seu site.
     </footer>
   </div>
 
+  <!-- Modal de cores -->
+  <div id="colorModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Escolher Cor do Mês</h3>
+      <div class="grid grid-cols-6 gap-3 mb-4">
+        <div class="color-picker" style="background-color:#8b5cf6" data-color="#8b5cf6"></div>
+        <div class="color-picker" style="background-color:#f97316" data-color="#f97316"></div>
+        <div class="color-picker" style="background-color:#3b82f6" data-color="#3b82f6"></div>
+        <div class="color-picker" style="background-color:#22c55e" data-color="#22c55e"></div>
+        <div class="color-picker" style="background-color:#eab308" data-color="#eab308"></div>
+        <div class="color-picker" style="background-color:#ec4899" data-color="#ec4899"></div>
+      </div>
+      <button id="closeColorModal" class="bg-gray-600 hover:bg-gray-700 w-full py-2 rounded-lg">Cancelar</button>
+    </div>
+  </div>
+
   <script>
-    // Pequeno script para demonstrar funcionamento e exportar como imagem
-    document.addEventListener('DOMContentLoaded', () => {
-      const app = document.querySelector('#calendarGrid');
-      // adiciona timestamp de execução
-      const stamp = document.createElement('p');
-      stamp.style.color = '#94a3b8';
-      stamp.style.fontSize = '12px';
-      stamp.style.marginTop = '8px';
-      stamp.textContent = 'Script rodando: ' + new Date().toLocaleString();
-      document.querySelector('.container').appendChild(stamp);
+    let editMode = false;
+    const monthsData = {
+      'Janeiro': { color:'#3b82f6', theme:'Saúde Mental', description:'Campanhas de autocuidado e empatia.', objective:'Sensibilizar sobre saúde emocional.' },
+      'Fevereiro': { color:'#8b5cf6', theme:'Acolhimento', description:'Integração dos novos alunos e servidores.', objective:'Criar ambiente acolhedor e participativo.' },
+      'Março': { color:'#f97316', theme:'Conscientização sobre Assédio', description:'Debates e palestras sobre respeito.', objective:'Combater comportamentos discriminatórios.' },
+      'Abril': { color:'#22c55e', theme:'Sustentabilidade', description:'Ações ambientais no campus.', objective:'Estimular práticas ecológicas.' },
+      'Maio': { color:'#eab308', theme:'Saúde Emocional', description:'Oficinas e rodas de conversa.', objective:'Promover o equilíbrio mental.' },
+      'Junho': { color:'#10b981', theme:'Prevenção a Vícios', description:'Teatros e visitas técnicas.', objective:'Conscientizar sobre os riscos dos vícios.' },
+      'Julho': { color:'#facc15', theme:'Recesso Escolar', description:'Descanso e planejamento.', objective:'Preparar o retorno ao segundo semestre.' },
+      'Agosto': { color:'#a855f7', theme:'Defesa Pessoal e Direitos das Mulheres', description:'Campanha Agosto Lilás.', objective:'Fortalecer conhecimento e segurança feminina.' },
+      'Setembro': { color:'#eab308', theme:'Prevenção ao Suicídio', description:'Campanha Setembro Amarelo.', objective:'Valorizar a vida e o acolhimento.' },
+      'Outubro': { color:'#ec4899', theme:'Saúde da Mulher', description:'Campanha Outubro Rosa.', objective:'Incentivar o autocuidado feminino.' },
+      'Novembro': { color:'#3b82f6', theme:'Saúde do Homem', description:'Campanha Novembro Azul.', objective:'Quebrar tabus sobre saúde masculina.' },
+      'Dezembro': { color:'#f97316', theme:'Prevenção ao Câncer de Pele', description:'Campanha Dezembro Laranja.', objective:'Refletir e planejar o próximo ano.' }
+    };
 
-      document.getElementById('exportImage').addEventListener('click', async () => {
-        // ajusta temporariamente para imagem clara se quiser
-        const originalBg = document.body.style.backgroundColor;
-        const originalColor = document.body.style.color;
-        document.body.style.backgroundColor = '#ffffff';
-        document.body.style.color = '#000000';
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+      Object.entries(monthsData).forEach(([month, data]) => {
+        const card = document.createElement('div');
+        card.className = 'month-card bg-gray-800 rounded-lg p-6 cursor-pointer';
+        card.style.borderLeftColor = data.color;
 
-        try {
-          await html2canvas(document.querySelector('.container')).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'calendario.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-          });
-        } catch (err) {
-          alert('Erro ao exportar imagem: ' + err.message);
-        } finally {
-          // restaura
-          document.body.style.backgroundColor = originalBg;
-          document.body.style.color = originalColor;
-        }
+        card.innerHTML = `
+          <h3 class="text-lg font-bold mb-3" style="color:${data.color}">${month}</h3>
+          <p class="text-gray-300 mb-2"><strong>Tema:</strong> ${editMode ? `<input class="w-full bg-gray-700 text-white p-1 rounded" value="${data.theme}">` : data.theme}</p>
+          <p class="text-gray-300 mb-2"><strong>Descrição:</strong> ${editMode ? `<textarea class="w-full bg-gray-700 text-white p-1 rounded">${data.description}</textarea>` : data.description}</p>
+          <p class="text-blue-300"><strong>Objetivo:</strong> ${editMode ? `<textarea class="w-full bg-gray-700 text-white p-1 rounded">${data.objective}</textarea>` : data.objective}</p>
+        `;
+
+        grid.appendChild(card);
       });
+    }
+
+    document.getElementById('editToggle').addEventListener('click', () => {
+      editMode = !editMode;
+      document.getElementById('editToggle').textContent = editMode ? 'Visualizar' : 'Modo Edição';
+      renderCalendar();
     });
+
+    document.getElementById('saveData').addEventListener('click', () => {
+      localStorage.setItem('calendarData', JSON.stringify(monthsData));
+      alert('Dados salvos com sucesso!');
+    });
+
+    document.getElementById('infoToggle').addEventListener('click', () => {
+      const infoPanel = document.getElementById('infoPanel');
+      infoPanel.classList.toggle('hidden');
+      document.getElementById('infoToggle').textContent = infoPanel.classList.contains('hidden')
+        ? 'Mostrar Dados' : 'Ocultar Dados';
+    });
+
+    document.getElementById('exportImage').addEventListener('click', async () => {
+      const body = document.body;
+      const originalBg = body.style.backgroundColor;
+      const originalColor = body.style.color;
+
+      body.style.backgroundColor = '#ffffff';
+      body.style.color = '#000000';
+
+      await html2canvas(document.querySelector('.container'), { scale: 2, backgroundColor: '#ffffff' })
+        .then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'calendario_caed_2026.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        });
+
+      body.style.backgroundColor = originalBg;
+      body.style.color = originalColor;
+    });
+
+    renderCalendar();
   </script>
 </body>
 </html>

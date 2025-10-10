@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calendário de Campanhas Educacionais</title>
+  <!-- Tailwind via CDN (opcional) -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <!-- html2canvas se quiser botão de exportar imagem -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer></script>
+
+  <style>
+    /* Estilos mínimos para visual agradável */
+    body { box-sizing: border-box; margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; }
+    .container { max-width: 1100px; margin: 32px auto; padding: 16px; }
+    .header { text-align: center; margin-bottom: 20px; }
+    .card { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 16px; margin-bottom: 12px; border-left: 6px solid #6d28d9; }
+    .btn { display: inline-block; padding: 8px 12px; border-radius: 8px; cursor: pointer; margin-right:8px; text-decoration:none; color: white; background: #2563eb; }
+    #calendarGrid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 12px; }
+    .month-card { padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); }
+    footer { text-align:center; margin-top: 28px; color: #94a3b8; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 style="font-size:28px; margin:0;">Calendário de Campanhas Educacionais 2026</h1>
+      <p style="margin:6px 0 0 0; color:#94a3b8;">Painel de informações e ferramentas</p>
+    </header>
+
+    <div class="card" id="controls">
+      <button id="editToggle" class="btn">Modo Edição</button>
+      <button id="saveData" class="btn" style="background:#16a34a;">Salvar Alterações</button>
+      <button id="infoToggle" class="btn" style="background:#7c3aed;">Dados Importantes</button>
+      <button id="exportImage" class="btn" style="background:#ea580c;">Exportar Imagem</button>
+    </div>
+
+    <div id="infoPanel" class="card" style="border-left-color:#7c3aed;">
+      <h2 style="margin-top:0;">Dados Importantes</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:6px;">
+          <h3 style="margin:0 0 6px 0; color:#fbbf24;">Integração Setorial</h3>
+          <p style="margin:0; color:#cbd5e1; font-size:14px;">
+            A integração com outros setores é essencial durante todo o período anual. Implementar ações pedagógicas integradas garante maior impacto.
+          </p>
+        </div>
+        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:6px;">
+          <h3 style="margin:0 0 6px 0; color:#60a5fa;">Produção Audiovisual</h3>
+          <p style="margin:0; color:#cbd5e1; font-size:14px;">
+            Incentivar alunos a produzir imagens e vídeos para as campanhas — protagonismo estudantil aumenta engajamento.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <section id="calendarGrid">
+      <!-- Exemplo de mês; gere dinamicamente se quiser -->
+      <div class="month-card card">
+        <h4 style="margin:0 0 8px 0;">Janeiro</h4>
+        <p style="margin:0; color:#cbd5e1;">Sem campanhas definidas</p>
+      </div>
+
+      <div class="month-card card" style="border-left-color:#10b981;">
+        <h4 style="margin:0 0 8px 0;">Junho</h4>
+        <p style="margin:0; color:#cbd5e1;"><strong>26 de Junho:</strong> Prevenção a vícios — teatros e visitas técnicas.</p>
+      </div>
+
+      <!-- Adicione quantos cards/mês você quiser -->
+    </section>
+
+    <footer>
+      Desenvolvido — salve este arquivo como <strong>index.html</strong> na raiz do seu site.
+    </footer>
+  </div>
+
+  <script>
+    // Pequeno script para demonstrar funcionamento e exportar como imagem
+    document.addEventListener('DOMContentLoaded', () => {
+      const app = document.querySelector('#calendarGrid');
+      // adiciona timestamp de execução
+      const stamp = document.createElement('p');
+      stamp.style.color = '#94a3b8';
+      stamp.style.fontSize = '12px';
+      stamp.style.marginTop = '8px';
+      stamp.textContent = 'Script rodando: ' + new Date().toLocaleString();
+      document.querySelector('.container').appendChild(stamp);
+
+      document.getElementById('exportImage').addEventListener('click', async () => {
+        // ajusta temporariamente para imagem clara se quiser
+        const originalBg = document.body.style.backgroundColor;
+        const originalColor = document.body.style.color;
+        document.body.style.backgroundColor = '#ffffff';
+        document.body.style.color = '#000000';
+
+        try {
+          await html2canvas(document.querySelector('.container')).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'calendario.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+          });
+        } catch (err) {
+          alert('Erro ao exportar imagem: ' + err.message);
+        } finally {
+          // restaura
+          document.body.style.backgroundColor = originalBg;
+          document.body.style.color = originalColor;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

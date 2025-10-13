@@ -3,142 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calendário Educacional 2026 - CAED</title>
+<title>Calendário de Campanhas Educacionais 2026 - CAED</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
-  body { transition: background-color 0.3s, color 0.3s; }
-  .month-card { border-left: 6px solid; border-radius: 8px; padding: 15px; margin-bottom: 12px; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
-  .month-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-  .edit-mode { border: 2px dashed #3b82f6; background: rgba(59,130,246,0.1); }
-  #adminPanel { position: fixed; top:0; left:0; right:0; z-index:1000; background:#0f172a; color:#fff; display:none; padding:12px; box-shadow:0 6px 18px rgba(0,0,0,0.5); }
+  body { box-sizing: border-box; background: #1f1f2e; color: #fff; font-family: 'Inter', sans-serif; }
+  .hidden { display: none; }
 </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
+<body class="p-6">
 
-<!-- LOGIN PANEL -->
-<div id="loginPanel" class="flex flex-col items-center justify-center min-h-screen">
-  <h1 class="text-3xl font-bold mb-4">Acesse o Calendário</h1>
-  <input id="userName" type="text" placeholder="Seu nome" class="text-black p-2 rounded-lg w-64 mb-2">
-  <input id="userPassword" type="password" placeholder="Senha" class="text-black p-2 rounded-lg w-64 mb-4">
-  <button id="loginBtn" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold">Entrar</button>
+<h1 class="text-3xl font-bold mb-6 text-center text-purple-300">Calendário de Campanhas Educacionais 2026</h1>
+
+<!-- Painel de Dados Importantes -->
+<section id="infoPanel" class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-6 mb-8 border-l-4 border-purple-500 hidden">
+  <h2 class="text-2xl font-bold text-purple-200 mb-4">Dados Importantes</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
+      <h3 class="text-lg font-semibold mb-3 text-yellow-300">Integração Setorial</h3>
+      <p class="text-gray-300 text-sm leading-relaxed">
+        A integração com os alunos de Pedagogia e entre setores é <strong>essencial durante todo o período anual</strong>.
+        Implementar ações pedagógicas integradas garante maior impacto e consistência educacional.
+      </p>
+    </div>
+    <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
+      <h3 class="text-lg font-semibold mb-3 text-blue-300">Produção Audiovisual</h3>
+      <p class="text-gray-300 text-sm leading-relaxed">
+        Durante todo o ano, incentivar alunos a produzir imagens e vídeos para as campanhas fortalece o protagonismo estudantil e o engajamento da comunidade escolar.
+      </p>
+    </div>
+    <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
+      <h3 class="text-lg font-semibold mb-3 text-green-300">Observações Gerais</h3>
+      <p class="text-gray-300 text-sm leading-relaxed">
+        Todas as campanhas devem ser planejadas com antecedência, envolvendo professores, alunos e coordenação. Reuniões de alinhamento trimestrais são recomendadas.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Botões principais -->
+<div class="flex flex-wrap justify-center gap-4 mb-6">
+  <button id="infoToggle" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg text-white font-semibold">
+    Dados Importantes
+  </button>
+  <button id="toggleDesign" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">
+    Alterar Design
+  </button>
+  <button id="exportBtn" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">
+    Exportar Calendário
+  </button>
+  <button id="devModeBtn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-lg text-white font-semibold">
+    Modo Desenvolvedor
+  </button>
 </div>
 
-<!-- ADMIN PANEL -->
-<div id="adminPanel" class="space-y-2">
-  <h2 class="font-bold text-xl">Painel do Administrador</h2>
-  <div class="flex flex-wrap gap-2">
-    <button onclick="toggleEditMode()" class="bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded">Editar Mês</button>
-    <button onclick="undoChange()" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded">Undo</button>
-    <button onclick="downloadCalendar()" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded">Exportar PNG</button>
-    <button onclick="toggleTheme()" class="bg-gray-600 hover:bg-gray-700 px-3 py-1 rounded">Tema Claro/Escuro</button>
+<!-- Calendário -->
+<div id="calendar" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Exemplo de mês -->
+  <div class="bg-gray-800 bg-opacity-40 rounded-lg p-4">
+    <h2 class="text-xl font-bold mb-2 text-purple-200">Janeiro</h2>
+    <ul class="list-disc list-inside text-gray-300">
+      <li>Campanha A: descrição...</li>
+      <li>Campanha B: descrição...</li>
+    </ul>
   </div>
-  <div class="flex items-center mt-2 gap-2">
-    <label>Tamanho da Fonte:</label>
-    <input type="range" min="12" max="30" value="16" id="fontSizeSlider">
+  <div class="bg-gray-800 bg-opacity-40 rounded-lg p-4">
+    <h2 class="text-xl font-bold mb-2 text-purple-200">Fevereiro</h2>
+    <ul class="list-disc list-inside text-gray-300">
+      <li>Campanha C: descrição...</li>
+      <li>Campanha D: descrição...</li>
+    </ul>
   </div>
+  <!-- Adicione os outros meses seguindo o mesmo padrão -->
 </div>
-
-<!-- CALENDAR -->
-<div id="calendarContainer" class="container mx-auto px-4 py-8 hidden"></div>
 
 <script>
-const allowedUsers = { "Bianca Rufino": "bianca123" };
-
-// Dados completos e detalhados de cada mês
-const months = [
-  {name:"Janeiro", color:"#f87171", events:["Campanha de Saúde - 05/01","Campanha Educacional - 12/01"]},
-  {name:"Fevereiro", color:"#fbbf24", events:["Campanha de Inclusão - 02/02","Campanha Ambiental - 20/02"]},
-  {name:"Março", color:"#34d399", events:["Campanha de Literatura - 10/03","Campanha de Artes - 18/03"]},
-  {name:"Abril", color:"#60a5fa", events:["Campanha de História - 05/04","Campanha de Ciências - 22/04"]},
-  {name:"Maio", color:"#a78bfa", events:["Campanha de Tecnologia - 08/05","Campanha de Música - 15/05"]},
-  {name:"Junho", color:"#f472b6", events:["Campanha de Esporte - 01/06","Campanha de Educação Financeira - 20/06"]},
-  {name:"Julho", color:"#facc15", events:["Campanha de Saúde Mental - 05/07","Campanha de Sustentabilidade - 18/07"]},
-  {name:"Agosto", color:"#22d3ee", events:["Campanha de Línguas - 12/08","Campanha de Ética - 25/08"]},
-  {name:"Setembro", color:"#fb923c", events:["Campanha de História do Brasil - 07/09","Campanha de Artesanato - 21/09"]},
-  {name:"Outubro", color:"#818cf8", events:["Campanha de Educação Ambiental - 10/10","Campanha de Literatura Infantil - 22/10"]},
-  {name:"Novembro", color:"#34d399", events:["Campanha de Ciências Sociais - 05/11","Campanha de Filosofia - 18/11"]},
-  {name:"Dezembro", color:"#f87171", events:["Campanha de Final de Ano - 15/12","Campanha de Solidariedade - 23/12"]}
-];
-
-let editMode = false;
-let history = [];
-
-document.getElementById("loginBtn").addEventListener("click", () => {
-  const name = document.getElementById("userName").value.trim();
-  const password = document.getElementById("userPassword").value.trim();
-  if(allowedUsers[name] && allowedUsers[name] === password){
-    loginSuccess();
-  } else {
-    alert("Usuário ou senha incorreta.");
-  }
-});
-
-function loginSuccess(){
-  document.getElementById("loginPanel").style.display="none";
-  document.getElementById("calendarContainer").style.display="block";
-  document.getElementById("adminPanel").style.display="block";
-  generateCalendar();
-}
-
-function generateCalendar(){
-  const container = document.getElementById("calendarContainer");
-  container.innerHTML="";
-  months.forEach((m,i)=>{
-    const card = document.createElement("div");
-    card.className = "month-card";
-    card.style.borderColor = m.color;
-    card.innerHTML = `<h3 class="font-bold text-lg">${m.name}</h3>
-                      <ul>${m.events.map(e=>`<li>${e}</li>`).join("")}</ul>`;
-    card.onclick = () => { if(editMode) editMonth(i, card) };
-    container.appendChild(card);
+  // Toggle Dados Importantes
+  document.getElementById('infoToggle').addEventListener('click', () => {
+    const panel = document.getElementById('infoPanel');
+    panel.classList.toggle('hidden');
+    document.getElementById('infoToggle').textContent = panel.classList.contains('hidden') 
+      ? 'Mostrar Dados' 
+      : 'Ocultar Dados';
   });
-}
 
-function toggleEditMode(){
-  editMode = !editMode;
-  document.querySelectorAll(".month-card").forEach(c=>c.classList.toggle("edit-mode", editMode));
-}
-
-function editMonth(index, card){
-  const newName = prompt("Digite o novo nome do mês:", months[index].name);
-  const newEvents = prompt("Digite os eventos separados por vírgula:", months[index].events.join(", "));
-  if(newName && newEvents){ 
-    history.push(JSON.parse(JSON.stringify(months)));
-    months[index].name = newName;
-    months[index].events = newEvents.split(",").map(e=>e.trim());
-    generateCalendar();
-  }
-}
-
-function undoChange(){
-  if(history.length>0){
-    months.splice(0,months.length,...history.pop());
-    generateCalendar();
-  }
-}
-
-function toggleTheme(){
-  document.body.classList.toggle("bg-gray-900");
-  document.body.classList.toggle("bg-white");
-  document.body.classList.toggle("text-white");
-  document.body.classList.toggle("text-black");
-}
-
-document.getElementById("fontSizeSlider").addEventListener("input",(e)=>{
-  document.querySelectorAll(".month-card").forEach(c=>{
-    c.style.fontSize = e.target.value+"px";
+  // Toggle Design (Exemplo: escuro/claro)
+  document.getElementById('toggleDesign').addEventListener('click', () => {
+    document.body.classList.toggle('bg-white');
+    document.body.classList.toggle('text-black');
+    document.querySelectorAll('.bg-gray-800').forEach(el => {
+      el.classList.toggle('bg-gray-200');
+      el.classList.toggle('text-black');
+    });
   });
-});
 
-function downloadCalendar(){
-  html2canvas(document.getElementById("calendarContainer")).then(canvas=>{
-    const link = document.createElement("a");
-    link.download = "calendario.png";
-    link.href = canvas.toDataURL();
-    link.click();
+  // Exportar calendário como imagem
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    html2canvas(document.getElementById('calendar')).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'calendario-campanhas-2026.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
   });
-}
+
+  // Modo Desenvolvedor (exemplo simples)
+  document.getElementById('devModeBtn').addEventListener('click', () => {
+    alert('Modo desenvolvedor ativado! Você pode agora editar os campos do calendário diretamente.');
+  });
 </script>
+
 </body>
 </html>
+

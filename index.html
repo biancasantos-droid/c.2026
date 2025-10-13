@@ -1,485 +1,147 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Calendário de Campanhas Educacionais 2026 - CAED</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendário Educacional 2026 - CAED</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
-  body { box-sizing: border-box; transition: background-color .25s, color .25s; }
-  .month-card { transition: all .2s ease; border-left:6px solid; cursor:pointer; padding:15px; border-radius:8px; }
-  .month-card:hover { transform: translateY(-4px); box-shadow:0 10px 30px rgba(0,0,0,.35); }
-  .color-picker { width:40px; height:40px; border-radius:50%; border:3px solid #374151; cursor:pointer; }
-  #adminPanel { position:fixed; top:0; left:0; right:0; z-index:1000; background:#0f172a; color:#fff; display:none; padding:12px; box-shadow:0 6px 18px rgba(0,0,0,.5); }
-  body.with-admin-padding { padding-top:260px; }
-  .selected-month { outline:3px dashed rgba(255,255,255,.35); }
-  input[type="text"], textarea { color: #000; }
-  /* small responsive adjustments */
-  @media(max-width:640px){ body.with-admin-padding{padding-top:340px;} }
+  body { transition: background-color 0.3s, color 0.3s; }
+  .month-card { border-left: 6px solid; border-radius: 8px; padding: 15px; margin-bottom: 12px; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
+  .month-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+  .edit-mode { border: 2px dashed #3b82f6; background: rgba(59,130,246,0.1); }
+  .color-picker { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #374151; cursor:pointer; transition: transform 0.2s; margin-right: 6px;}
+  .color-picker:hover { transform: scale(1.1); }
+  #adminPanel { position: fixed; top:0; left:0; right:0; z-index:1000; background:#0f172a; color:#fff; display:none; padding:12px; box-shadow:0 6px 18px rgba(0,0,0,0.5); }
+  .selected-month { outline: 3px dashed rgba(255,255,255,0.5); }
 </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
 
-<div class="container mx-auto px-4 py-8">
+<!-- LOGIN PANEL -->
+<div id="loginPanel" class="flex flex-col items-center justify-center min-h-screen">
+  <h1 class="text-3xl font-bold mb-4">Acesse o Calendário</h1>
+  <input id="userName" type="text" placeholder="Seu nome" class="text-black p-2 rounded-lg w-64 mb-2">
+  <input id="userPassword" type="password" placeholder="Senha" class="text-black p-2 rounded-lg w-64 mb-4" style="display:none">
+  <button id="loginBtn" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold">Entrar</button>
+</div>
 
-  <!-- LOGIN -->
-  <div id="loginPanel" class="text-center">
-    <h1 class="text-3xl font-bold mb-4">Digite seu nome para acessar o calendário:</h1>
-    <input id="userName" type="text" placeholder="Seu nome" class="text-black p-2 rounded-lg w-64 mb-2" autocomplete="name" />
-    <br>
-    <input id="userPassword" type="password" placeholder="Senha (só para Bianca)" class="text-black p-2 rounded-lg w-64 mb-4 hidden" autocomplete="current-password" />
-    <br>
-    <button id="enterBtn" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Entrar</button>
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="space-y-2">
+  <h2 class="font-bold text-xl">Painel do Administrador</h2>
+  <div class="flex flex-wrap gap-2">
+    <button onclick="toggleEditMode()" class="bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded">Editar Mês</button>
+    <button onclick="undoChange()" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded">Undo</button>
+    <button onclick="downloadCalendar()" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded">Exportar PNG</button>
+    <button onclick="toggleTheme()" class="bg-gray-600 hover:bg-gray-700 px-3 py-1 rounded">Tema Claro/Escuro</button>
   </div>
-
-  <!-- WELCOME -->
-  <div id="welcomePanel" class="hidden text-center mb-6">
-    <h2 id="welcomeText" class="text-2xl font-semibold"></h2>
+  <div class="flex items-center mt-2 gap-2">
+    <label>Tamanho da Fonte:</label>
+    <input type="range" min="12" max="30" value="16" id="fontSizeSlider">
   </div>
+</div>
 
-  <!-- HEADER -->
-  <header id="calendarHeader" class="text-center mb-4 hidden">
-    <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Calendário de Campanhas Educacionais 2026</h1>
-  </header>
-
-  <!-- ADMIN PANEL (fixed, hidden por padrão) -->
-  <div id="adminPanel" class="rounded-lg">
-    <div class="flex flex-wrap items-center gap-3">
-      <button id="toggleDevMode" class="bg-blue-600 px-4 py-2 rounded-lg text-white font-semibold">Modo Desenvolvedor</button>
-      <button id="viewAsUserBtn" class="bg-gray-600 px-4 py-2 rounded-lg text-white font-semibold">Ver como Usuário</button>
-      <button id="changePasswordBtn" class="bg-yellow-600 px-4 py-2 rounded-lg text-white font-semibold">Trocar Senha</button>
-      <button id="saveDataTop" class="bg-green-600 px-3 py-2 rounded-lg text-white font-semibold">Salvar</button>
-      <button id="closeAdminBtn" class="bg-red-600 px-3 py-2 rounded-lg text-white font-semibold">Fechar Painel</button>
-      <div class="ml-auto text-sm text-gray-300 pr-2">Admin: <span id="adminNameLabel">—</span></div>
-    </div>
-
-    <div id="designControls" class="hidden mt-4">
-      <p class="text-gray-200 mb-2">Clique em um mês para selecionar e depois escolha uma cor:</p>
-      <div class="grid grid-cols-6 gap-3 mb-3">
-        <div class="color-picker" style="background:#8b5cf6" data-color="#8b5cf6"></div>
-        <div class="color-picker" style="background:#f97316" data-color="#f97316"></div>
-        <div class="color-picker" style="background:#3b82f6" data-color="#3b82f6"></div>
-        <div class="color-picker" style="background:#22c55e" data-color="#22c55e"></div>
-        <div class="color-picker" style="background:#eab308" data-color="#eab308"></div>
-        <div class="color-picker" style="background:#ec4899" data-color="#ec4899"></div>
-      </div>
-
-      <div class="flex gap-3 items-center">
-        <button id="undoChange" class="bg-red-600 px-4 py-2 rounded-lg text-white font-semibold">Desfazer Última</button>
-        <button id="clearHistoryBtn" class="bg-gray-600 px-4 py-2 rounded-lg text-white">Limpar Histórico</button>
-        <button id="exportImageTop" class="bg-orange-600 px-4 py-2 rounded-lg text-white">Exportar Imagem</button>
-        <div class="ml-auto flex gap-2 items-center">
-          <span class="text-gray-300 mr-2">Tema:</span>
-          <button class="themeBtn bg-gray-700 px-3 py-1 rounded text-white" data-theme="dark">Escuro</button>
-          <button class="themeBtn bg-gray-200 px-3 py-1 rounded text-black" data-theme="light">Claro</button>
-        </div>
-      </div>
-
-      <p class="text-gray-300 mt-3 text-sm">Histórico de alterações:</p>
-      <div id="designHistory" class="bg-gray-800 p-2 rounded max-h-36 overflow-y-auto text-sm text-gray-200"></div>
-    </div>
-  </div>
-
-  <!-- CONTROLS (aparecem depois do login) -->
-  <div id="controlButtons" class="flex flex-wrap justify-center gap-4 mb-8 hidden mt-6">
-    <button id="editToggle" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Modo Edição</button>
-    <button id="saveData" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">Salvar Alterações</button>
-    <button id="infoToggle" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg text-white font-semibold">Dados Importantes</button>
-    <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg text-white font-semibold">Exportar Imagem</button>
-  </div>
-
-  <!-- INFO PANEL -->
-  <section id="infoPanel" class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-6 mb-8 border-l-4 border-purple-500 hidden">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-purple-200">Dados Importantes</h2>
-      <button id="textSizeToggle" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-sm text-white">Texto Pequeno</button>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
-        <h3 class="text-lg font-semibold mb-3 text-yellow-300">Integração Setorial</h3>
-        <p class="text-gray-300 text-sm leading-relaxed">A integração com outros setores é <strong>essencial durante todo o período anual</strong>. Implementar ações pedagógicas integradas garante maior impacto e consistência educacional.</p>
-      </div>
-      <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
-        <h3 class="text-lg font-semibold mb-3 text-blue-300">Produção Audiovisual</h3>
-        <p class="text-gray-300 text-sm leading-relaxed"><strong>Durante todo o ano:</strong> Incentivar alunos a produzir imagens e vídeos para as campanhas, fortalecendo o protagonismo estudantil e o engajamento da comunidade escolar.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- CALENDAR GRID -->
-  <section id="calendarGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden"></section>
-
-  <footer id="footerText" class="text-center mt-10 text-gray-400 text-sm hidden">Desenvolvido — salve este arquivo como <strong>index.html</strong> na raiz do seu site.</footer>
+<!-- CALENDAR -->
+<div id="calendarContainer" class="container mx-auto px-4 py-8 hidden">
+  <!-- Meses vão ser gerados aqui pelo JS -->
 </div>
 
 <script>
-/* -------------------------
-   Utilitários e estado
-   ------------------------- */
-// Normaliza nome: remove acentos, espaços extras, lower case
-function normalizeName(n){
-  if(!n) return '';
-  return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ').toLowerCase();
-}
+const allowedUsers = { "Bianca Rufino": "1234", "Admin": "admin" };
+const months = [
+  {name:"Janeiro", color:"#f87171", events:["Campanha 1","Campanha 2"]},
+  {name:"Fevereiro", color:"#fbbf24", events:["Campanha 3"]},
+  {name:"Março", color:"#34d399", events:["Campanha 4"]},
+  {name:"Abril", color:"#60a5fa", events:["Campanha 5"]},
+  {name:"Maio", color:"#a78bfa", events:["Campanha 6"]},
+  {name:"Junho", color:"#f472b6", events:["Campanha 7"]},
+  {name:"Julho", color:"#facc15", events:["Campanha 8"]},
+  {name:"Agosto", color:"#22d3ee", events:["Campanha 9"]},
+  {name:"Setembro", color:"#fb923c", events:["Campanha 10"]},
+  {name:"Outubro", color:"#818cf8", events:["Campanha 11"]},
+  {name:"Novembro", color:"#34d399", events:["Campanha 12"]},
+  {name:"Dezembro", color:"#f87171", events:["Campanha 13"]}
+];
 
-const adminUser = "Bianca Rufino Santos";
-const normAdmin = normalizeName(adminUser);
-let adminPassword = localStorage.getItem('adminPassword') || "Petter feioso";
-let currentUser = "";
 let editMode = false;
-let devMode = false;
-let selectedMonth = null;
-let lastChange = null;
+let history = [];
 
-// allowed editors normalized
-const allowedEditors = [
-  "Bruna Angélica Borges","Petter Nogueira","Cleidilene Luísa",
-  "Jorge Almeida","Margarida Ambrósio","Fátima Maria","José Augusto","Vanessa Caroline"
-].map(normalizeName);
+document.getElementById("loginBtn").addEventListener("click", () => {
+  const name = document.getElementById("userName").value.trim();
+  if(allowedUsers[name]){
+    const pwdField = document.getElementById("userPassword");
+    if(name === "Bianca Rufino"){ pwdField.style.display="block"; pwdField.focus(); return; }
+    loginSuccess();
+  } else if(document.getElementById("userPassword").value === allowedUsers[name]){
+    loginSuccess();
+  } else { alert("Usuário ou senha incorreta."); }
+});
 
-// initial months (may be overwritten by saved data)
-const monthsData = {
-  'Janeiro': { color:'#3b82f6', theme:'Saúde Mental', description:'Campanhas de autocuidado e empatia.', objective:'Sensibilizar sobre saúde emocional.' },
-  'Fevereiro': { color:'#8b5cf6', theme:'Acolhimento', description:'Integração dos novos alunos e servidores.', objective:'Criar ambiente acolhedor e participativo.' },
-  'Março': { color:'#f97316', theme:'Conscientização sobre Assédio', description:'Debates e palestras sobre respeito.', objective:'Combater comportamentos discriminatórios.' },
-  'Abril': { color:'#22c55e', theme:'Sustentabilidade', description:'Ações ambientais no campus.', objective:'Estimular práticas ecológicas.' },
-  'Maio': { color:'#eab308', theme:'Saúde Emocional', description:'Oficinas e rodas de conversa.', objective:'Promover o equilíbrio mental.' },
-  'Junho': { color:'#10b981', theme:'Prevenção a Vícios', description:'Teatros e visitas técnicas.', objective:'Conscientizar sobre os riscos dos vícios.' },
-  'Julho': { color:'#facc15', theme:'Recesso Escolar', description:'Descanso e planejamento.', objective:'Preparar o retorno ao segundo semestre.' },
-  'Agosto': { color:'#a855f7', theme:'Defesa Pessoal e Direitos das Mulheres', description:'Campanha Agosto Lilás.', objective:'Fortalecer conhecimento e segurança feminina.' },
-  'Setembro': { color:'#eab308', theme:'Prevenção ao Suicídio', description:'Campanha Setembro Amarelo.', objective:'Valorizar a vida e o acolhimento.' },
-  'Outubro': { color:'#ec4899', theme:'Saúde da Mulher', description:'Campanha Outubro Rosa.', objective:'Incentivar o autocuidado feminino.' },
-  'Novembro': { color:'#3b82f6', theme:'Saúde do Homem', description:'Campanha Novembro Azul.', objective:'Quebrar tabus sobre saúde masculina.' },
-  'Dezembro': { color:'#f97316', theme:'Prevenção ao Câncer de Pele', description:'Campanha Dezembro Laranja.', objective:'Refletir e planejar o próximo ano.' }
-};
-
-/* -------------------------
-   Persistence: load saved months & password
-   ------------------------- */
-function loadSaved(){
-  try{
-    const saved = localStorage.getItem('calendarData');
-    if(saved){
-      const parsed = JSON.parse(saved);
-      // only assign keys that exist to avoid unexpected data
-      for(const k of Object.keys(parsed)){
-        if(monthsData[k]) monthsData[k] = parsed[k];
-      }
-    }
-    const savedPass = localStorage.getItem('adminPassword');
-    if(savedPass) adminPassword = savedPass;
-  }catch(e){
-    console.warn('Erro ao carregar dados salvos', e);
-  }
+function loginSuccess(){
+  document.getElementById("loginPanel").style.display="none";
+  document.getElementById("calendarContainer").style.display="block";
+  document.getElementById("adminPanel").style.display="block";
+  generateCalendar();
 }
-loadSaved();
 
-/* -------------------------
-   Render calendar
-   ------------------------- */
-function renderCalendar(){
-  const grid = document.getElementById('calendarGrid');
-  grid.innerHTML = '';
-  Object.entries(monthsData).forEach(([month, data])=>{
-    const card = document.createElement('div');
-    card.className = 'month-card';
-    card.dataset.month = month;
-    card.style.borderLeftColor = data.color;
-    card.style.backgroundColor = ( (editMode || devMode) && (normalizeName(currentUser) === normAdmin || allowedEditors.includes(normalizeName(currentUser))) ) ? '#ffffff' : '#1f2937';
-    const titleColor = ( (editMode || devMode) && (normalizeName(currentUser) === normAdmin || allowedEditors.includes(normalizeName(currentUser))) ) ? '#000' : data.color;
-    card.innerHTML = `
-      <h3 class="text-lg font-bold mb-2" style="color:${titleColor}">${month}</h3>
-      <p style="color:${ (editMode || devMode) ? '#000' : '#d1d5db'}"><strong>Tema:</strong> ${editMode ? `<input class="w-full p-1 rounded month-theme" value="${escapeHtml(data.theme)}">` : escapeHtml(data.theme)}</p>
-      <p style="color:${ (editMode || devMode) ? '#000' : '#d1d5db'}"><strong>Descrição:</strong> ${editMode ? `<textarea class="w-full p-1 rounded month-desc">${escapeHtml(data.description)}</textarea>` : escapeHtml(data.description)}</p>
-      <p style="color:${ (editMode || devMode) ? '#000' : '#60a5fa'}"><strong>Objetivo:</strong> ${editMode ? `<textarea class="w-full p-1 rounded month-obj">${escapeHtml(data.objective)}</textarea>` : escapeHtml(data.objective)}</p>
-    `;
-    // click to select month for color change (admin only)
-    card.addEventListener('click', (e)=>{
-      if(normalizeName(currentUser) !== normAdmin) return;
-      document.querySelectorAll('.month-card').forEach(c => c.classList.remove('selected-month'));
-      card.classList.add('selected-month');
-      selectedMonth = month;
-    });
-    grid.appendChild(card);
+function generateCalendar(){
+  const container = document.getElementById("calendarContainer");
+  container.innerHTML="";
+  months.forEach((m,i)=>{
+    const card = document.createElement("div");
+    card.className = "month-card";
+    card.style.borderColor = m.color;
+    card.innerHTML = `<h3 class="font-bold text-lg">${m.name}</h3>
+                      <ul>${m.events.map(e=>`<li>${e}</li>`).join("")}</ul>`;
+    card.onclick = () => { if(editMode) editMonth(i, card) };
+    container.appendChild(card);
   });
 }
 
-/* small helper to escape HTML values inserted into value/text nodes */
-function escapeHtml(s){
-  if(s == null) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-/* -------------------------
-   Login handling
-   ------------------------- */
-const userNameInput = document.getElementById('userName');
-const userPassInput = document.getElementById('userPassword');
-userNameInput.addEventListener('input', ()=>{
-  const typed = normalizeName(userNameInput.value || '');
-  // show password field only when typed name normalizes to admin
-  if(typed === normAdmin) userPassInput.classList.remove('hidden');
-  else userPassInput.classList.add('hidden');
-});
-
-// Robust login click
-document.getElementById('enterBtn').addEventListener('click', ()=>{
-  const rawName = userNameInput.value;
-  const typed = normalizeName(rawName);
-  if(!typed){ alert('Digite seu nome!'); return; }
-
-  // admin path
-  if(typed === normAdmin){
-    const typedPass = userPassInput.value || '';
-    if(typedPass !== adminPassword){
-      alert('Senha incorreta para Bianca Rufino Santos!');
-      return;
-    }
-    // success admin login
-    currentUser = adminUser;
-    afterLogin();
-    return;
-  }
-
-  // non-admin: accept any name (no password)
-  currentUser = rawName.trim();
-  afterLogin();
-});
-
-// After successful login: show UI
-function afterLogin(){
-  document.getElementById('loginPanel').classList.add('hidden');
-  document.getElementById('welcomePanel').classList.remove('hidden');
-  document.getElementById('calendarHeader').classList.remove('hidden');
-  document.getElementById('calendarGrid').classList.remove('hidden');
-  document.getElementById('controlButtons').classList.remove('hidden');
-  document.getElementById('footerText').classList.remove('hidden');
-  document.getElementById('welcomeText').textContent = getWelcomeMessage(currentUser);
-  // if admin, show admin panel
-  if(normalizeName(currentUser) === normAdmin){
-    document.getElementById('adminPanel').style.display = 'block';
-    document.getElementById('adminNameLabel').textContent = currentUser;
-    document.body.classList.add('with-admin-padding');
-  } else {
-    document.getElementById('adminPanel').style.display = 'none';
-    document.body.classList.remove('with-admin-padding');
-  }
-  renderCalendar();
-}
-
-/* greeting */
-function getWelcomeMessage(name){
-  const hour = new Date().getHours();
-  let greeting = 'Olá';
-  if(hour < 12) greeting = 'Bom dia';
-  else if(hour < 18) greeting = 'Boa tarde';
-  else greeting = 'Boa noite';
-  return `${greeting}, ${name}!`;
-}
-
-/* -------------------------
-   Toggle Edit Mode (for allowed editors)
-   ------------------------- */
-document.getElementById('editToggle').addEventListener('click', ()=>{
-  const normCur = normalizeName(currentUser);
-  if(!(normCur === normAdmin || allowedEditors.includes(normCur))){
-    alert('Você não tem permissão para editar!');
-    return;
-  }
-  // when switching from edit -> save changes from inputs into monthsData
-  if(editMode){
-    // collect edits
-    const cards = document.querySelectorAll('.month-card');
-    cards.forEach(card=>{
-      const m = card.dataset.month;
-      if(!m) return;
-      const themeInput = card.querySelector('.month-theme');
-      const descInput = card.querySelector('.month-desc');
-      const objInput = card.querySelector('.month-obj');
-      if(themeInput) monthsData[m].theme = themeInput.value;
-      if(descInput) monthsData[m].description = descInput.value;
-      if(objInput) monthsData[m].objective = objInput.value;
-    });
-    // persist
-    localStorage.setItem('calendarData', JSON.stringify(monthsData));
-  }
+function toggleEditMode(){
   editMode = !editMode;
-  document.getElementById('editToggle').textContent = editMode ? 'Visualizar' : 'Modo Edição';
-  renderCalendar();
-});
-
-/* -------------------------
-   Admin panel actions
-   ------------------------- */
-document.getElementById('toggleDevMode').addEventListener('click', ()=>{
-  // only admin allowed
-  if(normalizeName(currentUser) !== normAdmin){
-    alert('Somente admin pode ativar o modo desenvolvedor.');
-    return;
-  }
-  devMode = !devMode;
-  document.getElementById('designControls').classList.toggle('hidden', !devMode);
-  document.getElementById('toggleDevMode').textContent = devMode ? 'Fechar Modo Desenvolvedor' : 'Modo Desenvolvedor';
-  // keep editMode false when switching to devMode to avoid confusion; devMode allows color edits
-  renderCalendar();
-});
-
-document.getElementById('viewAsUserBtn').addEventListener('click', ()=>{
-  devMode = false;
-  document.getElementById('designControls').classList.add('hidden');
-  document.getElementById('toggleDevMode').textContent = 'Modo Desenvolvedor';
-  renderCalendar();
-});
-
-document.getElementById('closeAdminBtn').addEventListener('click', ()=>{
-  document.getElementById('adminPanel').style.display = 'none';
-  document.body.classList.remove('with-admin-padding');
-});
-
-/* Change password (admin) */
-document.getElementById('changePasswordBtn').addEventListener('click', ()=>{
-  if(normalizeName(currentUser) !== normAdmin){ alert('Somente admin pode trocar a senha.'); return; }
-  const newPass = prompt('Digite a nova senha para Bianca Rufino Santos:', adminPassword || '');
-  if(newPass && newPass.trim() !== ''){
-    adminPassword = newPass.trim();
-    localStorage.setItem('adminPassword', adminPassword);
-    alert('Senha alterada com sucesso!');
-  } else {
-    alert('Senha inválida. A alteração foi cancelada.');
-  }
-});
-
-/* Save buttons */
-document.getElementById('saveData').addEventListener('click', ()=>{
-  localStorage.setItem('calendarData', JSON.stringify(monthsData));
-  alert('Dados salvos!');
-});
-document.getElementById('saveDataTop').addEventListener('click', ()=>{
-  localStorage.setItem('calendarData', JSON.stringify(monthsData));
-  localStorage.setItem('adminPassword', adminPassword);
-  alert('Dados salvos (inclui senha).');
-});
-
-/* -------------------------
-   Color pickers & history (admin/dev)
-   ------------------------- */
-const colorPickers = document.querySelectorAll('.color-picker');
-colorPickers.forEach(p => {
-  p.addEventListener('click', ()=>{
-    const color = p.dataset.color;
-    if(!color) return;
-    if(normalizeName(currentUser) !== normAdmin){ alert('Somente admin pode alterar cores.'); return; }
-    if(!selectedMonth){ alert('Selecione um mês clicando nele antes.'); return; }
-    // record change
-    const oldColor = monthsData[selectedMonth].color;
-    monthsData[selectedMonth].color = color;
-    lastChange = { month: selectedMonth, oldColor, newColor: color, timestamp: Date.now() };
-    // update UI & history
-    renderCalendar();
-    appendHistory(`${selectedMonth}: ${oldColor} → ${color}`);
-    // keep selectedMonth highlighted after render
-    setTimeout(()=> {
-      document.querySelectorAll('.month-card').forEach(c => {
-        if(c.dataset.month === selectedMonth) c.classList.add('selected-month');
-      });
-    }, 50);
-  });
-});
-
-function appendHistory(text){
-  const h = document.getElementById('designHistory');
-  const el = document.createElement('div');
-  el.textContent = `${new Date().toLocaleString()}: ${text}`;
-  h.prepend(el);
+  document.querySelectorAll(".month-card").forEach(c=>c.classList.toggle("edit-mode", editMode));
 }
 
-/* Undo last change */
-document.getElementById('undoChange').addEventListener('click', ()=>{
-  if(normalizeName(currentUser) !== normAdmin){ alert('Somente admin pode desfazer alterações.'); return; }
-  if(!lastChange){ alert('Nenhuma alteração para desfazer.'); return; }
-  monthsData[lastChange.month].color = lastChange.oldColor;
-  appendHistory(`Desfeito: ${lastChange.month} voltou para ${lastChange.oldColor}`);
-  lastChange = null;
-  renderCalendar();
-});
+function editMonth(index, card){
+  const newName = prompt("Digite o novo nome do mês:", months[index].name);
+  if(newName){ 
+    history.push(JSON.parse(JSON.stringify(months)));
+    months[index].name = newName;
+    generateCalendar();
+  }
+}
 
-/* Clear history */
-document.getElementById('clearHistoryBtn').addEventListener('click', ()=>{
-  if(!confirm('Limpar histórico de alterações?')) return;
-  document.getElementById('designHistory').innerHTML = '';
-});
+function undoChange(){
+  if(history.length>0){
+    months.splice(0,months.length,...history.pop());
+    generateCalendar();
+  }
+}
 
-/* -------------------------
-   Theme buttons
-   ------------------------- */
-document.querySelectorAll('.themeBtn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const theme = btn.dataset.theme;
-    if(theme === 'dark'){
-      document.body.classList.remove('bg-white','text-black');
-      document.body.classList.add('bg-gray-900','text-white');
-    } else {
-      document.body.classList.remove('bg-gray-900','text-white');
-      document.body.classList.add('bg-white','text-black');
-    }
+function toggleTheme(){
+  document.body.classList.toggle("bg-gray-900");
+  document.body.classList.toggle("bg-white");
+  document.body.classList.toggle("text-white");
+  document.body.classList.toggle("text-black");
+}
+
+document.getElementById("fontSizeSlider").addEventListener("input",(e)=>{
+  document.querySelectorAll(".month-card").forEach(c=>{
+    c.style.fontSize = e.target.value+"px";
   });
 });
 
-/* -------------------------
-   Export image (top & control)
-   ------------------------- */
-async function exportCalendarImage(){
-  // build export container with header + months only
-  const header = document.getElementById('calendarHeader').cloneNode(true);
-  const grid = document.getElementById('calendarGrid').cloneNode(true);
-  const exportDiv = document.createElement('div');
-  exportDiv.style.backgroundColor = '#ffffff';
-  exportDiv.style.color = '#000';
-  exportDiv.style.padding = '20px';
-  // ensure cloned nodes show month colors
-  // append header and grid
-  exportDiv.appendChild(header);
-  exportDiv.appendChild(grid);
-  document.body.appendChild(exportDiv);
-  try{
-    const canvas = await html2canvas(exportDiv, { scale: 2, backgroundColor: '#ffffff' });
-    const link = document.createElement('a');
-    link.download = 'calendario_caed_2026.png';
-    link.href = canvas.toDataURL('image/png');
+function downloadCalendar(){
+  html2canvas(document.getElementById("calendarContainer")).then(canvas=>{
+    const link = document.createElement("a");
+    link.download = "calendario.png";
+    link.href = canvas.toDataURL();
     link.click();
-  }catch(e){
-    alert('Erro ao exportar imagem: ' + e);
-  }finally{
-    exportDiv.remove();
-  }
+  });
 }
-document.getElementById('exportImage').addEventListener('click', exportCalendarImage);
-document.getElementById('exportImageTop').addEventListener('click', exportCalendarImage);
-
-/* -------------------------
-   Calendar click: handle selection highlight persistence when re-rendering
-   ------------------------- */
-// (handled in renderCalendar: clicking a card sets selectedMonth)
-
-/* -------------------------
-   Load saved data on start and render initial UI state
-   ------------------------- */
-(function init(){
-  // load data already done earlier
-  renderCalendar();
-  // show login panel initially (adminPanel hidden by CSS)
-  document.getElementById('loginPanel').classList.remove('hidden');
-  // ensure password field hidden until admin name typed
-  document.getElementById('userPassword').classList.add('hidden');
-  // populate adminNameLabel if admin already logged? none at start
-})();
-
-/* -------------------------
-   Extra: ensure admin cannot be locked out if localStorage cleared
-   - adminPassword default is set above; localStorage override will have been applied in loadSaved()
-   ------------------------- */
 </script>
+
 </body>
 </html>
-

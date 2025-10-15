@@ -593,7 +593,43 @@ if(addInfoBtn && !addInfoBtn.dataset.listenerAdded){
         panel.appendChild(div);
     });
 })();
+// --- Corrige botão "Adicionar Dado Importante" ---
+(function(){
+  const addBtn = document.getElementById('addInfoBtn');
+  const panel = document.getElementById('importantDataPanel');
+  if(!addBtn || !panel) return;
 
+  // Evita adicionar múltiplos listeners
+  if(addBtn.dataset.listenerAdded) return;
+  addBtn.dataset.listenerAdded = 'true';
+
+  addBtn.addEventListener('click', () => {
+    const texto = prompt('Digite o novo dado importante:');
+    if(!texto || texto.trim() === '') return;
+
+    // Cria o elemento de dado importante
+    const div = document.createElement('div');
+    div.className = 'dataItem';
+    div.textContent = texto;
+
+    // Adiciona no painel
+    panel.appendChild(div);
+
+    // Persiste no localStorage
+    const savedInfo = JSON.parse(localStorage.getItem('importantData') || '[]');
+    savedInfo.push(texto);
+    localStorage.setItem('importantData', JSON.stringify(savedInfo));
+  });
+
+  // Restaurar dados importantes salvos ao iniciar
+  const savedInfo = JSON.parse(localStorage.getItem('importantData') || '[]');
+  savedInfo.forEach(texto => {
+    const div = document.createElement('div');
+    div.className = 'dataItem';
+    div.textContent = texto;
+    panel.appendChild(div);
+  });
+})();
 
 </script>
 </body>

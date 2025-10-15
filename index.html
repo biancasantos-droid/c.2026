@@ -596,6 +596,45 @@ style.textContent = `
 .large-text { font-size: 1rem; }
 `;
 document.head.appendChild(style);
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Toggle para abrir/fechar painel de Dados Importantes
+  const infoToggleBtn = document.getElementById('infoToggle');
+  const infoPanel = document.getElementById('infoPanel');
+  const textSizeBtn = document.getElementById('textSizeToggle');
+
+  if(infoToggleBtn && infoPanel){
+    infoToggleBtn.addEventListener('click', () => {
+      infoPanel.classList.toggle('hidden');
+    });
+  }
+
+  // Alterna tamanho do texto
+  if(textSizeBtn && infoPanel){
+    textSizeBtn.addEventListener('click', () => {
+      const paragraphs = infoPanel.querySelectorAll('p');
+      paragraphs.forEach(p => {
+        if(p.classList.contains('small-text')){
+          p.classList.remove('small-text');
+          p.classList.add('large-text');
+        } else {
+          p.classList.remove('large-text');
+          p.classList.add('small-text');
+        }
+      });
+      textSizeBtn.textContent = textSizeBtn.textContent === 'Texto Pequeno' ? 'Texto Grande' : 'Texto Pequeno';
+    });
+  }
+
+  // Adiciona CSS mínimo para tamanhos alternados
+  const style = document.createElement('style');
+  style.textContent = `
+    .small-text { font-size: 0.75rem; }
+    .large-text { font-size: 1rem; }
+  `;
+  document.head.appendChild(style);
+
+});
 
 
 </script>

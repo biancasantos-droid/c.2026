@@ -558,6 +558,45 @@ if(textSizeToggle){
     });
   });
 }
+  /* -------------------------
+   Info Panel toggle (abre/fecha painel)
+   ------------------------- */
+document.getElementById('infoToggle').addEventListener('click', () => {
+  const panel = document.getElementById('infoPanel');
+  panel.classList.toggle('hidden'); // mostra/esconde
+});
+
+/* -------------------------
+   Alterna tamanho do texto dentro do painel
+   ------------------------- */
+document.getElementById('textSizeToggle').addEventListener('click', () => {
+  const panel = document.getElementById('infoPanel');
+  const paragraphs = panel.querySelectorAll('p');
+  const btn = document.getElementById('textSizeToggle');
+
+  paragraphs.forEach(p => {
+    if(p.classList.contains('small-text')){
+      p.classList.remove('small-text');
+      p.classList.add('large-text');
+    } else {
+      p.classList.remove('large-text');
+      p.classList.add('small-text');
+    }
+  });
+
+  btn.textContent = btn.textContent === 'Texto Pequeno' ? 'Texto Grande' : 'Texto Pequeno';
+});
+
+/* -------------------------
+   Adiciona classes CSS para tamanhos
+   ------------------------- */
+const style = document.createElement('style');
+style.textContent = `
+.small-text { font-size: 0.75rem; }
+.large-text { font-size: 1rem; }
+`;
+document.head.appendChild(style);
+
 
 </script>
 </body>

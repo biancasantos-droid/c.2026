@@ -15,6 +15,7 @@
   body.with-admin-padding { padding-top:260px; }
   .selected-month { outline:3px dashed rgba(255,255,255,.35); }
   input[type="text"], textarea { color: #000; }
+  /* small responsive adjustments */
   @media(max-width:640px){ body.with-admin-padding{padding-top:340px;} }
 </style>
 </head>
@@ -36,13 +37,19 @@
   <div id="welcomePanel" class="hidden text-center mb-6">
     <h2 id="welcomeText" class="text-2xl font-semibold"></h2>
   </div>
-
+<!-- CONTROLS (aparecem depois do login) -->
+<div id="controlButtons" class="flex flex-wrap justify-center gap-4 mb-8 hidden mt-6">
+  <button id="editToggle" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Modo Edição</button>
+  <button id="saveData" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">Salvar Alterações</button>
+  <!-- botão de Dados Importantes removido -->
+  <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg text-white font-semibold">Exportar Imagem</button>
+</div>
   <!-- HEADER -->
   <header id="calendarHeader" class="text-center mb-4 hidden">
     <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Calendário de Campanhas Educacionais 2026</h1>
   </header>
 
-  <!-- ADMIN PANEL -->
+  <!-- ADMIN PANEL (fixed, hidden por padrão) -->
   <div id="adminPanel" class="rounded-lg">
     <div class="flex flex-wrap items-center gap-3">
       <button id="toggleDevMode" class="bg-blue-600 px-4 py-2 rounded-lg text-white font-semibold">Modo Desenvolvedor</button>
@@ -80,7 +87,7 @@
     </div>
   </div>
 
-  <!-- CONTROL BUTTONS -->
+  <!-- CONTROLS (aparecem depois do login) -->
   <div id="controlButtons" class="flex flex-wrap justify-center gap-4 mb-8 hidden mt-6">
     <button id="editToggle" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Modo Edição</button>
     <button id="saveData" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">Salvar Alterações</button>
@@ -88,28 +95,23 @@
     <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg text-white font-semibold">Exportar Imagem</button>
   </div>
 
-    <!-- INFO PANEL (editável) -->
+  <!-- INFO PANEL -->
   <section id="infoPanel" class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-6 mb-8 border-l-4 border-purple-500 hidden">
-    <h2 class="text-2xl font-bold text-purple-200 mb-4">Dados Importantes</h2>
-    <div id="importantDataPanel" class="space-y-2">
-      <div class="dataItem flex justify-between items-center bg-purple-950 p-2 rounded">
-        <span class="dataText">Integração com outros setores é essencial durante o ano.</span>
-        <div class="flex gap-2">
-          <button class="editBtn bg-yellow-500 text-black px-2 py-1 rounded text-sm">✏️</button>
-          <button class="deleteBtn bg-red-600 text-white px-2 py-1 rounded text-sm">❌</button>
-        </div>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-purple-200">Dados Importantes</h2>
+      <button id="textSizeToggle" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-sm text-white">Texto Pequeno</button>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
+        <h3 class="text-lg font-semibold mb-3 text-yellow-300">Integração Setorial</h3>
+        <p class="text-gray-300 text-sm leading-relaxed">A integração com outros setores é <strong>essencial durante todo o período anual</strong>. Implementar ações pedagógicas integradas garante maior impacto e consistência educacional.</p>
       </div>
-      <div class="dataItem flex justify-between items-center bg-purple-950 p-2 rounded">
-        <span class="dataText">Produção audiovisual: incentivar alunos a produzir imagens e vídeos.</span>
-        <div class="flex gap-2">
-          <button class="editBtn bg-yellow-500 text-black px-2 py-1 rounded text-sm">✏️</button>
-          <button class="deleteBtn bg-red-600 text-white px-2 py-1 rounded text-sm">❌</button>
-        </div>
+      <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
+        <h3 class="text-lg font-semibold mb-3 text-blue-300">Produção Audiovisual</h3>
+        <p class="text-gray-300 text-sm leading-relaxed"><strong>Durante todo o ano:</strong> Incentivar alunos a produzir imagens e vídeos para as campanhas, fortalecendo o protagonismo estudantil e o engajamento da comunidade escolar.</p>
       </div>
     </div>
-    <button id="addInfoBtn" class="bg-green-600 px-4 py-2 rounded-lg text-white mt-3">Adicionar Dado Importante</button>
   </section>
-
 
   <!-- CALENDAR GRID -->
   <section id="calendarGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden"></section>
@@ -121,7 +123,12 @@
 /* -------------------------
    Utilitários e estado
    ------------------------- */
-function normalizeName(n){ if(!n) return ''; return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ').toLowerCase(); }
+// Normaliza nome: remove acentos, espaços extras, lower case
+function normalizeName(n){
+  if(!n) return '';
+  return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ').toLowerCase();
+}
+
 const adminUser = "Bianca Rufino Santos";
 const normAdmin = normalizeName(adminUser);
 let adminPassword = localStorage.getItem('adminPassword') || "Petter feioso";
@@ -130,18 +137,47 @@ let editMode = false;
 let devMode = false;
 let selectedMonth = null;
 let lastChange = null;
-const allowedEditors = ["Bruna Angélica Borges","Petter Nogueira","Cleidilene Luísa","Jorge Almeida","Margarida Ambrósio","Fátima Maria","José Augusto","Vanessa Caroline"].map(normalizeName);
-const monthsData = { 'Janeiro': { color:'#3b82f6', theme:'Saúde Mental', description:'Campanhas de autocuidado e empatia.', objective:'Sensibilizar sobre saúde emocional.' }, 'Fevereiro': { color:'#8b5cf6', theme:'Acolhimento', description:'Integração dos novos alunos e servidores.', objective:'Criar ambiente acolhedor e participativo.' }, 'Março': { color:'#f97316', theme:'Conscientização sobre Assédio', description:'Debates e palestras sobre respeito.', objective:'Combater comportamentos discriminatórios.' }, 'Abril': { color:'#22c55e', theme:'Sustentabilidade', description:'Ações ambientais no campus.', objective:'Estimular práticas ecológicas.' }, 'Maio': { color:'#eab308', theme:'Saúde Emocional', description:'Oficinas e rodas de conversa.', objective:'Promover o equilíbrio mental.' }, 'Junho': { color:'#10b981', theme:'Prevenção a Vícios', description:'Teatros e visitas técnicas.', objective:'Conscientizar sobre os riscos dos vícios.' }, 'Julho': { color:'#facc15', theme:'Recesso Escolar', description:'Descanso e planejamento.', objective:'Preparar o retorno ao segundo semestre.' }, 'Agosto': { color:'#a855f7', theme:'Defesa Pessoal e Direitos das Mulheres', description:'Campanha Agosto Lilás.', objective:'Fortalecer conhecimento e segurança feminina.' }, 'Setembro': { color:'#eab308', theme:'Prevenção ao Suicídio', description:'Campanha Setembro Amarelo.', objective:'Valorizar a vida e o acolhimento.' }, 'Outubro': { color:'#ec4899', theme:'Saúde da Mulher', description:'Campanha Outubro Rosa.', objective:'Incentivar o autocuidado feminino.' }, 'Novembro': { color:'#3b82f6', theme:'Saúde do Homem', description:'Campanha Novembro Azul.', objective:'Quebrar tabus sobre saúde masculina.' }, 'Dezembro': { color:'#f97316', theme:'Prevenção ao Câncer de Pele', description:'Campanha Dezembro Laranja.', objective:'Refletir e planejar o próximo ano.' }};
+
+// allowed editors normalized
+const allowedEditors = [
+  "Bruna Angélica Borges","Petter Nogueira","Cleidilene Luísa",
+  "Jorge Almeida","Margarida Ambrósio","Fátima Maria","José Augusto","Vanessa Caroline"
+].map(normalizeName);
+
+// initial months (may be overwritten by saved data)
+const monthsData = {
+  'Janeiro': { color:'#3b82f6', theme:'Saúde Mental', description:'Campanhas de autocuidado e empatia.', objective:'Sensibilizar sobre saúde emocional.' },
+  'Fevereiro': { color:'#8b5cf6', theme:'Acolhimento', description:'Integração dos novos alunos e servidores.', objective:'Criar ambiente acolhedor e participativo.' },
+  'Março': { color:'#f97316', theme:'Conscientização sobre Assédio', description:'Debates e palestras sobre respeito.', objective:'Combater comportamentos discriminatórios.' },
+  'Abril': { color:'#22c55e', theme:'Sustentabilidade', description:'Ações ambientais no campus.', objective:'Estimular práticas ecológicas.' },
+  'Maio': { color:'#eab308', theme:'Saúde Emocional', description:'Oficinas e rodas de conversa.', objective:'Promover o equilíbrio mental.' },
+  'Junho': { color:'#10b981', theme:'Prevenção a Vícios', description:'Teatros e visitas técnicas.', objective:'Conscientizar sobre os riscos dos vícios.' },
+  'Julho': { color:'#facc15', theme:'Recesso Escolar', description:'Descanso e planejamento.', objective:'Preparar o retorno ao segundo semestre.' },
+  'Agosto': { color:'#a855f7', theme:'Defesa Pessoal e Direitos das Mulheres', description:'Campanha Agosto Lilás.', objective:'Fortalecer conhecimento e segurança feminina.' },
+  'Setembro': { color:'#eab308', theme:'Prevenção ao Suicídio', description:'Campanha Setembro Amarelo.', objective:'Valorizar a vida e o acolhimento.' },
+  'Outubro': { color:'#ec4899', theme:'Saúde da Mulher', description:'Campanha Outubro Rosa.', objective:'Incentivar o autocuidado feminino.' },
+  'Novembro': { color:'#3b82f6', theme:'Saúde do Homem', description:'Campanha Novembro Azul.', objective:'Quebrar tabus sobre saúde masculina.' },
+  'Dezembro': { color:'#f97316', theme:'Prevenção ao Câncer de Pele', description:'Campanha Dezembro Laranja.', objective:'Refletir e planejar o próximo ano.' }
+};
 
 /* -------------------------
-   Persistence
+   Persistence: load saved months & password
    ------------------------- */
 function loadSaved(){
   try{
-    const saved = JSON.parse(localStorage.getItem('calendarData')||'{}');
-    Object.keys(saved).forEach(k => { if(monthsData[k]) monthsData[k]=saved[k]; });
-    const savedPass = localStorage.getItem('adminPassword'); if(savedPass) adminPassword=savedPass;
-  }catch(e){console.warn('Erro ao carregar dados salvos',e);}
+    const saved = localStorage.getItem('calendarData');
+    if(saved){
+      const parsed = JSON.parse(saved);
+      // only assign keys that exist to avoid unexpected data
+      for(const k of Object.keys(parsed)){
+        if(monthsData[k]) monthsData[k] = parsed[k];
+      }
+    }
+    const savedPass = localStorage.getItem('adminPassword');
+    if(savedPass) adminPassword = savedPass;
+  }catch(e){
+    console.warn('Erro ao carregar dados salvos', e);
+  }
 }
 loadSaved();
 
@@ -153,46 +189,71 @@ function renderCalendar(){
   grid.innerHTML = '';
   Object.entries(monthsData).forEach(([month, data])=>{
     const card = document.createElement('div');
-    card.className='month-card';
-    card.dataset.month=month;
-    card.style.borderLeftColor=data.color;
-    const bgColor = ((editMode||devMode) && (normalizeName(currentUser)===normAdmin||allowedEditors.includes(normalizeName(currentUser)))) ? '#ffffff' : '#1f2937';
-    card.style.backgroundColor=bgColor;
-    const titleColor = ((editMode||devMode) && (normalizeName(currentUser)===normAdmin||allowedEditors.includes(normalizeName(currentUser)))) ? '#000' : data.color;
-    card.innerHTML = `<h3 class="text-lg font-bold mb-2" style="color:${titleColor}">${month}</h3>
-      <p style="color:${(editMode||devMode)?'#000':'#d1d5db'}"><strong>Tema:</strong> ${editMode? `<input class="w-full p-1 rounded month-theme" value="${escapeHtml(data.theme)}">`:escapeHtml(data.theme)}</p>
-      <p style="color:${(editMode||devMode)?'#000':'#d1d5db'}"><strong>Descrição:</strong> ${editMode? `<textarea class="w-full p-1 rounded month-desc">${escapeHtml(data.description)}</textarea>`:escapeHtml(data.description)}</p>
-      <p style="color:${(editMode||devMode)?'#000':'#60a5fa'}"><strong>Objetivo:</strong> ${editMode? `<textarea class="w-full p-1 rounded month-obj">${escapeHtml(data.objective)}</textarea>`:escapeHtml(data.objective)}</p>`;
-    card.addEventListener('click',()=>{
-      if(normalizeName(currentUser)!==normAdmin) return;
-      document.querySelectorAll('.month-card').forEach(c=>c.classList.remove('selected-month'));
-      card.classList.add('selected-month'); selectedMonth=month;
+    card.className = 'month-card';
+    card.dataset.month = month;
+    card.style.borderLeftColor = data.color;
+    card.style.backgroundColor = ( (editMode || devMode) && (normalizeName(currentUser) === normAdmin || allowedEditors.includes(normalizeName(currentUser))) ) ? '#ffffff' : '#1f2937';
+    const titleColor = ( (editMode || devMode) && (normalizeName(currentUser) === normAdmin || allowedEditors.includes(normalizeName(currentUser))) ) ? '#000' : data.color;
+    card.innerHTML = `
+      <h3 class="text-lg font-bold mb-2" style="color:${titleColor}">${month}</h3>
+      <p style="color:${ (editMode || devMode) ? '#000' : '#d1d5db'}"><strong>Tema:</strong> ${editMode ? `<input class="w-full p-1 rounded month-theme" value="${escapeHtml(data.theme)}">` : escapeHtml(data.theme)}</p>
+      <p style="color:${ (editMode || devMode) ? '#000' : '#d1d5db'}"><strong>Descrição:</strong> ${editMode ? `<textarea class="w-full p-1 rounded month-desc">${escapeHtml(data.description)}</textarea>` : escapeHtml(data.description)}</p>
+      <p style="color:${ (editMode || devMode) ? '#000' : '#60a5fa'}"><strong>Objetivo:</strong> ${editMode ? `<textarea class="w-full p-1 rounded month-obj">${escapeHtml(data.objective)}</textarea>` : escapeHtml(data.objective)}</p>
+    `;
+    // click to select month for color change (admin only)
+    card.addEventListener('click', (e)=>{
+      if(normalizeName(currentUser) !== normAdmin) return;
+      document.querySelectorAll('.month-card').forEach(c => c.classList.remove('selected-month'));
+      card.classList.add('selected-month');
+      selectedMonth = month;
     });
     grid.appendChild(card);
   });
 }
-function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* small helper to escape HTML values inserted into value/text nodes */
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 
 /* -------------------------
    Login handling
    ------------------------- */
-document.getElementById('userName').addEventListener('input', ()=>{
-  const typed = normalizeName(document.getElementById('userName').value||'');
-  if(typed===normAdmin) document.getElementById('userPassword').classList.remove('hidden');
-  else document.getElementById('userPassword').classList.add('hidden');
+const userNameInput = document.getElementById('userName');
+const userPassInput = document.getElementById('userPassword');
+userNameInput.addEventListener('input', ()=>{
+  const typed = normalizeName(userNameInput.value || '');
+  // show password field only when typed name normalizes to admin
+  if(typed === normAdmin) userPassInput.classList.remove('hidden');
+  else userPassInput.classList.add('hidden');
 });
 
+// Robust login click
 document.getElementById('enterBtn').addEventListener('click', ()=>{
-  const rawName=document.getElementById('userName').value; const typed=normalizeName(rawName);
+  const rawName = userNameInput.value;
+  const typed = normalizeName(rawName);
   if(!typed){ alert('Digite seu nome!'); return; }
-  if(typed===normAdmin){
-    const typedPass=document.getElementById('userPassword').value||'';
-    if(typedPass!==adminPassword){ alert('Senha incorreta para Bianca Rufino Santos!'); return; }
-    currentUser=adminUser; afterLogin(); return;
+
+  // admin path
+  if(typed === normAdmin){
+    const typedPass = userPassInput.value || '';
+    if(typedPass !== adminPassword){
+      alert('Senha incorreta para Bianca Rufino Santos!');
+      return;
+    }
+    // success admin login
+    currentUser = adminUser;
+    afterLogin();
+    return;
   }
-  currentUser=rawName.trim(); afterLogin();
+
+  // non-admin: accept any name (no password)
+  currentUser = rawName.trim();
+  afterLogin();
 });
 
+// After successful login: show UI
 function afterLogin(){
   document.getElementById('loginPanel').classList.add('hidden');
   document.getElementById('welcomePanel').classList.remove('hidden');
@@ -201,42 +262,56 @@ function afterLogin(){
   document.getElementById('controlButtons').classList.remove('hidden');
   document.getElementById('footerText').classList.remove('hidden');
   document.getElementById('welcomeText').textContent = getWelcomeMessage(currentUser);
-  if(normalizeName(currentUser)===normAdmin){
-    document.getElementById('adminPanel').style.display='block';
-    document.getElementById('adminNameLabel').textContent=currentUser;
+  // if admin, show admin panel
+  if(normalizeName(currentUser) === normAdmin){
+    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('adminNameLabel').textContent = currentUser;
     document.body.classList.add('with-admin-padding');
   } else {
-    document.getElementById('adminPanel').style.display='none';
+    document.getElementById('adminPanel').style.display = 'none';
     document.body.classList.remove('with-admin-padding');
   }
   renderCalendar();
 }
+
+/* greeting */
 function getWelcomeMessage(name){
-  const hour=new Date().getHours(); let greeting='Olá';
-  if(hour<12) greeting='Bom dia'; else if(hour<18) greeting='Boa tarde'; else greeting='Boa noite';
+  const hour = new Date().getHours();
+  let greeting = 'Olá';
+  if(hour < 12) greeting = 'Bom dia';
+  else if(hour < 18) greeting = 'Boa tarde';
+  else greeting = 'Boa noite';
   return `${greeting}, ${name}!`;
 }
 
 /* -------------------------
-   Edit Mode
+   Toggle Edit Mode (for allowed editors)
    ------------------------- */
 document.getElementById('editToggle').addEventListener('click', ()=>{
-  const normCur=normalizeName(currentUser);
-  if(!(normCur===normAdmin||allowedEditors.includes(normCur))){ alert('Você não tem permissão para editar!'); return; }
+  const normCur = normalizeName(currentUser);
+  if(!(normCur === normAdmin || allowedEditors.includes(normCur))){
+    alert('Você não tem permissão para editar!');
+    return;
+  }
+  // when switching from edit -> save changes from inputs into monthsData
   if(editMode){
-    document.querySelectorAll('.month-card').forEach(card=>{
-      const m=card.dataset.month; if(!m) return;
-      const themeInput=card.querySelector('.month-theme');
-      const descInput=card.querySelector('.month-desc');
-      const objInput=card.querySelector('.month-obj');
-      if(themeInput) monthsData[m].theme=themeInput.value;
-      if(descInput) monthsData[m].description=descInput.value;
-      if(objInput) monthsData[m].objective=objInput.value;
+    // collect edits
+    const cards = document.querySelectorAll('.month-card');
+    cards.forEach(card=>{
+      const m = card.dataset.month;
+      if(!m) return;
+      const themeInput = card.querySelector('.month-theme');
+      const descInput = card.querySelector('.month-desc');
+      const objInput = card.querySelector('.month-obj');
+      if(themeInput) monthsData[m].theme = themeInput.value;
+      if(descInput) monthsData[m].description = descInput.value;
+      if(objInput) monthsData[m].objective = objInput.value;
     });
+    // persist
     localStorage.setItem('calendarData', JSON.stringify(monthsData));
   }
-  editMode=!editMode;
-  document.getElementById('editToggle').textContent = editMode?'Visualizar':'Modo Edição';
+  editMode = !editMode;
+  document.getElementById('editToggle').textContent = editMode ? 'Visualizar' : 'Modo Edição';
   renderCalendar();
 });
 
@@ -244,126 +319,176 @@ document.getElementById('editToggle').addEventListener('click', ()=>{
    Admin panel actions
    ------------------------- */
 document.getElementById('toggleDevMode').addEventListener('click', ()=>{
-  if(normalizeName(currentUser)!==normAdmin){ alert('Somente admin pode ativar o modo desenvolvedor.'); return; }
-  devMode=!devMode;
+  // only admin allowed
+  if(normalizeName(currentUser) !== normAdmin){
+    alert('Somente admin pode ativar o modo desenvolvedor.');
+    return;
+  }
+  devMode = !devMode;
   document.getElementById('designControls').classList.toggle('hidden', !devMode);
-  document.getElementById('toggleDevMode').textContent=devMode?'Fechar Modo Desenvolvedor':'Modo Desenvolvedor';
+  document.getElementById('toggleDevMode').textContent = devMode ? 'Fechar Modo Desenvolvedor' : 'Modo Desenvolvedor';
+  // keep editMode false when switching to devMode to avoid confusion; devMode allows color edits
   renderCalendar();
 });
+
+document.getElementById('viewAsUserBtn').addEventListener('click', ()=>{
+  devMode = false;
+  document.getElementById('designControls').classList.add('hidden');
+  document.getElementById('toggleDevMode').textContent = 'Modo Desenvolvedor';
+  renderCalendar();
+});
+
 document.getElementById('closeAdminBtn').addEventListener('click', ()=>{
-  document.getElementById('adminPanel').style.display='none';
+  document.getElementById('adminPanel').style.display = 'none';
   document.body.classList.remove('with-admin-padding');
 });
 
-/* -------------------------
-   Info panel actions
-   ------------------------- */
-/* -------------------------
-   Info panel actions
-   ------------------------- */
-const infoPanel = document.getElementById('infoPanel');
-const addInfoBtn = document.getElementById('addInfoBtn');
-const importantDataPanel = document.getElementById('importantDataPanel');
-
-document.getElementById('infoToggle').addEventListener('click', () => {
-  infoPanel.classList.toggle('hidden');
-});
-
-// Função para salvar dados no localStorage
-function saveImportantData() {
-  const data = Array.from(importantDataPanel.querySelectorAll('.dataItem')).map(div => div.querySelector('.dataText').textContent);
-  localStorage.setItem('importantData', JSON.stringify(data));
-}
-
-// Função para recriar os elementos com botões
-function renderImportantData() {
-  importantDataPanel.innerHTML = '';
-  const saved = JSON.parse(localStorage.getItem('importantData') || '[]');
-  saved.forEach(text => addImportantDataItem(text, false));
-}
-
-// Função para criar cada item
-function addImportantDataItem(text, save = true) {
-  const div = document.createElement('div');
-  div.className = 'dataItem flex items-center justify-between bg-gray-800 text-white p-2 rounded mb-2';
-
-  const span = document.createElement('span');
-  span.className = 'dataText flex-1';
-  span.textContent = text;
-
-  const btns = document.createElement('div');
-  btns.className = 'flex gap-2 ml-3';
-
-  const editBtn = document.createElement('button');
-  editBtn.textContent = '✏️';
-  editBtn.title = 'Editar';
-  editBtn.className = 'px-2 py-1 bg-blue-600 rounded hover:bg-blue-700';
-  editBtn.addEventListener('click', () => {
-    const novo = prompt('Editar dado importante:', span.textContent);
-    if (novo && novo.trim() !== '') {
-      span.textContent = novo.trim();
-      saveImportantData();
-    }
-  });
-
-  const deleteBtn = document.createElement('button');
-  deleteBtn.textContent = '❌';
-  deleteBtn.title = 'Excluir';
-  deleteBtn.className = 'px-2 py-1 bg-red-600 rounded hover:bg-red-700';
-  deleteBtn.addEventListener('click', () => {
-    div.remove();
-    saveImportantData();
-  });
-
-  btns.appendChild(editBtn);
-  btns.appendChild(deleteBtn);
-  div.appendChild(span);
-  div.appendChild(btns);
-  importantDataPanel.appendChild(div);
-
-  if (save) saveImportantData();
-}
-
-// Evento do botão “Adicionar Dado Importante”
-addInfoBtn.addEventListener('click', () => {
-  const text = prompt('Digite o dado importante:');
-  if (text && text.trim() !== '') addImportantDataItem(text.trim());
-});
-
-// Renderizar dados salvos ao iniciar
-renderImportantData();
-
+/* Change password (admin) */
+document.getElementById('changePasswordBtn').addEventListener('click', ()=>{
+  if(normalizeName(currentUser) !== normAdmin){ alert('Somente admin pode trocar a senha.'); return; }
+  const newPass = prompt('Digite a nova senha para Bianca Rufino Santos:', adminPassword || '');
+  if(newPass && newPass.trim() !== ''){
+    adminPassword = newPass.trim();
+    localStorage.setItem('adminPassword', adminPassword);
+    alert('Senha alterada com sucesso!');
+  } else {
+    alert('Senha inválida. A alteração foi cancelada.');
   }
 });
 
-/* -------------------------
-   Export Image
-   ------------------------- */
-function exportAsImage(){
-  html2canvas(document.body).then(canvas=>{
-    const link=document.createElement('a');
-    link.download='calendario.png';
-    link.href=canvas.toDataURL();
-    link.click();
-  });
-}
-document.getElementById('exportImage').addEventListener('click', exportAsImage);
-document.getElementById('exportImageTop').addEventListener('click', exportAsImage);
-
-/* -------------------------
-   Theme switch
-   ------------------------- */
-document.querySelectorAll('.themeBtn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{ const t=btn.dataset.theme; if(t==='light'){ document.body.classList.remove('bg-gray-900','text-white'); document.body.classList.add('bg-white','text-black'); } else { document.body.classList.remove('bg-white','text-black'); document.body.classList.add('bg-gray-900','text-white'); } });
+/* Save buttons */
+document.getElementById('saveData').addEventListener('click', ()=>{
+  localStorage.setItem('calendarData', JSON.stringify(monthsData));
+  alert('Dados salvos!');
+});
+document.getElementById('saveDataTop').addEventListener('click', ()=>{
+  localStorage.setItem('calendarData', JSON.stringify(monthsData));
+  localStorage.setItem('adminPassword', adminPassword);
+  alert('Dados salvos (inclui senha).');
 });
 
 /* -------------------------
-   HTML Escape Helper
+   Color pickers & history (admin/dev)
    ------------------------- */
-function escapeHtml(text){ return text ? text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])) : ''; }
+const colorPickers = document.querySelectorAll('.color-picker');
+colorPickers.forEach(p => {
+  p.addEventListener('click', ()=>{
+    const color = p.dataset.color;
+    if(!color) return;
+    if(normalizeName(currentUser) !== normAdmin){ alert('Somente admin pode alterar cores.'); return; }
+    if(!selectedMonth){ alert('Selecione um mês clicando nele antes.'); return; }
+    // record change
+    const oldColor = monthsData[selectedMonth].color;
+    monthsData[selectedMonth].color = color;
+    lastChange = { month: selectedMonth, oldColor, newColor: color, timestamp: Date.now() };
+    // update UI & history
+    renderCalendar();
+    appendHistory(`${selectedMonth}: ${oldColor} → ${color}`);
+    // keep selectedMonth highlighted after render
+    setTimeout(()=> {
+      document.querySelectorAll('.month-card').forEach(c => {
+        if(c.dataset.month === selectedMonth) c.classList.add('selected-month');
+      });
+    }, 50);
+  });
+});
+
+function appendHistory(text){
+  const h = document.getElementById('designHistory');
+  const el = document.createElement('div');
+  el.textContent = `${new Date().toLocaleString()}: ${text}`;
+  h.prepend(el);
+}
+
+/* Undo last change */
+document.getElementById('undoChange').addEventListener('click', ()=>{
+  if(normalizeName(currentUser) !== normAdmin){ alert('Somente admin pode desfazer alterações.'); return; }
+  if(!lastChange){ alert('Nenhuma alteração para desfazer.'); return; }
+  monthsData[lastChange.month].color = lastChange.oldColor;
+  appendHistory(`Desfeito: ${lastChange.month} voltou para ${lastChange.oldColor}`);
+  lastChange = null;
+  renderCalendar();
+});
+
+/* Clear history */
+document.getElementById('clearHistoryBtn').addEventListener('click', ()=>{
+  if(!confirm('Limpar histórico de alterações?')) return;
+  document.getElementById('designHistory').innerHTML = '';
+});
+
+/* -------------------------
+   Theme buttons
+   ------------------------- */
+document.querySelectorAll('.themeBtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const theme = btn.dataset.theme;
+    if(theme === 'dark'){
+      document.body.classList.remove('bg-white','text-black');
+      document.body.classList.add('bg-gray-900','text-white');
+    } else {
+      document.body.classList.remove('bg-gray-900','text-white');
+      document.body.classList.add('bg-white','text-black');
+    }
+  });
+});
+
+/* -------------------------
+   Export image (top & control)
+   ------------------------- */
+async function exportCalendarImage(){
+  // build export container with header + months only
+  const header = document.getElementById('calendarHeader').cloneNode(true);
+  const grid = document.getElementById('calendarGrid').cloneNode(true);
+  const exportDiv = document.createElement('div');
+  exportDiv.style.backgroundColor = '#ffffff';
+  exportDiv.style.color = '#000';
+  exportDiv.style.padding = '20px';
+  // ensure cloned nodes show month colors
+  // append header and grid
+  exportDiv.appendChild(header);
+  exportDiv.appendChild(grid);
+  document.body.appendChild(exportDiv);
+  try{
+    const canvas = await html2canvas(exportDiv, { scale: 2, backgroundColor: '#ffffff' });
+    const link = document.createElement('a');
+    link.download = 'calendario_caed_2026.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }catch(e){
+    alert('Erro ao exportar imagem: ' + e);
+  }finally{
+    exportDiv.remove();
+  }
+}
+document.getElementById('exportImage').addEventListener('click', exportCalendarImage);
+document.getElementById('exportImageTop').addEventListener('click', exportCalendarImage);
+
+/* -------------------------
+   Calendar click: handle selection highlight persistence when re-rendering
+   ------------------------- */
+// (handled in renderCalendar: clicking a card sets selectedMonth)
+
+/* -------------------------
+   Load saved data on start and render initial UI state
+   ------------------------- */
+(function init(){
+  // load data already done earlier
+  renderCalendar();
+  // show login panel initially (adminPanel hidden by CSS)
+  document.getElementById('loginPanel').classList.remove('hidden');
+  // ensure password field hidden until admin name typed
+  document.getElementById('userPassword').classList.add('hidden');
+  // populate adminNameLabel if admin already logged? none at start
+})();
+
+/* -------------------------
+   Extra: ensure admin cannot be locked out if localStorage cleared
+   - adminPassword default is set above; localStorage override will have been applied in loadSaved()
+   ------------------------- */
 </script>
 </body>
 </html>
+
 
 
 

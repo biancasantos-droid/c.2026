@@ -245,13 +245,81 @@ document.getElementById('closeAdminBtn').addEventListener('click', ()=>{
 /* -------------------------
    Info panel actions
    ------------------------- */
-const infoPanel=document.getElementById('infoPanel');
-document.getElementById('infoToggle').addEventListener('click', ()=>{ infoPanel.classList.toggle('hidden'); });
-document.getElementById('addInfoBtn').addEventListener('click', ()=>{
-  const text=prompt('Digite o dado importante:');
-  if(text) {
-    const div=document.createElement('div'); div.className='dataItem'; div.textContent=text;
-    document.getElementById('importantDataPanel').appendChild(div);
+/* -------------------------
+   Info panel actions
+   ------------------------- */
+const infoPanel = document.getElementById('infoPanel');
+const addInfoBtn = document.getElementById('addInfoBtn');
+const importantDataPanel = document.getElementById('importantDataPanel');
+
+document.getElementById('infoToggle').addEventListener('click', () => {
+  infoPanel.classList.toggle('hidden');
+});
+
+// Função para salvar dados no localStorage
+function saveImportantData() {
+  const data = Array.from(importantDataPanel.querySelectorAll('.dataItem')).map(div => div.querySelector('.dataText').textContent);
+  localStorage.setItem('importantData', JSON.stringify(data));
+}
+
+// Função para recriar os elementos com botões
+function renderImportantData() {
+  importantDataPanel.innerHTML = '';
+  const saved = JSON.parse(localStorage.getItem('importantData') || '[]');
+  saved.forEach(text => addImportantDataItem(text, false));
+}
+
+// Função para criar cada item
+function addImportantDataItem(text, save = true) {
+  const div = document.createElement('div');
+  div.className = 'dataItem flex items-center justify-between bg-gray-800 text-white p-2 rounded mb-2';
+
+  const span = document.createElement('span');
+  span.className = 'dataText flex-1';
+  span.textContent = text;
+
+  const btns = document.createElement('div');
+  btns.className = 'flex gap-2 ml-3';
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = '✏️';
+  editBtn.title = 'Editar';
+  editBtn.className = 'px-2 py-1 bg-blue-600 rounded hover:bg-blue-700';
+  editBtn.addEventListener('click', () => {
+    const novo = prompt('Editar dado importante:', span.textContent);
+    if (novo && novo.trim() !== '') {
+      span.textContent = novo.trim();
+      saveImportantData();
+    }
+  });
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = '❌';
+  deleteBtn.title = 'Excluir';
+  deleteBtn.className = 'px-2 py-1 bg-red-600 rounded hover:bg-red-700';
+  deleteBtn.addEventListener('click', () => {
+    div.remove();
+    saveImportantData();
+  });
+
+  btns.appendChild(editBtn);
+  btns.appendChild(deleteBtn);
+  div.appendChild(span);
+  div.appendChild(btns);
+  importantDataPanel.appendChild(div);
+
+  if (save) saveImportantData();
+}
+
+// Evento do botão “Adicionar Dado Importante”
+addInfoBtn.addEventListener('click', () => {
+  const text = prompt('Digite o dado importante:');
+  if (text && text.trim() !== '') addImportantDataItem(text.trim());
+});
+
+// Renderizar dados salvos ao iniciar
+renderImportantData();
+
   }
 });
 

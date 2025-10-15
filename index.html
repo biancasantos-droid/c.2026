@@ -558,83 +558,41 @@ if(textSizeToggle){
     });
   });
 }
-  /* -------------------------
-   Info Panel toggle (abre/fecha painel)
-   ------------------------- */
-document.getElementById('infoToggle').addEventListener('click', () => {
-  const panel = document.getElementById('infoPanel');
-  panel.classList.toggle('hidden'); // mostra/esconde
-});
+  // Garantir que o botão exista e adicionar listener apenas uma vez
+const addInfoBtn = document.getElementById('addInfoBtn');
+if(addInfoBtn && !addInfoBtn.dataset.listenerAdded){
+    addInfoBtn.addEventListener('click', () => {
+        const texto = prompt('Digite o novo dado importante:');
+        if(!texto || texto.trim() === '') return;
 
-/* -------------------------
-   Alterna tamanho do texto dentro do painel
-   ------------------------- */
-document.getElementById('textSizeToggle').addEventListener('click', () => {
-  const panel = document.getElementById('infoPanel');
-  const paragraphs = panel.querySelectorAll('p');
-  const btn = document.getElementById('textSizeToggle');
+        // Cria o elemento de dado importante
+        const div = document.createElement('div');
+        div.className = 'dataItem';
+        div.textContent = texto;
 
-  paragraphs.forEach(p => {
-    if(p.classList.contains('small-text')){
-      p.classList.remove('small-text');
-      p.classList.add('large-text');
-    } else {
-      p.classList.remove('large-text');
-      p.classList.add('small-text');
-    }
-  });
+        // Adiciona no painel sem apagar o existente
+        const panel = document.getElementById('importantDataPanel');
+        panel.appendChild(div);
 
-  btn.textContent = btn.textContent === 'Texto Pequeno' ? 'Texto Grande' : 'Texto Pequeno';
-});
-
-/* -------------------------
-   Adiciona classes CSS para tamanhos
-   ------------------------- */
-const style = document.createElement('style');
-style.textContent = `
-.small-text { font-size: 0.75rem; }
-.large-text { font-size: 1rem; }
-`;
-document.head.appendChild(style);
-document.addEventListener('DOMContentLoaded', () => {
-
-  // Toggle para abrir/fechar painel de Dados Importantes
-  const infoToggleBtn = document.getElementById('infoToggle');
-  const infoPanel = document.getElementById('infoPanel');
-  const textSizeBtn = document.getElementById('textSizeToggle');
-
-  if(infoToggleBtn && infoPanel){
-    infoToggleBtn.addEventListener('click', () => {
-      infoPanel.classList.toggle('hidden');
+        // Persistir no localStorage
+        const savedInfo = JSON.parse(localStorage.getItem('importantData') || '[]');
+        savedInfo.push(texto);
+        localStorage.setItem('importantData', JSON.stringify(savedInfo));
     });
-  }
+    addInfoBtn.dataset.listenerAdded = 'true'; // marca listener como adicionado
+}
 
-  // Alterna tamanho do texto
-  if(textSizeBtn && infoPanel){
-    textSizeBtn.addEventListener('click', () => {
-      const paragraphs = infoPanel.querySelectorAll('p');
-      paragraphs.forEach(p => {
-        if(p.classList.contains('small-text')){
-          p.classList.remove('small-text');
-          p.classList.add('large-text');
-        } else {
-          p.classList.remove('large-text');
-          p.classList.add('small-text');
-        }
-      });
-      textSizeBtn.textContent = textSizeBtn.textContent === 'Texto Pequeno' ? 'Texto Grande' : 'Texto Pequeno';
+// Restaurar dados importantes salvos ao iniciar
+(function restoreImportantData(){
+    const savedInfo = JSON.parse(localStorage.getItem('importantData') || '[]');
+    const panel = document.getElementById('importantDataPanel');
+    savedInfo.forEach(texto => {
+        const div = document.createElement('div');
+        div.className = 'dataItem';
+        div.textContent = texto;
+        panel.appendChild(div);
     });
-  }
-
-  // Adiciona CSS mínimo para tamanhos alternados
-  const style = document.createElement('style');
-  style.textContent = `
-    .small-text { font-size: 0.75rem; }
-    .large-text { font-size: 1rem; }
-  `;
-  document.head.appendChild(style);
-
-});
+})();
 
 
 </script>

@@ -133,8 +133,8 @@
     <div class="flex flex-wrap gap-6 items-center">
       <div class="font-size-controls">
         <span class="text-gray-300 mr-2">Tamanho do texto:</span>
-        <button class="font-size-btn" data-size="small">Pequeno</button>
-        <button class="font-size-btn active" data-size="medium">Médio</button>
+        <button class="font-size-btn active" data-size="small">Pequeno</button>
+        <button class="font-size-btn" data-size="medium">Médio</button>
         <button class="font-size-btn" data-size="large">Grande</button>
       </div>
       <div class="flex items-center">
@@ -222,6 +222,13 @@ let monthsData = {
 let currentUser = '';
 let editMode = false;
 let adminPassword = "Petter feioso";
+
+// Configurações de exportação
+let exportSettings = {
+  fontSize: 'small',
+  highContrast: false,
+  compactMode: false
+};
 
 // Carregar dados salvos
 function loadSaved() {
@@ -386,42 +393,162 @@ document.getElementById('saveImportantData').addEventListener('click', function(
   }
 });
 
-// Exportação
-let exportFontSize = 'medium';
-let exportHighContrast = false;
-let exportCompactMode = false;
-
+// CONFIGURAÇÕES DE EXPORTAÇÃO - CORRIGIDAS
 document.querySelectorAll('.font-size-btn').forEach(btn => {
   btn.addEventListener('click', function() {
     document.querySelectorAll('.font-size-btn').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
-    exportFontSize = this.dataset.size;
+    exportSettings.fontSize = this.dataset.size;
+    console.log('Tamanho da fonte:', exportSettings.fontSize);
   });
 });
 
 document.getElementById('highContrast').addEventListener('change', function() {
-  exportHighContrast = this.checked;
+  exportSettings.highContrast = this.checked;
+  console.log('Alto contraste:', exportSettings.highContrast);
 });
 
 document.getElementById('compactMode').addEventListener('change', function() {
-  exportCompactMode = this.checked;
+  exportSettings.compactMode = this.checked;
+  console.log('Modo compacto:', exportSettings.compactMode);
 });
 
+// EXPORTAÇÃO MELHORADA
 document.getElementById('exportImage').addEventListener('click', async function() {
-  const element = document.getElementById('calendarGrid');
-  
   try {
-    const canvas = await html2canvas(element, {
-      backgroundColor: '#ffffff',
-      scale: 2
-    });
+    // Criar um container para exportação
+    const exportContainer = document.createElement('div');
+    exportContainer.style.backgroundColor = '#ffffff';
+    exportContainer.style.color = '#000000';
+    exportContainer.style.padding = '20px';
+    exportContainer.style.maxWidth = '1200px';
+    exportContainer.style.margin = '0 auto';
+    exportContainer.style.fontFamily = 'Arial, sans-serif';
+
+    // Aplicar configurações de tamanho de fonte
+    let baseFontSize, titleSize, cardPadding, cardMargin;
     
+    switch(exportSettings.fontSize) {
+      case 'small':
+        baseFontSize = '12px';
+        titleSize = '16px';
+        cardPadding = '8px';
+        cardMargin = '4px';
+        break;
+      case 'medium':
+        baseFontSize = '14px';
+        titleSize = '20px';
+        cardPadding = '12px';
+        cardMargin = '6px';
+        break;
+      case 'large':
+        baseFontSize = '16px';
+        titleSize = '24px';
+        cardPadding = '16px';
+        cardMargin = '8px';
+        break;
+    }
+
+    exportContainer.style.fontSize = baseFontSize;
+
+    // Adicionar título
+    const title = document.createElement('h1');
+    title.textContent = 'Calendário de Campanhas Educacionais 2026 - CAED';
+    title.style.fontSize = titleSize;
+    title.style.fontWeight = 'bold';
+    title.style.textAlign = 'center';
+    title.style.marginBottom = '20px';
+    title.style.color = exportSettings.highContrast ? '#000000' : '#1e40af';
+    exportContainer.appendChild(title);
+
+    // Criar grid para os meses
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
+    grid.style.gap = '15px';
+
+    // Adicionar cada mês ao grid de exportação
+    Object.entries(monthsData).forEach(([month, data]) => {
+      const card = document.createElement('div');
+      card.style.border = '1px solid #ccc';
+      card.style.borderLeft = `6px solid ${exportSettings.highContrast ? '#000000' : data.color}`;
+      card.style.borderRadius = '8px';
+      card.style.padding = exportSettings.compactMode ? '6px' : cardPadding;
+      card.style.backgroundColor = '#ffffff';
+      card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+
+      const monthTitle = document.createElement('h3');
+      monthTitle.textContent = month;
+      monthTitle.style.fontSize = exportSettings.compactMode ? '14px' : '18px';
+      monthTitle.style.fontWeight = 'bold';
+      monthTitle.style.marginBottom = '8px';
+      monthTitle.style.color = exportSettings.highContrast ? '#000000' : data.color;
+
+      const theme = document.createElement('p');
+      theme.innerHTML = `<strong>Tema:</strong> ${data.theme}`;
+      theme.style.margin = `${cardMargin} 0`;
+      theme.style.fontSize = baseFontSize;
+      theme.style.color = '#000000';
+
+      const description = document.createElement('p');
+      description.innerHTML = `<strong>Descrição:</strong> ${data.description}`;
+      description.style.margin = `${cardMargin} 0`;
+      description.style.fontSize = baseFontSize;
+      description.style.color = '#000000';
+
+      const objective = document.createElement('p');
+      objective.innerHTML = `<strong>Objetivo:</strong> ${data.objective}`;
+      objective.style.margin = `${cardMargin} 0`;
+      objective.style.fontSize = baseFontSize;
+      objective.style.color = exportSettings.highContrast ? '#000000' : '#1e40af';
+
+      card.appendChild(monthTitle);
+      card.appendChild(theme);
+      card.appendChild(description);
+      card.appendChild(objective);
+      grid.appendChild(card);
+    });
+
+    exportContainer.appendChild(grid);
+
+    // Adicionar informações da exportação
+    const exportInfo = document.createElement('div');
+    exportInfo.style.marginTop = '20px';
+    exportInfo.style.paddingTop = '10px';
+    exportInfo.style.borderTop = '1px solid #ccc';
+    exportInfo.style.fontSize = '12px';
+    exportInfo.style.color = '#666';
+    exportInfo.style.textAlign = 'center';
+    exportInfo.textContent = `Exportado em ${new Date().toLocaleDateString('pt-BR')} | Configurações: ${exportSettings.fontSize}${exportSettings.highContrast ? ' | Alto contraste' : ''}${exportSettings.compactMode ? ' | Compacto' : ''}`;
+    
+    exportContainer.appendChild(exportInfo);
+
+    // Adicionar ao documento temporariamente
+    document.body.appendChild(exportContainer);
+
+    // Gerar a imagem
+    const canvas = await html2canvas(exportContainer, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+
+    // Criar link de download
     const link = document.createElement('a');
-    link.download = 'calendario-caed-2026.png';
-    link.href = canvas.toDataURL();
+    const fileName = `calendario_caed_2026_${exportSettings.fontSize}${exportSettings.highContrast ? '_contraste' : ''}${exportSettings.compactMode ? '_compacto' : ''}.png`;
+    link.download = fileName;
+    link.href = canvas.toDataURL('image/png');
     link.click();
+
+    // Remover o container temporário
+    document.body.removeChild(exportContainer);
+
+    alert('Exportação concluída com sucesso!');
+
   } catch (error) {
-    alert('Erro ao exportar: ' + error.message);
+    console.error('Erro na exportação:', error);
+    alert('Erro ao exportar imagem. Verifique o console para detalhes.');
   }
 });
 

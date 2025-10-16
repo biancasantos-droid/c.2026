@@ -76,6 +76,18 @@
   .font-size-btn.active {
     background: #3b82f6;
   }
+  .export-config-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+  }
+  .export-config-label {
+    font-size: 14px;
+    color: #d1d5db;
+  }
 </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
@@ -130,21 +142,34 @@
   <!-- EXPORT CONTROLS -->
   <div id="exportControls" class="bg-gray-800 rounded-lg p-4 mb-6 hidden">
     <h3 class="text-lg font-semibold mb-3">Configurações de Exportação</h3>
-    <div class="flex flex-wrap gap-6 items-center">
-      <div class="font-size-controls">
-        <span class="text-gray-300 mr-2">Tamanho do texto:</span>
-        <button class="font-size-btn active" data-size="small">Pequeno</button>
-        <button class="font-size-btn" data-size="medium">Médio</button>
-        <button class="font-size-btn" data-size="large">Grande</button>
+    <div class="flex flex-wrap gap-4 items-center">
+      <!-- Tamanho da Fonte -->
+      <div class="export-config-group">
+        <span class="export-config-label">Tamanho do texto:</span>
+        <div class="font-size-controls">
+          <button class="font-size-btn active" data-size="small">Pequeno</button>
+          <button class="font-size-btn" data-size="medium">Médio</button>
+          <button class="font-size-btn" data-size="large">Grande</button>
+        </div>
       </div>
-      <div class="flex items-center">
+      
+      <!-- Alto Contraste -->
+      <div class="export-config-group">
         <input type="checkbox" id="highContrast" class="mr-2">
-        <label for="highContrast" class="text-gray-300">Alto contraste</label>
+        <label for="highContrast" class="export-config-label">Alto contraste</label>
       </div>
-      <div class="flex items-center">
+      
+      <!-- Modo Compacto -->
+      <div class="export-config-group">
         <input type="checkbox" id="compactMode" class="mr-2">
-        <label for="compactMode" class="text-gray-300">Modo compacto</label>
+        <label for="compactMode" class="export-config-label">Modo compacto</label>
       </div>
+    </div>
+    
+    <!-- Preview das Configurações -->
+    <div id="exportPreview" class="mt-4 p-3 bg-gray-700 rounded text-sm hidden">
+      <strong>Configurações atuais:</strong>
+      <div id="previewText" class="text-gray-300 mt-1"></div>
     </div>
   </div>
 
@@ -203,8 +228,12 @@
 </div>
 
 <script>
-// Dados iniciais
-let monthsData = {
+// =============================================================================
+// CONFIGURAÇÕES E ESTADO GLOBAL
+// =============================================================================
+
+// Dados do calendário
+const monthsData = {
   'Janeiro': { color:'#3b82f6', theme:'Saúde Mental', description:'Campanhas de autocuidado.', objective:'Sensibilizar sobre saúde emocional.' },
   'Fevereiro': { color:'#8b5cf6', theme:'Acolhimento', description:'Integração dos novos alunos.', objective:'Criar ambiente acolhedor.' },
   'Março': { color:'#f97316', theme:'Conscientização', description:'Debates sobre respeito.', objective:'Combater discriminação.' },
@@ -219,16 +248,339 @@ let monthsData = {
   'Dezembro': { color:'#f97316', theme:'Prevenção ao Câncer', description:'Dezembro Laranja.', objective:'Refletir e planejar.' }
 };
 
-let currentUser = '';
-let editMode = false;
-let adminPassword = "Petter feioso";
-
-// Configurações de exportação
-let exportSettings = {
-  fontSize: 'small',
-  highContrast: false,
-  compactMode: false
+// Estado da aplicação
+const appState = {
+  currentUser: '',
+  editMode: false,
+  adminPassword: "Petter feioso",
+  
+  // Configurações de exportação refatoradas - objeto único
+  exportConfig: {
+    fontSize: 'small',      // 'small' | 'medium' | 'large'
+    highContrast: false,    // boolean
+    compactMode: false      // boolean
+  }
 };
+
+// =============================================================================
+// GERENCIADOR DE CONFIGURAÇÕES DE EXPORTAÇÃO
+// =============================================================================
+
+const ExportConfigManager = {
+  // Mapeamento de configurações de fonte
+  fontSettings: {
+    small: {
+      baseSize: '12px',
+      titleSize: '16px',
+      cardPadding: '8px',
+      cardMargin: '4px'
+    },
+    medium: {
+      baseSize: '14px',
+      titleSize: '20px',
+      cardPadding: '12px',
+      cardMargin: '6px'
+    },
+    large: {
+      baseSize: '16px',
+      titleSize: '24px',
+      cardPadding: '16px',
+      cardMargin: '8px'
+    }
+  },
+
+  // Atualizar configuração individual
+  updateConfig(key, value) {
+    if (key in appState.exportConfig) {
+      appState.exportConfig[key] = value;
+      this.updatePreview();
+      console.log(`Configuração atualizada: ${key} = ${value}`);
+    }
+  },
+
+  // Obter configurações atuais de fonte
+  getCurrentFontSettings() {
+    return this.fontSettings[appState.exportConfig.fontSize];
+  },
+
+  // Atualizar visualização das configurações
+  updatePreview() {
+    const preview = document.getElementById('exportPreview');
+    const previewText = document.getElementById('previewText');
+    
+    if (preview && previewText) {
+      const config = appState.exportConfig;
+      const settings = [];
+      
+      settings.push(`Tamanho: ${this.getSizeLabel(config.fontSize)}`);
+      if (config.highContrast) settings.push('Alto contraste');
+      if (config.compactMode) settings.push('Modo compacto');
+      
+      previewText.textContent = settings.join(' • ');
+      preview.classList.remove('hidden');
+    }
+  },
+
+  // Obter label amigável para o tamanho
+  getSizeLabel(size) {
+    const labels = {
+      small: 'Pequeno',
+      medium: 'Médio',
+      large: 'Grande'
+    };
+    return labels[size] || size;
+  },
+
+  // Gerar nome do arquivo baseado nas configurações
+  generateFileName() {
+    const config = appState.exportConfig;
+    let fileName = 'calendario_caed_2026';
+    
+    fileName += `_${config.fontSize}`;
+    if (config.highContrast) fileName += '_contraste';
+    if (config.compactMode) fileName += '_compacto';
+    
+    return `${fileName}.png`;
+  },
+
+  // Inicializar controles de exportação
+  initializeControls() {
+    this.setupFontSizeControls();
+    this.setupCheckboxControls();
+    this.updatePreview();
+  },
+
+  // Configurar controles de tamanho de fonte
+  setupFontSizeControls() {
+    document.querySelectorAll('.font-size-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const size = e.target.dataset.size;
+        
+        // Atualizar UI
+        document.querySelectorAll('.font-size-btn').forEach(b => 
+          b.classList.remove('active')
+        );
+        e.target.classList.add('active');
+        
+        // Atualizar configuração
+        this.updateConfig('fontSize', size);
+      });
+    });
+  },
+
+  // Configurar controles de checkbox
+  setupCheckboxControls() {
+    const checkboxes = [
+      { id: 'highContrast', key: 'highContrast' },
+      { id: 'compactMode', key: 'compactMode' }
+    ];
+
+    checkboxes.forEach(({ id, key }) => {
+      const checkbox = document.getElementById(id);
+      if (checkbox) {
+        checkbox.addEventListener('change', (e) => {
+          this.updateConfig(key, e.target.checked);
+        });
+      }
+    });
+  }
+};
+
+// =============================================================================
+// GERENCIADOR DE EXPORTAÇÃO
+// =============================================================================
+
+const ExportManager = {
+  // Exportar calendário como imagem
+  async exportCalendar() {
+    try {
+      const exportContainer = this.createExportContainer();
+      document.body.appendChild(exportContainer);
+
+      const canvas = await html2canvas(exportContainer, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+
+      this.downloadImage(canvas);
+      document.body.removeChild(exportContainer);
+      
+      this.showSuccessMessage();
+
+    } catch (error) {
+      this.handleExportError(error);
+    }
+  },
+
+  // Criar container para exportação
+  createExportContainer() {
+    const container = document.createElement('div');
+    const config = appState.exportConfig;
+    const fontSettings = ExportConfigManager.getCurrentFontSettings();
+
+    // Configurações base
+    Object.assign(container.style, {
+      backgroundColor: '#ffffff',
+      color: '#000000',
+      padding: '20px',
+      maxWidth: '1200px',
+      margin: '0 auto',
+      fontFamily: 'Arial, sans-serif',
+      fontSize: fontSettings.baseSize
+    });
+
+    // Adicionar conteúdo
+    container.appendChild(this.createHeader());
+    container.appendChild(this.createCalendarGrid());
+    container.appendChild(this.createExportInfo());
+
+    return container;
+  },
+
+  // Criar cabeçalho da exportação
+  createHeader() {
+    const config = appState.exportConfig;
+    const fontSettings = ExportConfigManager.getCurrentFontSettings();
+    
+    const header = document.createElement('h1');
+    header.textContent = 'Calendário de Campanhas Educacionais 2026 - CAED';
+    
+    Object.assign(header.style, {
+      fontSize: fontSettings.titleSize,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: '20px',
+      color: config.highContrast ? '#000000' : '#1e40af'
+    });
+
+    return header;
+  },
+
+  // Criar grid do calendário
+  createCalendarGrid() {
+    const grid = document.createElement('div');
+    Object.assign(grid.style, {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+      gap: '15px'
+    });
+
+    // Adicionar cards dos meses
+    Object.entries(monthsData).forEach(([month, data]) => {
+      grid.appendChild(this.createMonthCard(month, data));
+    });
+
+    return grid;
+  },
+
+  // Criar card individual do mês
+  createMonthCard(month, data) {
+    const config = appState.exportConfig;
+    const fontSettings = ExportConfigManager.getCurrentFontSettings();
+    
+    const card = document.createElement('div');
+    const padding = config.compactMode ? '6px' : fontSettings.cardPadding;
+    
+    Object.assign(card.style, {
+      border: '1px solid #ccc',
+      borderLeft: `6px solid ${config.highContrast ? '#000000' : data.color}`,
+      borderRadius: '8px',
+      padding: padding,
+      backgroundColor: '#ffffff',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+    });
+
+    // Conteúdo do card
+    card.appendChild(this.createMonthTitle(month, data.color));
+    card.appendChild(this.createInfoElement('Tema', data.theme, fontSettings.cardMargin));
+    card.appendChild(this.createInfoElement('Descrição', data.description, fontSettings.cardMargin));
+    card.appendChild(this.createInfoElement('Objetivo', data.objective, fontSettings.cardMargin, config.highContrast ? '#000000' : '#1e40af'));
+
+    return card;
+  },
+
+  // Criar título do mês
+  createMonthTitle(month, color) {
+    const config = appState.exportConfig;
+    const fontSettings = ExportConfigManager.getCurrentFontSettings();
+    
+    const title = document.createElement('h3');
+    title.textContent = month;
+    
+    Object.assign(title.style, {
+      fontSize: config.compactMode ? '14px' : '18px',
+      fontWeight: 'bold',
+      marginBottom: '8px',
+      color: config.highContrast ? '#000000' : color
+    });
+
+    return title;
+  },
+
+  // Criar elemento de informação
+  createInfoElement(label, content, margin, color = '#000000') {
+    const element = document.createElement('p');
+    element.innerHTML = `<strong>${label}:</strong> ${content}`;
+    
+    Object.assign(element.style, {
+      margin: `${margin} 0`,
+      fontSize: ExportConfigManager.getCurrentFontSettings().baseSize,
+      color: color
+    });
+
+    return element;
+  },
+
+  // Criar informações da exportação
+  createExportInfo() {
+    const info = document.createElement('div');
+    const config = appState.exportConfig;
+    
+    Object.assign(info.style, {
+      marginTop: '20px',
+      paddingTop: '10px',
+      borderTop: '1px solid #ccc',
+      fontSize: '12px',
+      color: '#666',
+      textAlign: 'center'
+    });
+
+    const settings = [
+      ExportConfigManager.getSizeLabel(config.fontSize),
+      config.highContrast ? 'Alto contraste' : null,
+      config.compactMode ? 'Compacto' : null
+    ].filter(Boolean).join(' • ');
+
+    info.textContent = `Exportado em ${new Date().toLocaleDateString('pt-BR')} | ${settings}`;
+    
+    return info;
+  },
+
+  // Download da imagem
+  downloadImage(canvas) {
+    const link = document.createElement('a');
+    link.download = ExportConfigManager.generateFileName();
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  },
+
+  // Mensagem de sucesso
+  showSuccessMessage() {
+    alert('Calendário exportado com sucesso!');
+  },
+
+  // Tratamento de erro
+  handleExportError(error) {
+    console.error('Erro na exportação:', error);
+    alert('Erro ao exportar calendário. Tente novamente.');
+  }
+};
+
+// =============================================================================
+// FUNÇÕES PRINCIPAIS DA APLICAÇÃO
+// =============================================================================
 
 // Carregar dados salvos
 function loadSaved() {
@@ -237,7 +589,6 @@ function loadSaved() {
     Object.assign(monthsData, JSON.parse(saved));
   }
 }
-loadSaved();
 
 // Renderizar calendário
 function renderCalendar() {
@@ -256,7 +607,7 @@ function renderCalendar() {
       <p class="text-blue-400"><strong>Objetivo:</strong> ${data.objective}</p>
     `;
     
-    if (editMode) {
+    if (appState.editMode) {
       content = `
         <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
         <div class="mb-2">
@@ -273,40 +624,32 @@ function renderCalendar() {
     grid.appendChild(card);
     
     // Event listeners para edição
-    if (editMode) {
-      const colorInput = card.querySelector('.month-color');
-      const themeInput = card.querySelector('.month-theme');
-      const descInput = card.querySelector('.month-desc');
-      const objInput = card.querySelector('.month-obj');
-      
-      colorInput.addEventListener('change', (e) => {
-        monthsData[month].color = e.target.value;
-        card.style.borderLeftColor = e.target.value;
-      });
-      
-      themeInput.addEventListener('input', (e) => {
-        monthsData[month].theme = e.target.value;
-      });
-      
-      descInput.addEventListener('input', (e) => {
-        monthsData[month].description = e.target.value;
-      });
-      
-      objInput.addEventListener('input', (e) => {
-        monthsData[month].objective = e.target.value;
-      });
+    if (appState.editMode) {
+      setupEditListeners(card, month);
     }
   });
 }
 
+// Configurar listeners de edição
+function setupEditListeners(card, month) {
+  const colorInput = card.querySelector('.month-color');
+  const themeInput = card.querySelector('.month-theme');
+  const descInput = card.querySelector('.month-desc');
+  const objInput = card.querySelector('.month-obj');
+  
+  colorInput.addEventListener('change', (e) => {
+    monthsData[month].color = e.target.value;
+    card.style.borderLeftColor = e.target.value;
+  });
+  
+  [themeInput, descInput, objInput].forEach(input => {
+    input.addEventListener('input', (e) => {
+      monthsData[month][input.classList[1].replace('month-', '')] = e.target.value;
+    });
+  });
+}
+
 // Login
-document.getElementById('enterBtn').addEventListener('click', handleLogin);
-
-document.getElementById('userName').addEventListener('input', function() {
-  const isBianca = this.value.toLowerCase().includes('bianca');
-  document.getElementById('userPassword').classList.toggle('hidden', !isBianca);
-});
-
 function handleLogin() {
   const userName = document.getElementById('userName').value.trim();
   const userPassword = document.getElementById('userPassword').value;
@@ -318,18 +661,17 @@ function handleLogin() {
   
   // Verificar se é a Bianca
   if (userName.toLowerCase().includes('bianca')) {
-    if (userPassword !== adminPassword) {
+    if (userPassword !== appState.adminPassword) {
       alert('Senha incorreta!');
       return;
     }
-    currentUser = 'Bianca Rufino Santos';
+    appState.currentUser = 'Bianca Rufino Santos';
     document.getElementById('adminPanel').classList.remove('hidden');
     document.body.style.paddingTop = '120px';
   } else {
-    currentUser = userName;
+    appState.currentUser = userName;
   }
   
-  // Fazer login
   afterLogin();
 }
 
@@ -342,251 +684,104 @@ function afterLogin() {
   document.getElementById('exportControls').classList.remove('hidden');
   document.getElementById('footerText').classList.remove('hidden');
   
-  document.getElementById('welcomeText').textContent = `Bem-vindo(a), ${currentUser}!`;
+  document.getElementById('welcomeText').textContent = `Bem-vindo(a), ${appState.currentUser}!`;
   renderCalendar();
 }
 
-// Controles principais
-document.getElementById('editToggle').addEventListener('click', function() {
-  editMode = !editMode;
-  this.textContent = editMode ? 'Visualizar' : 'Editar';
-  renderCalendar();
-});
+// =============================================================================
+// INICIALIZAÇÃO
+// =============================================================================
 
-document.getElementById('saveData').addEventListener('click', function() {
-  localStorage.setItem('calendarData', JSON.stringify(monthsData));
-  alert('Dados salvos!');
-});
-
-document.getElementById('infoToggle').addEventListener('click', function() {
-  document.getElementById('infoPanel').classList.toggle('hidden');
-});
-
-// Modal de dados importantes
-document.getElementById('addImportantData').addEventListener('click', function() {
-  document.getElementById('addDataModal').classList.remove('hidden');
-});
-
-document.getElementById('cancelAddData').addEventListener('click', function() {
-  document.getElementById('addDataModal').classList.add('hidden');
-});
-
-document.getElementById('saveImportantData').addEventListener('click', function() {
-  const title = document.getElementById('dataTitle').value;
-  const content = document.getElementById('dataContent').value;
+document.addEventListener('DOMContentLoaded', function() {
+  // Carregar dados
+  loadSaved();
   
-  if (title && content) {
-    const container = document.getElementById('importantDataContainer');
-    const newData = document.createElement('div');
-    newData.className = 'bg-gray-800 bg-opacity-50 rounded-lg p-5';
-    newData.innerHTML = `
-      <h3 class="text-lg font-semibold mb-3 text-yellow-300">${title}</h3>
-      <p class="text-gray-300 text-sm leading-relaxed">${content}</p>
-    `;
-    container.appendChild(newData);
-    
+  // Login
+  document.getElementById('enterBtn').addEventListener('click', handleLogin);
+  document.getElementById('userName').addEventListener('input', function() {
+    const isBianca = this.value.toLowerCase().includes('bianca');
+    document.getElementById('userPassword').classList.toggle('hidden', !isBianca);
+  });
+
+  // Controles principais
+  document.getElementById('editToggle').addEventListener('click', function() {
+    appState.editMode = !appState.editMode;
+    this.textContent = appState.editMode ? 'Visualizar' : 'Editar';
+    renderCalendar();
+  });
+
+  document.getElementById('saveData').addEventListener('click', function() {
+    localStorage.setItem('calendarData', JSON.stringify(monthsData));
+    alert('Dados salvos!');
+  });
+
+  document.getElementById('infoToggle').addEventListener('click', function() {
+    document.getElementById('infoPanel').classList.toggle('hidden');
+  });
+
+  // Modal de dados importantes
+  document.getElementById('addImportantData').addEventListener('click', function() {
+    document.getElementById('addDataModal').classList.remove('hidden');
+  });
+
+  document.getElementById('cancelAddData').addEventListener('click', function() {
     document.getElementById('addDataModal').classList.add('hidden');
-    document.getElementById('dataTitle').value = '';
-    document.getElementById('dataContent').value = '';
-  } else {
-    alert('Preencha todos os campos!');
-  }
-});
-
-// CONFIGURAÇÕES DE EXPORTAÇÃO - CORRIGIDAS
-document.querySelectorAll('.font-size-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.font-size-btn').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    exportSettings.fontSize = this.dataset.size;
-    console.log('Tamanho da fonte:', exportSettings.fontSize);
   });
-});
 
-document.getElementById('highContrast').addEventListener('change', function() {
-  exportSettings.highContrast = this.checked;
-  console.log('Alto contraste:', exportSettings.highContrast);
-});
-
-document.getElementById('compactMode').addEventListener('change', function() {
-  exportSettings.compactMode = this.checked;
-  console.log('Modo compacto:', exportSettings.compactMode);
-});
-
-// EXPORTAÇÃO MELHORADA
-document.getElementById('exportImage').addEventListener('click', async function() {
-  try {
-    // Criar um container para exportação
-    const exportContainer = document.createElement('div');
-    exportContainer.style.backgroundColor = '#ffffff';
-    exportContainer.style.color = '#000000';
-    exportContainer.style.padding = '20px';
-    exportContainer.style.maxWidth = '1200px';
-    exportContainer.style.margin = '0 auto';
-    exportContainer.style.fontFamily = 'Arial, sans-serif';
-
-    // Aplicar configurações de tamanho de fonte
-    let baseFontSize, titleSize, cardPadding, cardMargin;
+  document.getElementById('saveImportantData').addEventListener('click', function() {
+    const title = document.getElementById('dataTitle').value;
+    const content = document.getElementById('dataContent').value;
     
-    switch(exportSettings.fontSize) {
-      case 'small':
-        baseFontSize = '12px';
-        titleSize = '16px';
-        cardPadding = '8px';
-        cardMargin = '4px';
-        break;
-      case 'medium':
-        baseFontSize = '14px';
-        titleSize = '20px';
-        cardPadding = '12px';
-        cardMargin = '6px';
-        break;
-      case 'large':
-        baseFontSize = '16px';
-        titleSize = '24px';
-        cardPadding = '16px';
-        cardMargin = '8px';
-        break;
+    if (title && content) {
+      const container = document.getElementById('importantDataContainer');
+      const newData = document.createElement('div');
+      newData.className = 'bg-gray-800 bg-opacity-50 rounded-lg p-5';
+      newData.innerHTML = `
+        <h3 class="text-lg font-semibold mb-3 text-yellow-300">${title}</h3>
+        <p class="text-gray-300 text-sm leading-relaxed">${content}</p>
+      `;
+      container.appendChild(newData);
+      
+      document.getElementById('addDataModal').classList.add('hidden');
+      document.getElementById('dataTitle').value = '';
+      document.getElementById('dataContent').value = '';
+    } else {
+      alert('Preencha todos os campos!');
     }
-
-    exportContainer.style.fontSize = baseFontSize;
-
-    // Adicionar título
-    const title = document.createElement('h1');
-    title.textContent = 'Calendário de Campanhas Educacionais 2026 - CAED';
-    title.style.fontSize = titleSize;
-    title.style.fontWeight = 'bold';
-    title.style.textAlign = 'center';
-    title.style.marginBottom = '20px';
-    title.style.color = exportSettings.highContrast ? '#000000' : '#1e40af';
-    exportContainer.appendChild(title);
-
-    // Criar grid para os meses
-    const grid = document.createElement('div');
-    grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
-    grid.style.gap = '15px';
-
-    // Adicionar cada mês ao grid de exportação
-    Object.entries(monthsData).forEach(([month, data]) => {
-      const card = document.createElement('div');
-      card.style.border = '1px solid #ccc';
-      card.style.borderLeft = `6px solid ${exportSettings.highContrast ? '#000000' : data.color}`;
-      card.style.borderRadius = '8px';
-      card.style.padding = exportSettings.compactMode ? '6px' : cardPadding;
-      card.style.backgroundColor = '#ffffff';
-      card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-
-      const monthTitle = document.createElement('h3');
-      monthTitle.textContent = month;
-      monthTitle.style.fontSize = exportSettings.compactMode ? '14px' : '18px';
-      monthTitle.style.fontWeight = 'bold';
-      monthTitle.style.marginBottom = '8px';
-      monthTitle.style.color = exportSettings.highContrast ? '#000000' : data.color;
-
-      const theme = document.createElement('p');
-      theme.innerHTML = `<strong>Tema:</strong> ${data.theme}`;
-      theme.style.margin = `${cardMargin} 0`;
-      theme.style.fontSize = baseFontSize;
-      theme.style.color = '#000000';
-
-      const description = document.createElement('p');
-      description.innerHTML = `<strong>Descrição:</strong> ${data.description}`;
-      description.style.margin = `${cardMargin} 0`;
-      description.style.fontSize = baseFontSize;
-      description.style.color = '#000000';
-
-      const objective = document.createElement('p');
-      objective.innerHTML = `<strong>Objetivo:</strong> ${data.objective}`;
-      objective.style.margin = `${cardMargin} 0`;
-      objective.style.fontSize = baseFontSize;
-      objective.style.color = exportSettings.highContrast ? '#000000' : '#1e40af';
-
-      card.appendChild(monthTitle);
-      card.appendChild(theme);
-      card.appendChild(description);
-      card.appendChild(objective);
-      grid.appendChild(card);
-    });
-
-    exportContainer.appendChild(grid);
-
-    // Adicionar informações da exportação
-    const exportInfo = document.createElement('div');
-    exportInfo.style.marginTop = '20px';
-    exportInfo.style.paddingTop = '10px';
-    exportInfo.style.borderTop = '1px solid #ccc';
-    exportInfo.style.fontSize = '12px';
-    exportInfo.style.color = '#666';
-    exportInfo.style.textAlign = 'center';
-    exportInfo.textContent = `Exportado em ${new Date().toLocaleDateString('pt-BR')} | Configurações: ${exportSettings.fontSize}${exportSettings.highContrast ? ' | Alto contraste' : ''}${exportSettings.compactMode ? ' | Compacto' : ''}`;
-    
-    exportContainer.appendChild(exportInfo);
-
-    // Adicionar ao documento temporariamente
-    document.body.appendChild(exportContainer);
-
-    // Gerar a imagem
-    const canvas = await html2canvas(exportContainer, {
-      backgroundColor: '#ffffff',
-      scale: 2,
-      useCORS: true,
-      logging: false
-    });
-
-    // Criar link de download
-    const link = document.createElement('a');
-    const fileName = `calendario_caed_2026_${exportSettings.fontSize}${exportSettings.highContrast ? '_contraste' : ''}${exportSettings.compactMode ? '_compacto' : ''}.png`;
-    link.download = fileName;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-
-    // Remover o container temporário
-    document.body.removeChild(exportContainer);
-
-    alert('Exportação concluída com sucesso!');
-
-  } catch (error) {
-    console.error('Erro na exportação:', error);
-    alert('Erro ao exportar imagem. Verifique o console para detalhes.');
-  }
-});
-
-// Admin panel
-document.getElementById('toggleDevMode').addEventListener('click', function() {
-  document.getElementById('designControls').classList.toggle('hidden');
-});
-
-document.getElementById('closeAdminBtn').addEventListener('click', function() {
-  document.getElementById('adminPanel').classList.add('hidden');
-  document.body.style.paddingTop = '0';
-});
-
-document.getElementById('changePasswordBtn').addEventListener('click', function() {
-  const newPassword = prompt('Nova senha:');
-  if (newPassword) {
-    adminPassword = newPassword;
-    alert('Senha alterada!');
-  }
-});
-
-// Color pickers
-document.querySelectorAll('.color-picker').forEach(picker => {
-  picker.addEventListener('click', function() {
-    if (!editMode) return;
-    
-    const color = this.dataset.color;
-    // Aplicar cor aos meses selecionados (implementar seleção)
-    alert(`Cor ${color} selecionada. Clique em um mês para aplicar.`);
   });
-});
 
-// Inicialização
-document.getElementById('loginPanel').classList.remove('hidden');
+  // Inicializar configurações de exportação
+  ExportConfigManager.initializeControls();
+
+  // Exportação
+  document.getElementById('exportImage').addEventListener('click', function() {
+    ExportManager.exportCalendar();
+  });
+
+  // Admin panel
+  document.getElementById('toggleDevMode').addEventListener('click', function() {
+    document.getElementById('designControls').classList.toggle('hidden');
+  });
+
+  document.getElementById('closeAdminBtn').addEventListener('click', function() {
+    document.getElementById('adminPanel').classList.add('hidden');
+    document.body.style.paddingTop = '0';
+  });
+
+  document.getElementById('changePasswordBtn').addEventListener('click', function() {
+    const newPassword = prompt('Nova senha:');
+    if (newPassword) {
+      appState.adminPassword = newPassword;
+      alert('Senha alterada!');
+    }
+  });
+
+  // Mostrar painel de login
+  document.getElementById('loginPanel').classList.remove('hidden');
+});
 </script>
 </body>
 </html>
-
 
 
 

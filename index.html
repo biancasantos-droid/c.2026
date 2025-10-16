@@ -283,7 +283,13 @@ function getWelcomeMessage(name){
   else greeting = 'Boa noite';
   return `${greeting}, ${name}!`;
 }
-
+// -------------------------
+// Carregar dados salvos
+// -------------------------
+const savedData = localStorage.getItem('calendarData');
+if (savedData) {
+  monthsData = JSON.parse(savedData);
+}
 /* -------------------------
    Toggle Edit Mode (for allowed editors)
    ------------------------- */
@@ -313,6 +319,7 @@ document.getElementById('editToggle').addEventListener('click', ()=>{
   editMode = !editMode;
   document.getElementById('editToggle').textContent = editMode ? 'Visualizar' : 'Modo Edição';
   renderCalendar();
+  
 });
 
 /* -------------------------

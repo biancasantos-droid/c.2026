@@ -10,7 +10,7 @@
   body { 
     box-sizing: border-box; 
     transition: background-color .25s, color .25s; 
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
   }
   .month-card { 
     transition: all .2s ease; 
@@ -47,46 +47,149 @@
   input[type="text"], textarea { 
     color: #000; 
   }
-  .format-toolbar {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 5px;
+  
+  /* Novos estilos para controles de exportação */
+  .export-controls-section {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border: 1px solid #475569;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
   }
-  .format-btn {
-    background: #4b5563;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    cursor: pointer;
+  
+  .export-control-group {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .font-size-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  .font-size-btn {
-    background: #4b5563;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-  }
-  .font-size-btn.active {
-    background: #3b82f6;
-  }
-  .export-config-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 6px;
-  }
-  .export-config-label {
+  
+  .export-control-label {
+    display: block;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 8px;
     font-size: 14px;
-    color: #d1d5db;
+  }
+  
+  .export-control-description {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  
+  .btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .btn-option {
+    flex: 1;
+    min-width: 80px;
+    background: #475569;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-size: 13px;
+  }
+  
+  .btn-option:hover {
+    background: #5b6b82;
+    transform: translateY(-1px);
+  }
+  
+  .btn-option.active {
+    background: #3b82f6;
+    border-color: #60a5fa;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+  
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .checkbox-group:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #3b82f6;
+  }
+  
+  .checkbox-label {
+    flex: 1;
+    color: #e2e8f0;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .preview-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #3b82f6;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 2px;
+  }
+  
+  .export-preview-card {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    border-left: 4px solid #3b82f6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .export-preview-card .preview-title {
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .export-preview-card .preview-content {
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  
+  .preview-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  
+  /* Animações */
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .slide-down {
+    animation: slideDown 0.3s ease-out;
   }
 </style>
 </head>
@@ -114,7 +217,7 @@
     <button id="saveData" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">Salvar</button>
     <button id="infoToggle" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg text-white font-semibold">Dados Importantes</button>
     <button id="addImportantData" class="bg-pink-600 hover:bg-pink-700 px-6 py-2 rounded-lg text-white font-semibold">Adicionar Dados</button>
-    <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg text-white font-semibold">Exportar</button>
+    <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg text-white font-semibold">Exportar Calendário</button>
   </div>
 
   <!-- ADMIN PANEL -->
@@ -139,37 +242,154 @@
     </div>
   </div>
 
-  <!-- EXPORT CONTROLS -->
-  <div id="exportControls" class="bg-gray-800 rounded-lg p-4 mb-6 hidden">
-    <h3 class="text-lg font-semibold mb-3">Configurações de Exportação</h3>
-    <div class="flex flex-wrap gap-4 items-center">
-      <!-- Tamanho da Fonte -->
-      <div class="export-config-group">
-        <span class="export-config-label">Tamanho do texto:</span>
-        <div class="font-size-controls">
-          <button class="font-size-btn active" data-size="small">Pequeno</button>
-          <button class="font-size-btn" data-size="medium">Médio</button>
-          <button class="font-size-btn" data-size="large">Grande</button>
-        </div>
-      </div>
-      
-      <!-- Alto Contraste -->
-      <div class="export-config-group">
-        <input type="checkbox" id="highContrast" class="mr-2">
-        <label for="highContrast" class="export-config-label">Alto contraste</label>
-      </div>
-      
-      <!-- Modo Compacto -->
-      <div class="export-config-group">
-        <input type="checkbox" id="compactMode" class="mr-2">
-        <label for="compactMode" class="export-config-label">Modo compacto</label>
+  <!-- EXPORT CONTROLS - REFATORADO -->
+  <div id="exportControls" class="export-controls-section hidden slide-down">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-bold text-white">Configurações de Exportação</h3>
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-green-400 bg-green-900 bg-opacity-30 px-3 py-1 rounded-full" id="configStatus">
+          Configurações prontas
+        </span>
+        <button id="toggleExportHelp" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
+          Ajuda
+        </button>
       </div>
     </div>
-    
-    <!-- Preview das Configurações -->
-    <div id="exportPreview" class="mt-4 p-3 bg-gray-700 rounded text-sm hidden">
-      <strong>Configurações atuais:</strong>
-      <div id="previewText" class="text-gray-300 mt-1"></div>
+
+    <!-- Tamanho da Fonte e Layout -->
+    <div class="export-control-group">
+      <label class="export-control-label">
+        📊 Tamanho e Layout
+      </label>
+      <div class="btn-group">
+        <button class="btn-option active" data-type="size" data-value="compact">
+          <div class="font-semibold">Compacto</div>
+          <div class="text-xs opacity-80 mt-1">Para documentos</div>
+        </button>
+        <button class="btn-option" data-type="size" data-value="standard">
+          <div class="font-semibold">Padrão</div>
+          <div class="text-xs opacity-80 mt-1">Uso geral</div>
+        </button>
+        <button class="btn-option" data-type="size" data-value="large">
+          <div class="font-semibold">Grande</div>
+          <div class="text-xs opacity-80 mt-1">Apresentações</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Estilo Visual -->
+    <div class="export-control-group">
+      <label class="export-control-label">
+        🎨 Estilo Visual
+      </label>
+      <div class="btn-group">
+        <button class="btn-option active" data-type="style" data-value="colorful">
+          <div class="font-semibold">Colorido</div>
+          <div class="text-xs opacity-80 mt-1">Cores originais</div>
+        </button>
+        <button class="btn-option" data-type="style" data-value="professional">
+          <div class="font-semibold">Profissional</div>
+          <div class="text-xs opacity-80 mt-1">Tom sépia</div>
+        </button>
+        <button class="btn-option" data-type="style" data-value="high-contrast">
+          <div class="font-semibold">Alto Contraste</div>
+          <div class="text-xs opacity-80 mt-1">Acessibilidade</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Opções Adicionais -->
+    <div class="export-control-group">
+      <label class="export-control-label">
+        ⚙️ Opções de Exportação
+      </label>
+      
+      <div class="space-y-3">
+        <div class="checkbox-group">
+          <input type="checkbox" id="includeHeader" checked>
+          <label for="includeHeader" class="checkbox-label">
+            Incluir cabeçalho do calendário
+          </label>
+        </div>
+        
+        <div class="checkbox-group">
+          <input type="checkbox" id="includeFooter" checked>
+          <label for="includeFooter" class="checkbox-label">
+            Incluir rodapé com informações
+          </label>
+        </div>
+        
+        <div class="checkbox-group">
+          <input type="checkbox" id="optimizePrint">
+          <label for="optimizePrint" class="checkbox-label">
+            Otimizado para impressão
+            <div class="export-control-description">
+              Ajusta cores e espaçamento para melhor resultado na impressora
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualização Rápida -->
+    <div class="export-control-group">
+      <label class="export-control-label">
+        👁️ Visualização das Configurações
+      </label>
+      <div id="exportPreview" class="mt-3 p-4 bg-gray-800 rounded-lg border border-gray-700">
+        <div class="flex flex-wrap gap-2 mb-3">
+          <span class="preview-badge">
+            <span class="preview-indicator" style="background:#10b981"></span>
+            Compacto
+          </span>
+          <span class="preview-badge">
+            <span class="preview-indicator" style="background:#3b82f6"></span>
+            Colorido
+          </span>
+          <span class="preview-badge">
+            <span class="preview-indicator" style="background:#6b7280"></span>
+            Com cabeçalho
+          </span>
+        </div>
+        
+        <div class="export-preview-card">
+          <div class="preview-title">Janeiro - Saúde Mental</div>
+          <div class="preview-content">
+            <strong>Tema:</strong> Campanhas de autocuidado e saúde emocional<br>
+            <strong>Objetivo:</strong> Sensibilizar sobre importância do equilíbrio mental
+          </div>
+        </div>
+        
+        <div class="text-xs text-gray-400 mt-3 text-center">
+          Visualização aproximada • Exportação em alta qualidade
+        </div>
+      </div>
+    </div>
+
+    <!-- Ações de Exportação -->
+    <div class="flex flex-wrap gap-3 justify-between items-center mt-6 pt-4 border-t border-gray-700">
+      <div class="text-sm text-gray-300">
+        <strong>Formato:</strong> PNG • <strong>Qualidade:</strong> Alta
+      </div>
+      <div class="flex gap-3">
+        <button id="resetExportConfig" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg text-white font-medium text-sm">
+          Redefinir
+        </button>
+        <button id="quickExport" class="px-6 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold text-sm">
+          Exportar Agora
+        </button>
+      </div>
+    </div>
+
+    <!-- Ajuda Expandida -->
+    <div id="exportHelp" class="mt-4 p-4 bg-blue-900 bg-opacity-20 rounded-lg border border-blue-700 hidden">
+      <h4 class="font-semibold text-blue-300 mb-2">💡 Dicas de Exportação</h4>
+      <ul class="text-sm text-blue-200 space-y-1">
+        <li>• <strong>Compacto:</strong> Ideal para anexar em emails e documentos</li>
+        <li>• <strong>Alto Contraste:</strong> Melhor legibilidade para impressão</li>
+        <li>• <strong>Profissional:</strong> Tom sépia para relatórios formais</li>
+        <li>• Use "Otimizado para impressão" para economizar tinta</li>
+      </ul>
     </div>
   </div>
 
@@ -199,7 +419,7 @@
   <section id="calendarGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden"></section>
 
   <footer class="text-center mt-10 text-gray-400 text-sm hidden" id="footerText">
-    Calendário CAED 2026
+    Calendário CAED 2026 - Desenvolvido para gestão educacional
   </footer>
 </div>
 
@@ -213,11 +433,6 @@
     </div>
     <div class="mb-4">
       <label class="block text-gray-300 mb-2">Conteúdo:</label>
-      <div class="format-toolbar">
-        <button class="format-btn" data-format="bold">B</button>
-        <button class="format-btn" data-format="italic">I</button>
-        <button class="format-btn" data-format="underline">U</button>
-      </div>
       <textarea id="dataContent" class="w-full p-2 rounded text-black h-32" placeholder="Digite o conteúdo"></textarea>
     </div>
     <div class="flex justify-end gap-2">
@@ -229,7 +444,7 @@
 
 <script>
 // =============================================================================
-// CONFIGURAÇÕES E ESTADO GLOBAL
+// CONFIGURAÇÕES E ESTADO GLOBAL - REFATORADO
 // =============================================================================
 
 // Dados do calendário
@@ -248,45 +463,156 @@ const monthsData = {
   'Dezembro': { color:'#f97316', theme:'Prevenção ao Câncer', description:'Dezembro Laranja.', objective:'Refletir e planejar.' }
 };
 
-// Estado da aplicação
+// Estado da aplicação - REFATORADO
 const appState = {
   currentUser: '',
   editMode: false,
   adminPassword: "Petter feioso",
   
-  // Configurações de exportação refatoradas - objeto único
+  // Configurações de exportação refatoradas - mais intuitivas
   exportConfig: {
-    fontSize: 'small',      // 'small' | 'medium' | 'large'
-    highContrast: false,    // boolean
-    compactMode: false      // boolean
+    size: 'compact',           // 'compact' | 'standard' | 'large'
+    style: 'colorful',         // 'colorful' | 'professional' | 'high-contrast'
+    includeHeader: true,
+    includeFooter: true,
+    optimizePrint: false
   }
 };
 
 // =============================================================================
-// GERENCIADOR DE CONFIGURAÇÕES DE EXPORTAÇÃO
+// GERENCIADOR DE CONFIGURAÇÕES DE EXPORTAÇÃO - REFATORADO
 // =============================================================================
 
 const ExportConfigManager = {
-  // Mapeamento de configurações de fonte
-  fontSettings: {
-    small: {
-      baseSize: '12px',
-      titleSize: '16px',
-      cardPadding: '8px',
-      cardMargin: '4px'
+  // Mapeamento de configurações - mais organizado
+  settings: {
+    size: {
+      compact: {
+        label: 'Compacto',
+        description: 'Para documentos e anexos',
+        fontSize: '12px',
+        titleSize: '16px',
+        cardPadding: '8px',
+        spacing: 'compact'
+      },
+      standard: {
+        label: 'Padrão',
+        description: 'Uso geral e visualização',
+        fontSize: '14px',
+        titleSize: '20px',
+        cardPadding: '12px',
+        spacing: 'normal'
+      },
+      large: {
+        label: 'Grande',
+        description: 'Apresentações e posters',
+        fontSize: '16px',
+        titleSize: '24px',
+        cardPadding: '16px',
+        spacing: 'large'
+      }
     },
-    medium: {
-      baseSize: '14px',
-      titleSize: '20px',
-      cardPadding: '12px',
-      cardMargin: '6px'
-    },
-    large: {
-      baseSize: '16px',
-      titleSize: '24px',
-      cardPadding: '16px',
-      cardMargin: '8px'
+    
+    style: {
+      colorful: {
+        label: 'Colorido',
+        description: 'Cores vibrantes originais',
+        backgroundColor: '#ffffff',
+        textColor: '#000000',
+        accentColors: true,
+        highContrast: false
+      },
+      professional: {
+        label: 'Profissional',
+        description: 'Tom sépia para documentos formais',
+        backgroundColor: '#fefefe',
+        textColor: '#374151',
+        accentColors: false,
+        palette: ['#8b5cf6', '#f97316', '#3b82f6', '#22c55e'],
+        highContrast: false
+      },
+      'high-contrast': {
+        label: 'Alto Contraste',
+        description: 'Máxima acessibilidade',
+        backgroundColor: '#ffffff',
+        textColor: '#000000',
+        accentColors: false,
+        highContrast: true
+      }
     }
+  },
+
+  // Inicializar controles de exportação
+  initializeControls() {
+    this.setupButtonGroups();
+    this.setupCheckboxControls();
+    this.setupActionButtons();
+    this.updatePreview();
+  },
+
+  // Configurar grupos de botões
+  setupButtonGroups() {
+    // Botões de tamanho
+    document.querySelectorAll('[data-type="size"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const value = e.currentTarget.dataset.value;
+        this.updateButtonGroup('size', value);
+        this.updateConfig('size', value);
+      });
+    });
+
+    // Botões de estilo
+    document.querySelectorAll('[data-type="style"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const value = e.currentTarget.dataset.value;
+        this.updateButtonGroup('style', value);
+        this.updateConfig('style', value);
+      });
+    });
+  },
+
+  // Atualizar grupo de botões
+  updateButtonGroup(type, value) {
+    document.querySelectorAll(`[data-type="${type}"]`).forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.value === value);
+    });
+  },
+
+  // Configurar controles de checkbox
+  setupCheckboxControls() {
+    const checkboxes = [
+      { id: 'includeHeader', key: 'includeHeader' },
+      { id: 'includeFooter', key: 'includeFooter' },
+      { id: 'optimizePrint', key: 'optimizePrint' }
+    ];
+
+    checkboxes.forEach(({ id, key }) => {
+      const checkbox = document.getElementById(id);
+      if (checkbox) {
+        checkbox.checked = appState.exportConfig[key];
+        checkbox.addEventListener('change', (e) => {
+          this.updateConfig(key, e.target.checked);
+        });
+      }
+    });
+  },
+
+  // Configurar botões de ação
+  setupActionButtons() {
+    // Botão de ajuda
+    document.getElementById('toggleExportHelp').addEventListener('click', () => {
+      document.getElementById('exportHelp').classList.toggle('hidden');
+    });
+
+    // Botão de redefinir
+    document.getElementById('resetExportConfig').addEventListener('click', () => {
+      this.resetToDefaults();
+    });
+
+    // Exportação rápida
+    document.getElementById('quickExport').addEventListener('click', () => {
+      ExportManager.exportCalendar();
+    });
   },
 
   // Atualizar configuração individual
@@ -294,106 +620,98 @@ const ExportConfigManager = {
     if (key in appState.exportConfig) {
       appState.exportConfig[key] = value;
       this.updatePreview();
-      console.log(`Configuração atualizada: ${key} = ${value}`);
+      this.updateStatus();
     }
   },
 
-  // Obter configurações atuais de fonte
-  getCurrentFontSettings() {
-    return this.fontSettings[appState.exportConfig.fontSize];
-  },
-
-  // Atualizar visualização das configurações
-  updatePreview() {
-    const preview = document.getElementById('exportPreview');
-    const previewText = document.getElementById('previewText');
-    
-    if (preview && previewText) {
-      const config = appState.exportConfig;
-      const settings = [];
-      
-      settings.push(`Tamanho: ${this.getSizeLabel(config.fontSize)}`);
-      if (config.highContrast) settings.push('Alto contraste');
-      if (config.compactMode) settings.push('Modo compacto');
-      
-      previewText.textContent = settings.join(' • ');
-      preview.classList.remove('hidden');
-    }
-  },
-
-  // Obter label amigável para o tamanho
-  getSizeLabel(size) {
-    const labels = {
-      small: 'Pequeno',
-      medium: 'Médio',
-      large: 'Grande'
+  // Redefinir para padrões
+  resetToDefaults() {
+    appState.exportConfig = {
+      size: 'compact',
+      style: 'colorful',
+      includeHeader: true,
+      includeFooter: true,
+      optimizePrint: false
     };
-    return labels[size] || size;
+    
+    this.initializeControls();
+    this.showNotification('Configurações redefinidas para padrão', 'success');
   },
 
-  // Gerar nome do arquivo baseado nas configurações
-  generateFileName() {
+  // Atualizar visualização
+  updatePreview() {
     const config = appState.exportConfig;
-    let fileName = 'calendario_caed_2026';
+    const previewContainer = document.getElementById('exportPreview');
     
-    fileName += `_${config.fontSize}`;
-    if (config.highContrast) fileName += '_contraste';
-    if (config.compactMode) fileName += '_compacto';
+    if (!previewContainer) return;
+
+    // Atualizar badges
+    const badgesHtml = `
+      <span class="preview-badge">
+        <span class="preview-indicator" style="background:#10b981"></span>
+        ${this.settings.size[config.size].label}
+      </span>
+      <span class="preview-badge">
+        <span class="preview-indicator" style="background:#3b82f6"></span>
+        ${this.settings.style[config.style].label}
+      </span>
+      ${config.includeHeader ? `
+        <span class="preview-badge">
+          <span class="preview-indicator" style="background:#6b7280"></span>
+          Com cabeçalho
+        </span>
+      ` : ''}
+      ${config.optimizePrint ? `
+        <span class="preview-badge">
+          <span class="preview-indicator" style="background:#f59e0b"></span>
+          Otimizado
+        </span>
+      ` : ''}
+    `;
     
-    return `${fileName}.png`;
+    previewContainer.querySelector('.flex-wrap').innerHTML = badgesHtml;
   },
 
-  // Inicializar controles de exportação
-  initializeControls() {
-    this.setupFontSizeControls();
-    this.setupCheckboxControls();
-    this.updatePreview();
+  // Atualizar status
+  updateStatus() {
+    const statusElement = document.getElementById('configStatus');
+    if (statusElement) {
+      statusElement.textContent = 'Configurações atualizadas';
+      statusElement.className = 'text-sm text-green-400 bg-green-900 bg-opacity-30 px-3 py-1 rounded-full';
+      
+      setTimeout(() => {
+        statusElement.textContent = 'Configurações prontas';
+      }, 2000);
+    }
   },
 
-  // Configurar controles de tamanho de fonte
-  setupFontSizeControls() {
-    document.querySelectorAll('.font-size-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const size = e.target.dataset.size;
-        
-        // Atualizar UI
-        document.querySelectorAll('.font-size-btn').forEach(b => 
-          b.classList.remove('active')
-        );
-        e.target.classList.add('active');
-        
-        // Atualizar configuração
-        this.updateConfig('fontSize', size);
-      });
-    });
+  // Mostrar notificação
+  showNotification(message, type = 'info') {
+    // Implementação simples - pode ser expandida para um sistema de notificações
+    console.log(`${type.toUpperCase()}: ${message}`);
   },
 
-  // Configurar controles de checkbox
-  setupCheckboxControls() {
-    const checkboxes = [
-      { id: 'highContrast', key: 'highContrast' },
-      { id: 'compactMode', key: 'compactMode' }
-    ];
-
-    checkboxes.forEach(({ id, key }) => {
-      const checkbox = document.getElementById(id);
-      if (checkbox) {
-        checkbox.addEventListener('change', (e) => {
-          this.updateConfig(key, e.target.checked);
-        });
-      }
-    });
+  // Obter configurações atuais
+  getCurrentSettings() {
+    const config = appState.exportConfig;
+    return {
+      size: this.settings.size[config.size],
+      style: this.settings.style[config.style],
+      options: config
+    };
   }
 };
 
 // =============================================================================
-// GERENCIADOR DE EXPORTAÇÃO
+// GERENCIADOR DE EXPORTAÇÃO - REFATORADO
 // =============================================================================
 
 const ExportManager = {
   // Exportar calendário como imagem
   async exportCalendar() {
     try {
+      this.showExportingState();
+      
       const exportContainer = this.createExportContainer();
       document.body.appendChild(exportContainer);
 
@@ -411,178 +729,194 @@ const ExportManager = {
 
     } catch (error) {
       this.handleExportError(error);
+    } finally {
+      this.hideExportingState();
+    }
+  },
+
+  // Mostrar estado de exportação
+  showExportingState() {
+    const exportBtn = document.getElementById('quickExport');
+    if (exportBtn) {
+      exportBtn.innerHTML = '⏳ Exportando...';
+      exportBtn.disabled = true;
+    }
+  },
+
+  // Esconder estado de exportação
+  hideExportingState() {
+    const exportBtn = document.getElementById('quickExport');
+    if (exportBtn) {
+      exportBtn.innerHTML = 'Exportar Agora';
+      exportBtn.disabled = false;
     }
   },
 
   // Criar container para exportação
   createExportContainer() {
     const container = document.createElement('div');
-    const config = appState.exportConfig;
-    const fontSettings = ExportConfigManager.getCurrentFontSettings();
-
-    // Configurações base
+    const settings = ExportConfigManager.getCurrentSettings();
+    
+    // Aplicar configurações de estilo
     Object.assign(container.style, {
-      backgroundColor: '#ffffff',
-      color: '#000000',
-      padding: '20px',
+      backgroundColor: settings.style.backgroundColor,
+      color: settings.style.textColor,
+      padding: '24px',
       maxWidth: '1200px',
       margin: '0 auto',
       fontFamily: 'Arial, sans-serif',
-      fontSize: fontSettings.baseSize
+      fontSize: settings.size.fontSize,
+      lineHeight: '1.4'
     });
 
-    // Adicionar conteúdo
-    container.appendChild(this.createHeader());
-    container.appendChild(this.createCalendarGrid());
-    container.appendChild(this.createExportInfo());
+    // Adicionar conteúdo baseado nas configurações
+    if (appState.exportConfig.includeHeader) {
+      container.appendChild(this.createHeader(settings));
+    }
+    
+    container.appendChild(this.createCalendarGrid(settings));
+    
+    if (appState.exportConfig.includeFooter) {
+      container.appendChild(this.createFooter(settings));
+    }
 
     return container;
   },
 
-  // Criar cabeçalho da exportação
-  createHeader() {
-    const config = appState.exportConfig;
-    const fontSettings = ExportConfigManager.getCurrentFontSettings();
+  // Criar cabeçalho
+  createHeader(settings) {
+    const header = document.createElement('div');
+    header.style.marginBottom = '24px';
+    header.style.textAlign = 'center';
     
-    const header = document.createElement('h1');
-    header.textContent = 'Calendário de Campanhas Educacionais 2026 - CAED';
+    const title = document.createElement('h1');
+    title.textContent = 'Calendário de Campanhas Educacionais 2026 - CAED';
+    title.style.fontSize = settings.size.titleSize;
+    title.style.fontWeight = 'bold';
+    title.style.marginBottom = '8px';
+    title.style.color = settings.style.highContrast ? '#000000' : '#1e40af';
     
-    Object.assign(header.style, {
-      fontSize: fontSettings.titleSize,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: '20px',
-      color: config.highContrast ? '#000000' : '#1e40af'
-    });
-
+    const subtitle = document.createElement('p');
+    subtitle.textContent = `Exportado em ${new Date().toLocaleDateString('pt-BR')} • ${settings.size.label} • ${settings.style.label}`;
+    subtitle.style.fontSize = '12px';
+    subtitle.style.color = '#666';
+    
+    header.appendChild(title);
+    header.appendChild(subtitle);
+    
     return header;
   },
 
   // Criar grid do calendário
-  createCalendarGrid() {
+  createCalendarGrid(settings) {
     const grid = document.createElement('div');
-    Object.assign(grid.style, {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-      gap: '15px'
-    });
-
-    // Adicionar cards dos meses
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
+    grid.style.gap = settings.size.spacing === 'compact' ? '12px' : '20px';
+    
     Object.entries(monthsData).forEach(([month, data]) => {
-      grid.appendChild(this.createMonthCard(month, data));
+      grid.appendChild(this.createMonthCard(month, data, settings));
     });
 
     return grid;
   },
 
-  // Criar card individual do mês
-  createMonthCard(month, data) {
-    const config = appState.exportConfig;
-    const fontSettings = ExportConfigManager.getCurrentFontSettings();
-    
+  // Criar card do mês
+  createMonthCard(month, data, settings) {
     const card = document.createElement('div');
-    const padding = config.compactMode ? '6px' : fontSettings.cardPadding;
+    
+    // Configurações visuais baseadas no estilo
+    const borderColor = settings.style.highContrast ? '#000000' : 
+                       settings.style.accentColors ? data.color : 
+                       settings.style.palette ? settings.style.palette[0] : data.color;
     
     Object.assign(card.style, {
-      border: '1px solid #ccc',
-      borderLeft: `6px solid ${config.highContrast ? '#000000' : data.color}`,
+      border: '1px solid #e5e7eb',
+      borderLeft: `4px solid ${borderColor}`,
       borderRadius: '8px',
-      padding: padding,
+      padding: settings.size.cardPadding,
       backgroundColor: '#ffffff',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
     });
 
-    // Conteúdo do card
-    card.appendChild(this.createMonthTitle(month, data.color));
-    card.appendChild(this.createInfoElement('Tema', data.theme, fontSettings.cardMargin));
-    card.appendChild(this.createInfoElement('Descrição', data.description, fontSettings.cardMargin));
-    card.appendChild(this.createInfoElement('Objetivo', data.objective, fontSettings.cardMargin, config.highContrast ? '#000000' : '#1e40af'));
+    // Título do mês
+    const title = document.createElement('h3');
+    title.textContent = month;
+    title.style.fontSize = settings.size === 'compact' ? '16px' : '18px';
+    title.style.fontWeight = 'bold';
+    title.style.marginBottom = '8px';
+    title.style.color = borderColor;
 
+    // Conteúdo
+    const content = document.createElement('div');
+    content.style.fontSize = settings.size.fontSize;
+    
+    content.appendChild(this.createInfoRow('Tema', data.theme));
+    content.appendChild(this.createInfoRow('Descrição', data.description));
+    content.appendChild(this.createInfoRow('Objetivo', data.objective, settings.style.highContrast ? '#000000' : '#1e40af'));
+
+    card.appendChild(title);
+    card.appendChild(content);
+    
     return card;
   },
 
-  // Criar título do mês
-  createMonthTitle(month, color) {
-    const config = appState.exportConfig;
-    const fontSettings = ExportConfigManager.getCurrentFontSettings();
-    
-    const title = document.createElement('h3');
-    title.textContent = month;
-    
-    Object.assign(title.style, {
-      fontSize: config.compactMode ? '14px' : '18px',
-      fontWeight: 'bold',
-      marginBottom: '8px',
-      color: config.highContrast ? '#000000' : color
-    });
-
-    return title;
+  // Criar linha de informação
+  createInfoRow(label, content, color = '#000000') {
+    const row = document.createElement('p');
+    row.style.margin = '4px 0';
+    row.style.color = color;
+    row.innerHTML = `<strong>${label}:</strong> ${content}`;
+    return row;
   },
 
-  // Criar elemento de informação
-  createInfoElement(label, content, margin, color = '#000000') {
-    const element = document.createElement('p');
-    element.innerHTML = `<strong>${label}:</strong> ${content}`;
+  // Criar rodapé
+  createFooter(settings) {
+    const footer = document.createElement('div');
+    footer.style.marginTop = '24px';
+    footer.style.paddingTop = '16px';
+    footer.style.borderTop = '1px solid #e5e7eb';
+    footer.style.textAlign = 'center';
+    footer.style.fontSize = '11px';
+    footer.style.color = '#666';
     
-    Object.assign(element.style, {
-      margin: `${margin} 0`,
-      fontSize: ExportConfigManager.getCurrentFontSettings().baseSize,
-      color: color
-    });
-
-    return element;
-  },
-
-  // Criar informações da exportação
-  createExportInfo() {
-    const info = document.createElement('div');
-    const config = appState.exportConfig;
+    footer.textContent = `Calendário CAED 2026 - Desenvolvido para gestão educacional • ${settings.size.label} • ${settings.style.label}`;
     
-    Object.assign(info.style, {
-      marginTop: '20px',
-      paddingTop: '10px',
-      borderTop: '1px solid #ccc',
-      fontSize: '12px',
-      color: '#666',
-      textAlign: 'center'
-    });
-
-    const settings = [
-      ExportConfigManager.getSizeLabel(config.fontSize),
-      config.highContrast ? 'Alto contraste' : null,
-      config.compactMode ? 'Compacto' : null
-    ].filter(Boolean).join(' • ');
-
-    info.textContent = `Exportado em ${new Date().toLocaleDateString('pt-BR')} | ${settings}`;
-    
-    return info;
+    return footer;
   },
 
   // Download da imagem
   downloadImage(canvas) {
     const link = document.createElement('a');
-    link.download = ExportConfigManager.generateFileName();
+    link.download = this.generateFileName();
     link.href = canvas.toDataURL('image/png');
     link.click();
   },
 
+  // Gerar nome do arquivo
+  generateFileName() {
+    const config = appState.exportConfig;
+    const date = new Date().toISOString().split('T')[0];
+    return `calendario_caed_2026_${config.size}_${config.style}_${date}.png`;
+  },
+
   // Mensagem de sucesso
   showSuccessMessage() {
-    alert('Calendário exportado com sucesso!');
+    // Poderia ser expandido para um sistema de notificações mais elaborado
+    alert('✅ Calendário exportado com sucesso!');
   },
 
   // Tratamento de erro
   handleExportError(error) {
     console.error('Erro na exportação:', error);
-    alert('Erro ao exportar calendário. Tente novamente.');
+    alert('❌ Erro ao exportar calendário. Verifique o console para detalhes.');
   }
 };
 
 // =============================================================================
-// FUNÇÕES PRINCIPAIS DA APLICAÇÃO
+// FUNÇÕES PRINCIPAIS (mantidas do código original)
 // =============================================================================
 
-// Carregar dados salvos
 function loadSaved() {
   const saved = localStorage.getItem('calendarData');
   if (saved) {
@@ -590,7 +924,6 @@ function loadSaved() {
   }
 }
 
-// Renderizar calendário
 function renderCalendar() {
   const grid = document.getElementById('calendarGrid');
   grid.innerHTML = '';
@@ -623,14 +956,12 @@ function renderCalendar() {
     card.innerHTML = content;
     grid.appendChild(card);
     
-    // Event listeners para edição
     if (appState.editMode) {
       setupEditListeners(card, month);
     }
   });
 }
 
-// Configurar listeners de edição
 function setupEditListeners(card, month) {
   const colorInput = card.querySelector('.month-color');
   const themeInput = card.querySelector('.month-theme');
@@ -649,7 +980,6 @@ function setupEditListeners(card, month) {
   });
 }
 
-// Login
 function handleLogin() {
   const userName = document.getElementById('userName').value.trim();
   const userPassword = document.getElementById('userPassword').value;
@@ -659,7 +989,6 @@ function handleLogin() {
     return;
   }
   
-  // Verificar se é a Bianca
   if (userName.toLowerCase().includes('bianca')) {
     if (userPassword !== appState.adminPassword) {
       alert('Senha incorreta!');
@@ -693,7 +1022,6 @@ function afterLogin() {
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Carregar dados
   loadSaved();
   
   // Login
@@ -750,7 +1078,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Inicializar configurações de exportação
+  // Inicializar configurações de exportação REFATORADAS
   ExportConfigManager.initializeControls();
 
   // Exportação
@@ -782,10 +1110,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-

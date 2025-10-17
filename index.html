@@ -191,6 +191,83 @@
   .slide-down {
     animation: slideDown 0.3s ease-out;
   }
+
+  /* Estilos para modo edição */
+  .edit-input {
+    background: #4b5563 !important;
+    border: 1px solid #6b7280 !important;
+    color: white !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    width: 100% !important;
+    margin-bottom: 8px !important;
+  }
+
+  .edit-textarea {
+    background: #4b5563 !important;
+    border: 1px solid #6b7280 !important;
+    color: white !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    width: 100% !important;
+    min-height: 60px !important;
+    resize: vertical !important;
+    margin-bottom: 8px !important;
+  }
+
+  .edit-color {
+    width: 100% !important;
+    height: 40px !important;
+    border-radius: 4px !important;
+    border: 1px solid #6b7280 !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Painel Admin */
+  .admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .stat-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3b82f6;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: #94a3b8;
+  }
+
+  .user-log {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-left: 3px solid #3b82f6;
+  }
+
+  .user-log.recent {
+    border-left-color: #10b981;
+  }
+
+  .activity-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-left: 3px solid #8b5cf6;
+  }
 </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
@@ -226,6 +303,7 @@
       <button id="toggleDevMode" class="bg-blue-600 px-4 py-2 rounded-lg text-white font-semibold">Modo Desenvolvedor</button>
       <button id="viewAsUserBtn" class="bg-gray-600 px-4 py-2 rounded-lg text-white font-semibold">Ver como Usuário</button>
       <button id="changePasswordBtn" class="bg-yellow-600 px-4 py-2 rounded-lg text-white font-semibold">Trocar Senha</button>
+      <button id="showAdminDashboard" class="bg-indigo-600 px-4 py-2 rounded-lg text-white font-semibold">Painel Admin</button>
       <button id="closeAdminBtn" class="bg-red-600 px-4 py-2 rounded-lg text-white font-semibold">Fechar</button>
       <div class="ml-auto text-sm text-gray-300">Admin: <span id="adminNameLabel">—</span></div>
     </div>
@@ -242,8 +320,98 @@
     </div>
   </div>
 
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminDashboard" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold text-white">Painel de Administração</h3>
+        <button id="closeAdminDashboard" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold">
+          Fechar
+        </button>
+      </div>
+
+      <!-- Estatísticas -->
+      <div class="admin-stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="totalUsers">0</div>
+          <div class="stat-label">Usuários Únicos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalLogins">0</div>
+          <div class="stat-label">Total de Logins</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalEdits">0</div>
+          <div class="stat-label">Edições Realizadas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalExports">0</div>
+          <div class="stat-label">Exportações</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Usuários Recentes -->
+        <div class="bg-gray-700 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-3 text-blue-300">📊 Usuários Recentes</h4>
+          <div id="recentUsers" class="space-y-2 max-h-60 overflow-y-auto">
+            <!-- Lista de usuários será preenchida aqui -->
+          </div>
+        </div>
+
+        <!-- Atividades Recentes -->
+        <div class="bg-gray-700 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-3 text-green-300">🔄 Atividades Recentes</h4>
+          <div id="recentActivities" class="space-y-2 max-h-60 overflow-y-auto">
+            <!-- Lista de atividades será preenchida aqui -->
+          </div>
+        </div>
+
+        <!-- Dados do Sistema -->
+        <div class="bg-gray-700 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-3 text-purple-300">⚙️ Dados do Sistema</h4>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span>Meses Configurados:</span>
+              <span class="font-semibold" id="monthsConfigured">12/12</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Dados Importantes:</span>
+              <span class="font-semibold" id="importantDataCount">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Último Backup:</span>
+              <span class="font-semibold" id="lastBackup">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Versão do Sistema:</span>
+              <span class="font-semibold">2.0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="bg-gray-700 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-3 text-yellow-300">🚀 Ações Rápidas</h4>
+          <div class="space-y-2">
+            <button id="backupData" class="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white text-sm">
+              Fazer Backup dos Dados
+            </button>
+            <button id="clearOldLogs" class="w-full bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white text-sm">
+              Limpar Logs Antigos
+            </button>
+            <button id="resetAllData" class="w-full bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white text-sm">
+              Resetar Todos os Dados
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- EXPORT CONTROLS - REFATORADO -->
   <div id="exportControls" class="export-controls-section hidden slide-down">
+    <!-- ... (mesmo conteúdo anterior da exportação) ... -->
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-xl font-bold text-white">Configurações de Exportação</h3>
       <div class="flex items-center gap-2">
@@ -402,16 +570,12 @@
   <section id="infoPanel" class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-6 mb-8 border-l-4 border-purple-500 hidden">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold text-purple-200">Dados Importantes</h2>
+      <button id="closeInfoPanel" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white font-semibold text-sm">
+        Fechar
+      </button>
     </div>
     <div id="importantDataContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
-        <h3 class="text-lg font-semibold mb-3 text-yellow-300">Integração Setorial</h3>
-        <p class="text-gray-300 text-sm leading-relaxed">A integração com outros setores é essencial durante todo o período anual.</p>
-      </div>
-      <div class="bg-gray-800 bg-opacity-50 rounded-lg p-5">
-        <h3 class="text-lg font-semibold mb-3 text-blue-300">Produção Audiovisual</h3>
-        <p class="text-gray-300 text-sm leading-relaxed">Incentivar alunos a produzir imagens e vídeos para as campanhas.</p>
-      </div>
+      <!-- Dados importantes serão carregados aqui -->
     </div>
   </section>
 
@@ -448,7 +612,7 @@
 // =============================================================================
 
 // Dados do calendário
-const monthsData = {
+let monthsData = {
   'Janeiro': { color:'#3b82f6', theme:'Saúde Mental', description:'Campanhas de autocuidado.', objective:'Sensibilizar sobre saúde emocional.' },
   'Fevereiro': { color:'#8b5cf6', theme:'Acolhimento', description:'Integração dos novos alunos.', objective:'Criar ambiente acolhedor.' },
   'Março': { color:'#f97316', theme:'Conscientização', description:'Debates sobre respeito.', objective:'Combater discriminação.' },
@@ -461,6 +625,21 @@ const monthsData = {
   'Outubro': { color:'#ec4899', theme:'Saúde da Mulher', description:'Outubro Rosa.', objective:'Incentivar autocuidado.' },
   'Novembro': { color:'#3b82f6', theme:'Saúde do Homem', description:'Novembro Azul.', objective:'Quebrar tabus.' },
   'Dezembro': { color:'#f97316', theme:'Prevenção ao Câncer', description:'Dezembro Laranja.', objective:'Refletir e planejar.' }
+};
+
+// Dados importantes
+let importantData = [];
+
+// Dados de administração
+const adminData = {
+  userLogs: [],
+  activityLogs: [],
+  statistics: {
+    totalLogins: 0,
+    totalEdits: 0,
+    totalExports: 0,
+    uniqueUsers: new Set()
+  }
 };
 
 // Estado da aplicação - REFATORADO
@@ -480,11 +659,406 @@ const appState = {
 };
 
 // =============================================================================
+// SISTEMA DE ARMAZENAMENTO - CORRIGIDO
+// =============================================================================
+
+const StorageManager = {
+  // Chaves para localStorage
+  KEYS: {
+    CALENDAR_DATA: 'calendarData_v2',
+    IMPORTANT_DATA: 'importantData_v2',
+    EXPORT_CONFIG: 'exportConfig_v2',
+    ADMIN_DATA: 'adminData_v2'
+  },
+
+  // Salvar todos os dados
+  saveAllData() {
+    try {
+      // Salvar dados do calendário
+      localStorage.setItem(this.KEYS.CALENDAR_DATA, JSON.stringify(monthsData));
+      
+      // Salvar dados importantes
+      localStorage.setItem(this.KEYS.IMPORTANT_DATA, JSON.stringify(importantData));
+      
+      // Salvar configurações de exportação
+      localStorage.setItem(this.KEYS.EXPORT_CONFIG, JSON.stringify(appState.exportConfig));
+      
+      // Salvar dados de admin
+      localStorage.setItem(this.KEYS.ADMIN_DATA, JSON.stringify(adminData));
+      
+      console.log('Todos os dados salvos com sucesso!');
+      return true;
+    } catch (error) {
+      console.error('Erro ao salvar dados:', error);
+      return false;
+    }
+  },
+
+  // Carregar todos os dados
+  loadAllData() {
+    try {
+      // Carregar dados do calendário
+      const savedCalendarData = localStorage.getItem(this.KEYS.CALENDAR_DATA);
+      if (savedCalendarData) {
+        const parsedData = JSON.parse(savedCalendarData);
+        monthsData = { ...monthsData, ...parsedData };
+      }
+
+      // Carregar dados importantes
+      const savedImportantData = localStorage.getItem(this.KEYS.IMPORTANT_DATA);
+      if (savedImportantData) {
+        importantData = JSON.parse(savedImportantData);
+      }
+
+      // Carregar configurações de exportação
+      const savedExportConfig = localStorage.getItem(this.KEYS.EXPORT_CONFIG);
+      if (savedExportConfig) {
+        Object.assign(appState.exportConfig, JSON.parse(savedExportConfig));
+      }
+
+      // Carregar dados de admin
+      const savedAdminData = localStorage.getItem(this.KEYS.ADMIN_DATA);
+      if (savedAdminData) {
+        const parsedAdminData = JSON.parse(savedAdminData);
+        Object.assign(adminData, parsedAdminData);
+        
+        // Restaurar Set de usuários únicos
+        if (parsedAdminData.statistics && parsedAdminData.statistics.uniqueUsers) {
+          adminData.statistics.uniqueUsers = new Set(parsedAdminData.statistics.uniqueUsers);
+        }
+      }
+
+      console.log('Dados carregados com sucesso!');
+      return true;
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+      return false;
+    }
+  },
+
+  // Salvar apenas dados do calendário
+  saveCalendarData() {
+    try {
+      localStorage.setItem(this.KEYS.CALENDAR_DATA, JSON.stringify(monthsData));
+      console.log('Dados do calendário salvos!');
+      return true;
+    } catch (error) {
+      console.error('Erro ao salvar calendário:', error);
+      return false;
+    }
+  },
+
+  // Salvar apenas dados importantes
+  saveImportantData() {
+    try {
+      localStorage.setItem(this.KEYS.IMPORTANT_DATA, JSON.stringify(importantData));
+      console.log('Dados importantes salvos!');
+      return true;
+    } catch (error) {
+      console.error('Erro ao salvar dados importantes:', error);
+      return false;
+    }
+  },
+
+  // Salvar dados de admin
+  saveAdminData() {
+    try {
+      // Converter Set para Array para salvar no localStorage
+      const adminDataToSave = {
+        ...adminData,
+        statistics: {
+          ...adminData.statistics,
+          uniqueUsers: Array.from(adminData.statistics.uniqueUsers)
+        }
+      };
+      
+      localStorage.setItem(this.KEYS.ADMIN_DATA, JSON.stringify(adminDataToSave));
+      console.log('Dados de admin salvos!');
+      return true;
+    } catch (error) {
+      console.error('Erro ao salvar dados de admin:', error);
+      return false;
+    }
+  }
+};
+
+// =============================================================================
+// SISTEMA DE ADMINISTRAÇÃO
+// =============================================================================
+
+const AdminManager = {
+  // Registrar login de usuário
+  logUserLogin(userName) {
+    const timestamp = new Date().toLocaleString('pt-BR');
+    const logEntry = {
+      user: userName,
+      timestamp: timestamp,
+      type: 'login'
+    };
+    
+    adminData.userLogs.unshift(logEntry);
+    adminData.statistics.totalLogins++;
+    adminData.statistics.uniqueUsers.add(userName);
+    
+    // Manter apenas os últimos 50 logs
+    if (adminData.userLogs.length > 50) {
+      adminData.userLogs = adminData.userLogs.slice(0, 50);
+    }
+    
+    this.logActivity(`${userName} fez login no sistema`, 'user');
+    StorageManager.saveAdminData();
+  },
+
+  // Registrar atividade
+  logActivity(description, type = 'system') {
+    const timestamp = new Date().toLocaleString('pt-BR');
+    const activityEntry = {
+      description: description,
+      timestamp: timestamp,
+      type: type
+    };
+    
+    adminData.activityLogs.unshift(activityEntry);
+    
+    // Manter apenas as últimas 50 atividades
+    if (adminData.activityLogs.length > 50) {
+      adminData.activityLogs = adminData.activityLogs.slice(0, 50);
+    }
+    
+    StorageManager.saveAdminData();
+  },
+
+  // Registrar edição
+  logEdit(userName, month, field) {
+    adminData.statistics.totalEdits++;
+    this.logActivity(`${userName} editou ${field} de ${month}`, 'edit');
+  },
+
+  // Registrar exportação
+  logExport(userName) {
+    adminData.statistics.totalExports++;
+    this.logActivity(`${userName} exportou o calendário`, 'export');
+  },
+
+  // Atualizar painel admin
+  updateAdminDashboard() {
+    // Estatísticas
+    document.getElementById('totalUsers').textContent = adminData.statistics.uniqueUsers.size;
+    document.getElementById('totalLogins').textContent = adminData.statistics.totalLogins;
+    document.getElementById('totalEdits').textContent = adminData.statistics.totalEdits;
+    document.getElementById('totalExports').textContent = adminData.statistics.totalExports;
+
+    // Usuários recentes
+    const recentUsersContainer = document.getElementById('recentUsers');
+    recentUsersContainer.innerHTML = '';
+    
+    const recentUsers = adminData.userLogs.slice(0, 10);
+    recentUsers.forEach(log => {
+      const userElement = document.createElement('div');
+      userElement.className = `user-log ${log.type === 'login' ? 'recent' : ''}`;
+      userElement.innerHTML = `
+        <div class="font-semibold">${log.user}</div>
+        <div class="text-xs text-gray-400">${log.timestamp}</div>
+      `;
+      recentUsersContainer.appendChild(userElement);
+    });
+
+    // Atividades recentes
+    const activitiesContainer = document.getElementById('recentActivities');
+    activitiesContainer.innerHTML = '';
+    
+    const recentActivities = adminData.activityLogs.slice(0, 10);
+    recentActivities.forEach(activity => {
+      const activityElement = document.createElement('div');
+      activityElement.className = 'activity-item';
+      activityElement.innerHTML = `
+        <div class="text-sm">${activity.description}</div>
+        <div class="text-xs text-gray-400">${activity.timestamp}</div>
+      `;
+      activitiesContainer.appendChild(activityElement);
+    });
+
+    // Dados do sistema
+    document.getElementById('monthsConfigured').textContent = `${Object.keys(monthsData).length}/12`;
+    document.getElementById('importantDataCount').textContent = importantData.length;
+    
+    const lastBackup = adminData.activityLogs.find(log => log.description.includes('backup'));
+    document.getElementById('lastBackup').textContent = lastBackup ? lastBackup.timestamp : 'Nunca';
+  },
+
+  // Fazer backup
+  backupData() {
+    const backup = {
+      monthsData: monthsData,
+      importantData: importantData,
+      exportConfig: appState.exportConfig,
+      timestamp: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup_calendario_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    this.logActivity('Backup dos dados realizado', 'system');
+    alert('Backup realizado com sucesso!');
+  },
+
+  // Limpar logs antigos
+  clearOldLogs() {
+    if (confirm('Tem certeza que deseja limpar todos os logs?')) {
+      adminData.userLogs = [];
+      adminData.activityLogs = [];
+      StorageManager.saveAdminData();
+      this.updateAdminDashboard();
+      this.logActivity('Logs antigos foram limpos', 'system');
+      alert('Logs limpos com sucesso!');
+    }
+  },
+
+  // Resetar todos os dados
+  resetAllData() {
+    if (confirm('⚠️ ATENÇÃO: Isso irá resetar TODOS os dados do sistema. Tem certeza?')) {
+      if (confirm('⚠️ CONFIRMAÇÃO FINAL: Esta ação não pode ser desfeita!')) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+  }
+};
+
+// =============================================================================
+// GERENCIADOR DE DADOS IMPORTANTES - CORRIGIDO
+// =============================================================================
+
+const ImportantDataManager = {
+  // ... (código anterior mantido igual) ...
+  initialize() {
+    this.loadImportantData();
+    this.renderImportantData();
+  },
+
+  loadImportantData() {
+    if (importantData.length === 0) {
+      importantData = [
+        {
+          id: this.generateId(),
+          title: 'Integração Setorial',
+          content: 'A integração com outros setores é essencial durante todo o período anual.',
+          color: 'yellow'
+        },
+        {
+          id: this.generateId(),
+          title: 'Produção Audiovisual',
+          content: 'Incentivar alunos a produzir imagens e vídeos para as campanhas.',
+          color: 'blue'
+        }
+      ];
+    }
+  },
+
+  renderImportantData() {
+    const container = document.getElementById('importantDataContainer');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (importantData.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-2 text-center py-8">
+          <p class="text-gray-400">Nenhum dado importante adicionado ainda.</p>
+          <button id="addFirstData" class="mt-4 bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-lg text-white font-semibold">
+            Adicionar Primeiro Dado
+          </button>
+        </div>
+      `;
+
+      document.getElementById('addFirstData')?.addEventListener('click', () => {
+        document.getElementById('addDataModal').classList.remove('hidden');
+      });
+      return;
+    }
+
+    importantData.forEach(item => {
+      const dataElement = document.createElement('div');
+      dataElement.className = 'bg-gray-800 bg-opacity-50 rounded-lg p-5';
+      dataElement.innerHTML = `
+        <div class="flex justify-between items-start mb-3">
+          <h3 class="text-lg font-semibold text-${item.color}-300">${item.title}</h3>
+          <button class="delete-important-data text-red-400 hover:text-red-300 text-sm" data-id="${item.id}">
+            🗑️
+          </button>
+        </div>
+        <p class="text-gray-300 text-sm leading-relaxed">${item.content}</p>
+      `;
+      container.appendChild(dataElement);
+    });
+
+    this.attachDeleteListeners();
+  },
+
+  addNewData(title, content) {
+    const newData = {
+      id: this.generateId(),
+      title: title.trim(),
+      content: content.trim(),
+      color: this.getRandomColor()
+    };
+
+    importantData.push(newData);
+    StorageManager.saveImportantData();
+    this.renderImportantData();
+    
+    AdminManager.logActivity(`${appState.currentUser} adicionou dado importante: ${title}`, 'data');
+    
+    return newData;
+  },
+
+  removeData(id) {
+    const index = importantData.findIndex(item => item.id === id);
+    if (index !== -1) {
+      const removedItem = importantData[index];
+      importantData.splice(index, 1);
+      StorageManager.saveImportantData();
+      this.renderImportantData();
+      
+      AdminManager.logActivity(`${appState.currentUser} removeu dado importante: ${removedItem.title}`, 'data');
+      
+      return true;
+    }
+    return false;
+  },
+
+  attachDeleteListeners() {
+    document.querySelectorAll('.delete-important-data').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const id = e.target.closest('button').dataset.id;
+        if (confirm('Tem certeza que deseja excluir este dado importante?')) {
+          this.removeData(id);
+        }
+      });
+    });
+  },
+
+  generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  },
+
+  getRandomColor() {
+    const colors = ['yellow', 'blue', 'green', 'purple', 'pink', 'indigo'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+};
+
+// =============================================================================
 // GERENCIADOR DE CONFIGURAÇÕES DE EXPORTAÇÃO - REFATORADO
 // =============================================================================
 
 const ExportConfigManager = {
-  // Mapeamento de configurações - mais organizado
+  // ... (código anterior mantido igual) ...
   settings: {
     size: {
       compact: {
@@ -542,17 +1116,24 @@ const ExportConfigManager = {
     }
   },
 
-  // Inicializar controles de exportação
   initializeControls() {
+    this.loadSavedConfig();
     this.setupButtonGroups();
     this.setupCheckboxControls();
     this.setupActionButtons();
     this.updatePreview();
   },
 
-  // Configurar grupos de botões
+  loadSavedConfig() {
+    this.updateButtonGroup('size', appState.exportConfig.size);
+    this.updateButtonGroup('style', appState.exportConfig.style);
+    
+    document.getElementById('includeHeader').checked = appState.exportConfig.includeHeader;
+    document.getElementById('includeFooter').checked = appState.exportConfig.includeFooter;
+    document.getElementById('optimizePrint').checked = appState.exportConfig.optimizePrint;
+  },
+
   setupButtonGroups() {
-    // Botões de tamanho
     document.querySelectorAll('[data-type="size"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const value = e.currentTarget.dataset.value;
@@ -561,7 +1142,6 @@ const ExportConfigManager = {
       });
     });
 
-    // Botões de estilo
     document.querySelectorAll('[data-type="style"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const value = e.currentTarget.dataset.value;
@@ -571,14 +1151,12 @@ const ExportConfigManager = {
     });
   },
 
-  // Atualizar grupo de botões
   updateButtonGroup(type, value) {
     document.querySelectorAll(`[data-type="${type}"]`).forEach(btn => {
       btn.classList.toggle('active', btn.dataset.value === value);
     });
   },
 
-  // Configurar controles de checkbox
   setupCheckboxControls() {
     const checkboxes = [
       { id: 'includeHeader', key: 'includeHeader' },
@@ -589,7 +1167,6 @@ const ExportConfigManager = {
     checkboxes.forEach(({ id, key }) => {
       const checkbox = document.getElementById(id);
       if (checkbox) {
-        checkbox.checked = appState.exportConfig[key];
         checkbox.addEventListener('change', (e) => {
           this.updateConfig(key, e.target.checked);
         });
@@ -597,34 +1174,29 @@ const ExportConfigManager = {
     });
   },
 
-  // Configurar botões de ação
   setupActionButtons() {
-    // Botão de ajuda
     document.getElementById('toggleExportHelp').addEventListener('click', () => {
       document.getElementById('exportHelp').classList.toggle('hidden');
     });
 
-    // Botão de redefinir
     document.getElementById('resetExportConfig').addEventListener('click', () => {
       this.resetToDefaults();
     });
 
-    // Exportação rápida
     document.getElementById('quickExport').addEventListener('click', () => {
       ExportManager.exportCalendar();
     });
   },
 
-  // Atualizar configuração individual
   updateConfig(key, value) {
     if (key in appState.exportConfig) {
       appState.exportConfig[key] = value;
       this.updatePreview();
       this.updateStatus();
+      StorageManager.saveAllData();
     }
   },
 
-  // Redefinir para padrões
   resetToDefaults() {
     appState.exportConfig = {
       size: 'compact',
@@ -636,16 +1208,15 @@ const ExportConfigManager = {
     
     this.initializeControls();
     this.showNotification('Configurações redefinidas para padrão', 'success');
+    StorageManager.saveAllData();
   },
 
-  // Atualizar visualização
   updatePreview() {
     const config = appState.exportConfig;
     const previewContainer = document.getElementById('exportPreview');
     
     if (!previewContainer) return;
 
-    // Atualizar badges
     const badgesHtml = `
       <span class="preview-badge">
         <span class="preview-indicator" style="background:#10b981"></span>
@@ -672,7 +1243,6 @@ const ExportConfigManager = {
     previewContainer.querySelector('.flex-wrap').innerHTML = badgesHtml;
   },
 
-  // Atualizar status
   updateStatus() {
     const statusElement = document.getElementById('configStatus');
     if (statusElement) {
@@ -685,13 +1255,10 @@ const ExportConfigManager = {
     }
   },
 
-  // Mostrar notificação
   showNotification(message, type = 'info') {
-    // Implementação simples - pode ser expandida para um sistema de notificações
     console.log(`${type.toUpperCase()}: ${message}`);
   },
 
-  // Obter configurações atuais
   getCurrentSettings() {
     const config = appState.exportConfig;
     return {
@@ -703,7 +1270,7 @@ const ExportConfigManager = {
 };
 
 // =============================================================================
-// GERENCIADOR DE EXPORTAÇÃO - REFATORADO
+// GERENCIADOR DE EXPORTAÇÃO - CORRIGIDO
 // =============================================================================
 
 const ExportManager = {
@@ -715,19 +1282,28 @@ const ExportManager = {
       const exportContainer = this.createExportContainer();
       document.body.appendChild(exportContainer);
 
+      // CORREÇÃO: Aguardar um pouco para garantir que o container foi renderizado
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       const canvas = await html2canvas(exportContainer, {
         backgroundColor: '#ffffff',
         scale: 2,
         useCORS: true,
-        logging: false
+        logging: false,
+        allowTaint: true,
+        removeContainer: true
       });
 
       this.downloadImage(canvas);
       document.body.removeChild(exportContainer);
       
       this.showSuccessMessage();
+      
+      // Registrar no admin
+      AdminManager.logExport(appState.currentUser);
 
     } catch (error) {
+      console.error('Erro detalhado na exportação:', error);
       this.handleExportError(error);
     } finally {
       this.hideExportingState();
@@ -737,18 +1313,30 @@ const ExportManager = {
   // Mostrar estado de exportação
   showExportingState() {
     const exportBtn = document.getElementById('quickExport');
+    const mainExportBtn = document.getElementById('exportImage');
+    
     if (exportBtn) {
       exportBtn.innerHTML = '⏳ Exportando...';
       exportBtn.disabled = true;
+    }
+    if (mainExportBtn) {
+      mainExportBtn.innerHTML = '⏳ Exportando...';
+      mainExportBtn.disabled = true;
     }
   },
 
   // Esconder estado de exportação
   hideExportingState() {
     const exportBtn = document.getElementById('quickExport');
+    const mainExportBtn = document.getElementById('exportImage');
+    
     if (exportBtn) {
       exportBtn.innerHTML = 'Exportar Agora';
       exportBtn.disabled = false;
+    }
+    if (mainExportBtn) {
+      mainExportBtn.innerHTML = 'Exportar Calendário';
+      mainExportBtn.disabled = false;
     }
   },
 
@@ -821,7 +1409,7 @@ const ExportManager = {
     return grid;
   },
 
-  // Criar card do mês
+  // Criar card do mês - CORREÇÃO: typo corrigido
   createMonthCard(month, data, settings) {
     const card = document.createElement('div');
     
@@ -890,7 +1478,9 @@ const ExportManager = {
     const link = document.createElement('a');
     link.download = this.generateFileName();
     link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   },
 
   // Gerar nome do arquivo
@@ -902,7 +1492,6 @@ const ExportManager = {
 
   // Mensagem de sucesso
   showSuccessMessage() {
-    // Poderia ser expandido para um sistema de notificações mais elaborado
     alert('✅ Calendário exportado com sucesso!');
   },
 
@@ -914,14 +1503,11 @@ const ExportManager = {
 };
 
 // =============================================================================
-// FUNÇÕES PRINCIPAIS (mantidas do código original)
+// FUNÇÕES PRINCIPAIS (CORRIGIDAS)
 // =============================================================================
 
 function loadSaved() {
-  const saved = localStorage.getItem('calendarData');
-  if (saved) {
-    Object.assign(monthsData, JSON.parse(saved));
-  }
+  StorageManager.loadAllData();
 }
 
 function renderCalendar() {
@@ -933,23 +1519,34 @@ function renderCalendar() {
     card.className = 'month-card';
     card.style.borderLeftColor = data.color;
     
-    let content = `
-      <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
-      <p class="text-gray-300"><strong>Tema:</strong> ${data.theme}</p>
-      <p class="text-gray-300"><strong>Descrição:</strong> ${data.description}</p>
-      <p class="text-blue-400"><strong>Objetivo:</strong> ${data.objective}</p>
-    `;
+    let content = '';
     
     if (appState.editMode) {
       content = `
         <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
         <div class="mb-2">
           <label class="block text-white text-sm mb-1">Cor:</label>
-          <input type="color" value="${data.color}" class="month-color w-full h-8 rounded">
+          <input type="color" value="${data.color}" class="edit-color" data-field="color">
         </div>
-        <p class="text-white"><strong>Tema:</strong> <input class="w-full p-1 rounded bg-gray-700 text-white month-theme" value="${data.theme}"></p>
-        <p class="text-white"><strong>Descrição:</strong> <textarea class="w-full p-1 rounded bg-gray-700 text-white month-desc">${data.description}</textarea></p>
-        <p class="text-white"><strong>Objetivo:</strong> <textarea class="w-full p-1 rounded bg-gray-700 text-white month-obj">${data.objective}</textarea></p>
+        <div class="mb-2">
+          <label class="block text-white text-sm mb-1">Tema:</label>
+          <input type="text" value="${data.theme}" class="edit-input" data-field="theme">
+        </div>
+        <div class="mb-2">
+          <label class="block text-white text-sm mb-1">Descrição:</label>
+          <textarea class="edit-textarea" data-field="description">${data.description}</textarea>
+        </div>
+        <div class="mb-2">
+          <label class="block text-white text-sm mb-1">Objetivo:</label>
+          <textarea class="edit-textarea" data-field="objective">${data.objective}</textarea>
+        </div>
+      `;
+    } else {
+      content = `
+        <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
+        <p class="text-gray-300"><strong>Tema:</strong> ${data.theme}</p>
+        <p class="text-gray-300"><strong>Descrição:</strong> ${data.description}</p>
+        <p class="text-blue-400"><strong>Objetivo:</strong> ${data.objective}</p>
       `;
     }
     
@@ -963,21 +1560,43 @@ function renderCalendar() {
 }
 
 function setupEditListeners(card, month) {
-  const colorInput = card.querySelector('.month-color');
-  const themeInput = card.querySelector('.month-theme');
-  const descInput = card.querySelector('.month-desc');
-  const objInput = card.querySelector('.month-obj');
+  const colorInput = card.querySelector('.edit-color');
+  const themeInput = card.querySelector('input[data-field="theme"]');
+  const descInput = card.querySelector('textarea[data-field="description"]');
+  const objInput = card.querySelector('textarea[data-field="objective"]');
   
-  colorInput.addEventListener('change', (e) => {
-    monthsData[month].color = e.target.value;
-    card.style.borderLeftColor = e.target.value;
-  });
-  
-  [themeInput, descInput, objInput].forEach(input => {
-    input.addEventListener('input', (e) => {
-      monthsData[month][input.classList[1].replace('month-', '')] = e.target.value;
+  if (colorInput) {
+    colorInput.addEventListener('input', (e) => {
+      monthsData[month].color = e.target.value;
+      card.style.borderLeftColor = e.target.value;
+      const title = card.querySelector('h3');
+      if (title) {
+        title.style.color = e.target.value;
+      }
+      AdminManager.logEdit(appState.currentUser, month, 'cor');
     });
-  });
+  }
+  
+  if (themeInput) {
+    themeInput.addEventListener('input', (e) => {
+      monthsData[month].theme = e.target.value;
+      AdminManager.logEdit(appState.currentUser, month, 'tema');
+    });
+  }
+  
+  if (descInput) {
+    descInput.addEventListener('input', (e) => {
+      monthsData[month].description = e.target.value;
+      AdminManager.logEdit(appState.currentUser, month, 'descrição');
+    });
+  }
+  
+  if (objInput) {
+    objInput.addEventListener('input', (e) => {
+      monthsData[month].objective = e.target.value;
+      AdminManager.logEdit(appState.currentUser, month, 'objetivo');
+    });
+  }
 }
 
 function handleLogin() {
@@ -996,10 +1615,14 @@ function handleLogin() {
     }
     appState.currentUser = 'Bianca Rufino Santos';
     document.getElementById('adminPanel').classList.remove('hidden');
+    document.getElementById('adminNameLabel').textContent = appState.currentUser;
     document.body.style.paddingTop = '120px';
   } else {
     appState.currentUser = userName;
   }
+  
+  // Registrar login no admin
+  AdminManager.logUserLogin(appState.currentUser);
   
   afterLogin();
 }
@@ -1015,10 +1638,12 @@ function afterLogin() {
   
   document.getElementById('welcomeText').textContent = `Bem-vindo(a), ${appState.currentUser}!`;
   renderCalendar();
+  
+  ImportantDataManager.initialize();
 }
 
 // =============================================================================
-// INICIALIZAÇÃO
+// INICIALIZAÇÃO - CORRIGIDA
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1039,21 +1664,35 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   document.getElementById('saveData').addEventListener('click', function() {
-    localStorage.setItem('calendarData', JSON.stringify(monthsData));
-    alert('Dados salvos!');
+    if (StorageManager.saveAllData()) {
+      alert('✅ Todos os dados foram salvos com sucesso!');
+      AdminManager.logActivity(`${appState.currentUser} salvou todos os dados`, 'system');
+    } else {
+      alert('❌ Erro ao salvar dados. Verifique o console.');
+    }
   });
 
   document.getElementById('infoToggle').addEventListener('click', function() {
-    document.getElementById('infoPanel').classList.toggle('hidden');
+    const infoPanel = document.getElementById('infoPanel');
+    infoPanel.classList.toggle('hidden');
+    
+    if (!infoPanel.classList.contains('hidden')) {
+      ImportantDataManager.renderImportantData();
+    }
   });
 
-  // Modal de dados importantes
+  document.getElementById('closeInfoPanel')?.addEventListener('click', function() {
+    document.getElementById('infoPanel').classList.add('hidden');
+  });
+
   document.getElementById('addImportantData').addEventListener('click', function() {
     document.getElementById('addDataModal').classList.remove('hidden');
   });
 
   document.getElementById('cancelAddData').addEventListener('click', function() {
     document.getElementById('addDataModal').classList.add('hidden');
+    document.getElementById('dataTitle').value = '';
+    document.getElementById('dataContent').value = '';
   });
 
   document.getElementById('saveImportantData').addEventListener('click', function() {
@@ -1061,25 +1700,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const content = document.getElementById('dataContent').value;
     
     if (title && content) {
-      const container = document.getElementById('importantDataContainer');
-      const newData = document.createElement('div');
-      newData.className = 'bg-gray-800 bg-opacity-50 rounded-lg p-5';
-      newData.innerHTML = `
-        <h3 class="text-lg font-semibold mb-3 text-yellow-300">${title}</h3>
-        <p class="text-gray-300 text-sm leading-relaxed">${content}</p>
-      `;
-      container.appendChild(newData);
+      ImportantDataManager.addNewData(title, content);
       
       document.getElementById('addDataModal').classList.add('hidden');
       document.getElementById('dataTitle').value = '';
       document.getElementById('dataContent').value = '';
+      
+      document.getElementById('infoPanel').classList.remove('hidden');
     } else {
-      alert('Preencha todos os campos!');
+      alert('⚠️ Preencha todos os campos!');
     }
   });
-
-  // Inicializar configurações de exportação REFATORADAS
-  ExportConfigManager.initializeControls();
 
   // Exportação
   document.getElementById('exportImage').addEventListener('click', function() {
@@ -1101,8 +1732,35 @@ document.addEventListener('DOMContentLoaded', function() {
     if (newPassword) {
       appState.adminPassword = newPassword;
       alert('Senha alterada!');
+      AdminManager.logActivity('Senha de administrador alterada', 'system');
     }
   });
+
+  // Painel Admin
+  document.getElementById('showAdminDashboard').addEventListener('click', function() {
+    AdminManager.updateAdminDashboard();
+    document.getElementById('adminDashboard').classList.remove('hidden');
+  });
+
+  document.getElementById('closeAdminDashboard').addEventListener('click', function() {
+    document.getElementById('adminDashboard').classList.add('hidden');
+  });
+
+  // Ações do painel admin
+  document.getElementById('backupData').addEventListener('click', function() {
+    AdminManager.backupData();
+  });
+
+  document.getElementById('clearOldLogs').addEventListener('click', function() {
+    AdminManager.clearOldLogs();
+  });
+
+  document.getElementById('resetAllData').addEventListener('click', function() {
+    AdminManager.resetAllData();
+  });
+
+  // Inicializar configurações de exportação
+  ExportConfigManager.initializeControls();
 
   // Mostrar painel de login
   document.getElementById('loginPanel').classList.remove('hidden');

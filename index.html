@@ -427,7 +427,7 @@
     <!-- Tamanho da Fonte e Layout -->
     <div class="export-control-group">
       <label class="export-control-label">
-        📊 Tamanho e Layout
+         Tamanho e Layout
       </label>
       <div class="btn-group">
         <button class="btn-option active" data-type="size" data-value="compact">
@@ -448,7 +448,7 @@
     <!-- Estilo Visual -->
     <div class="export-control-group">
       <label class="export-control-label">
-        🎨 Estilo Visual
+         Estilo Visual
       </label>
       <div class="btn-group">
         <button class="btn-option active" data-type="style" data-value="colorful">
@@ -469,7 +469,7 @@
     <!-- Opções Adicionais -->
     <div class="export-control-group">
       <label class="export-control-label">
-        ⚙️ Opções de Exportação
+         Opções de Exportação
       </label>
       
       <div class="space-y-3">
@@ -502,7 +502,7 @@
     <!-- Visualização Rápida -->
     <div class="export-control-group">
       <label class="export-control-label">
-        👁️ Visualização das Configurações
+         Visualização das Configurações
       </label>
       <div id="exportPreview" class="mt-3 p-4 bg-gray-800 rounded-lg border border-gray-700">
         <div class="flex flex-wrap gap-2 mb-3">
@@ -551,7 +551,7 @@
 
     <!-- Ajuda Expandida -->
     <div id="exportHelp" class="mt-4 p-4 bg-blue-900 bg-opacity-20 rounded-lg border border-blue-700 hidden">
-      <h4 class="font-semibold text-blue-300 mb-2">💡 Dicas de Exportação</h4>
+      <h4 class="font-semibold text-blue-300 mb-2"> Dicas de Exportação</h4>
       <ul class="text-sm text-blue-200 space-y-1">
         <li>• <strong>Compacto:</strong> Ideal para anexar em emails e documentos</li>
         <li>• <strong>Alto Contraste:</strong> Melhor legibilidade para impressão</li>
@@ -921,8 +921,8 @@ const AdminManager = {
 
   // Resetar todos os dados
   resetAllData() {
-    if (confirm('⚠️ ATENÇÃO: Isso irá resetar TODOS os dados do sistema. Tem certeza?')) {
-      if (confirm('⚠️ CONFIRMAÇÃO FINAL: Esta ação não pode ser desfeita!')) {
+    if (confirm(' ATENÇÃO: Isso irá resetar TODOS os dados do sistema. Tem certeza?')) {
+      if (confirm(' CONFIRMAÇÃO FINAL: Esta ação não pode ser desfeita!')) {
         localStorage.clear();
         location.reload();
       }
@@ -1316,11 +1316,11 @@ const ExportManager = {
     const mainExportBtn = document.getElementById('exportImage');
     
     if (exportBtn) {
-      exportBtn.innerHTML = '⏳ Exportando...';
+      exportBtn.innerHTML = ' Exportando...';
       exportBtn.disabled = true;
     }
     if (mainExportBtn) {
-      mainExportBtn.innerHTML = '⏳ Exportando...';
+      mainExportBtn.innerHTML = ' Exportando...';
       mainExportBtn.disabled = true;
     }
   },

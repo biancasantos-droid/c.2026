@@ -11,6 +11,8 @@
     box-sizing: border-box; 
     transition: background-color .25s, color .25s; 
     font-family: 'Segoe UI', system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
   }
   .month-card { 
     transition: all .2s ease; 
@@ -18,6 +20,7 @@
     padding: 15px; 
     border-radius: 8px; 
     background-color: #1f2937;
+    min-height: 280px;
   }
   .month-card:hover { 
     transform: translateY(-4px); 
@@ -44,155 +47,7 @@
   .selected-month { 
     outline: 3px dashed rgba(255,255,255,.35); 
   }
-  input[type="text"], textarea { 
-    color: #000; 
-  }
   
-  /* Novos estilos para controles de exportação */
-  .export-controls-section {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-    border: 1px solid #475569;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 24px;
-  }
-  
-  .export-control-group {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .export-control-label {
-    display: block;
-    font-weight: 600;
-    color: #e2e8f0;
-    margin-bottom: 8px;
-    font-size: 14px;
-  }
-  
-  .export-control-description {
-    font-size: 12px;
-    color: #94a3b8;
-    margin-top: 4px;
-  }
-  
-  .btn-group {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  
-  .btn-option {
-    flex: 1;
-    min-width: 80px;
-    background: #475569;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    padding: 10px 12px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    font-size: 13px;
-  }
-  
-  .btn-option:hover {
-    background: #5b6b82;
-    transform: translateY(-1px);
-  }
-  
-  .btn-option.active {
-    background: #3b82f6;
-    border-color: #60a5fa;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  }
-  
-  .checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s ease;
-  }
-  
-  .checkbox-group:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  .checkbox-group input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #3b82f6;
-  }
-  
-  .checkbox-label {
-    flex: 1;
-    color: #e2e8f0;
-    font-weight: 500;
-    font-size: 14px;
-  }
-  
-  .preview-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #3b82f6;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    margin: 2px;
-  }
-  
-  .export-preview-card {
-    background: white;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 16px;
-    border-left: 4px solid #3b82f6;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .export-preview-card .preview-title {
-    color: #1e293b;
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-  
-  .export-preview-card .preview-content {
-    color: #475569;
-    font-size: 13px;
-    line-height: 1.4;
-  }
-  
-  .preview-indicator {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 8px;
-  }
-  
-  /* Animações */
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .slide-down {
-    animation: slideDown 0.3s ease-out;
-  }
-
-  /* Estilos para modo edição */
   .edit-input {
     background: #4b5563 !important;
     border: 1px solid #6b7280 !important;
@@ -223,7 +78,6 @@
     margin-bottom: 8px !important;
   }
 
-  /* Painel Admin */
   .admin-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -268,6 +122,131 @@
     margin-bottom: 8px;
     border-left: 3px solid #8b5cf6;
   }
+
+  .admin-dashboard {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+  }
+
+  .important-data-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+  }
+
+  .important-data-item.yellow {
+    border-left-color: #eab308;
+  }
+
+  .important-data-item.blue {
+    border-left-color: #3b82f6;
+  }
+
+  .important-data-item.green {
+    border-left-color: #22c55e;
+  }
+
+  .important-data-item.red {
+    border-left-color: #ef4444;
+  }
+
+  .important-data-item.purple {
+    border-left-color: #8b5cf6;
+  }
+
+  .important-data-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .important-data-actions button {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .export-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002;
+  }
+
+  .export-preview {
+    border: 2px dashed #6b7280;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    background: white;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .export-month-card {
+    border-left: 6px solid;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+    min-height: 200px;
+  }
+
+  .export-small { font-size: 10px; }
+  .export-medium { font-size: 12px; }
+  .export-large { font-size: 14px; }
+  .export-xlarge { font-size: 16px; }
+
+  .export-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+    page-break-after: always;
+  }
+
+  .export-quarter {
+    page-break-inside: avoid;
+  }
+
+  .calendar-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 1200px) {
+    .calendar-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .calendar-row {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
@@ -293,8 +272,8 @@
     <button id="editToggle" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Modo Edição</button>
     <button id="saveData" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">Salvar</button>
     <button id="infoToggle" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg text-white font-semibold">Dados Importantes</button>
-    <button id="addImportantData" class="bg-pink-600 hover:bg-pink-700 px-6 py-2 rounded-lg text-white font-semibold">Adicionar Dados</button>
     <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg text-white font-semibold">Exportar Calendário</button>
+    <button id="autoSaveToggle" class="bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold">Auto-save: ON</button>
   </div>
 
   <!-- ADMIN PANEL -->
@@ -320,8 +299,124 @@
     </div>
   </div>
 
+  <!-- PAINEL DE EXPORTAÇÃO -->
+  <div id="exportPanel" class="export-panel hidden">
+    <div class="bg-gray-800 rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold text-white">Personalizar Exportação</h3>
+        <button id="closeExportPanel" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold">
+          Fechar
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+        <!-- Configurações de Cor -->
+        <div class="bg-gray-700 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-3 text-blue-300">🎨 Esquema de Cores</h4>
+          <div class="space-y-3">
+            <label class="flex items-center">
+              <input type="radio" name="colorScheme" value="color" checked class="mr-2">
+              <span>Cores Originais</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="colorScheme" value="bw" class="mr-2">
+              <span>Preto e Branco</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="colorScheme" value="grayscale" class="mr-2">
+              <span>Escala de Cinza</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Tamanho da Fonte -->
+        <div class="bg-gray-700 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-3 text-green-300">🔠 Tamanho da Fonte</h4>
+          <div class="space-y-3">
+            <label class="flex items-center">
+              <input type="radio" name="fontSize" value="small" class="mr-2">
+              <span>Pequeno</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="fontSize" value="medium" checked class="mr-2">
+              <span>Médio</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="fontSize" value="large" class="mr-2">
+              <span>Grande</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="fontSize" value="xlarge" class="mr-2">
+              <span>Extra Grande</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Layout -->
+        <div class="bg-gray-700 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-3 text-purple-300">📐 Layout</h4>
+          <div class="space-y-3">
+            <label class="flex items-center">
+              <input type="radio" name="layout" value="horizontal" checked class="mr-2">
+              <span>Horizontal (4 por linha)</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="layout" value="vertical" class="mr-2">
+              <span>Vertical</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="layout" value="quarters" class="mr-2">
+              <span>Por Trimestres</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Opções Adicionais -->
+        <div class="bg-gray-700 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-3 text-yellow-300">⚙️ Opções</h4>
+          <div class="space-y-3">
+            <label class="flex items-center">
+              <input type="checkbox" id="includeTitle" checked class="mr-2">
+              <span>Incluir Título</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="includeFooter" checked class="mr-2">
+              <span>Incluir Rodapé</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="highQuality" checked class="mr-2">
+              <span>Alta Qualidade (2x)</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="landscape" checked class="mr-2">
+              <span>Modo Paisagem</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="bg-gray-700 rounded-lg p-4 mb-6">
+        <h4 class="text-lg font-semibold mb-3 text-yellow-300">👁️ Preview (Layout Horizontal)</h4>
+        <div id="exportPreview" class="export-preview">
+          <!-- Preview será gerado aqui -->
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="flex justify-end gap-4">
+        <button id="updatePreview" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">
+          Atualizar Preview
+        </button>
+        <button id="confirmExport" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">
+          Exportar Calendário
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ADMIN DASHBOARD -->
-  <div id="adminDashboard" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div id="adminDashboard" class="admin-dashboard hidden">
     <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-6">
         <h3 class="text-2xl font-bold text-white">Painel de Administração</h3>
@@ -377,7 +472,7 @@
             </div>
             <div class="flex justify-between">
               <span>Dados Importantes:</span>
-              <span class="font-semibold" id="importantDataCount">0</span>
+              <span class="font-semibold" id="importantDataCount">4</span>
             </div>
             <div class="flex justify-between">
               <span>Último Backup:</span>
@@ -409,226 +504,196 @@
     </div>
   </div>
 
-  <!-- EXPORT CONTROLS - REFATORADO -->
-  <div id="exportControls" class="export-controls-section hidden slide-down">
-    <!-- ... (mesmo conteúdo anterior da exportação) ... -->
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-xl font-bold text-white">Configurações de Exportação</h3>
-      <div class="flex items-center gap-2">
-        <span class="text-sm text-green-400 bg-green-900 bg-opacity-30 px-3 py-1 rounded-full" id="configStatus">
-          Configurações prontas
-        </span>
-        <button id="toggleExportHelp" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
-          Ajuda
-        </button>
-      </div>
-    </div>
-
-    <!-- Tamanho da Fonte e Layout -->
-    <div class="export-control-group">
-      <label class="export-control-label">
-         Tamanho e Layout
-      </label>
-      <div class="btn-group">
-        <button class="btn-option active" data-type="size" data-value="compact">
-          <div class="font-semibold">Compacto</div>
-          <div class="text-xs opacity-80 mt-1">Para documentos</div>
-        </button>
-        <button class="btn-option" data-type="size" data-value="standard">
-          <div class="font-semibold">Padrão</div>
-          <div class="text-xs opacity-80 mt-1">Uso geral</div>
-        </button>
-        <button class="btn-option" data-type="size" data-value="large">
-          <div class="font-semibold">Grande</div>
-          <div class="text-xs opacity-80 mt-1">Apresentações</div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Estilo Visual -->
-    <div class="export-control-group">
-      <label class="export-control-label">
-         Estilo Visual
-      </label>
-      <div class="btn-group">
-        <button class="btn-option active" data-type="style" data-value="colorful">
-          <div class="font-semibold">Colorido</div>
-          <div class="text-xs opacity-80 mt-1">Cores originais</div>
-        </button>
-        <button class="btn-option" data-type="style" data-value="professional">
-          <div class="font-semibold">Profissional</div>
-          <div class="text-xs opacity-80 mt-1">Tom sépia</div>
-        </button>
-        <button class="btn-option" data-type="style" data-value="high-contrast">
-          <div class="font-semibold">Alto Contraste</div>
-          <div class="text-xs opacity-80 mt-1">Acessibilidade</div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Opções Adicionais -->
-    <div class="export-control-group">
-      <label class="export-control-label">
-         Opções de Exportação
-      </label>
-      
-      <div class="space-y-3">
-        <div class="checkbox-group">
-          <input type="checkbox" id="includeHeader" checked>
-          <label for="includeHeader" class="checkbox-label">
-            Incluir cabeçalho do calendário
-          </label>
-        </div>
-        
-        <div class="checkbox-group">
-          <input type="checkbox" id="includeFooter" checked>
-          <label for="includeFooter" class="checkbox-label">
-            Incluir rodapé com informações
-          </label>
-        </div>
-        
-        <div class="checkbox-group">
-          <input type="checkbox" id="optimizePrint">
-          <label for="optimizePrint" class="checkbox-label">
-            Otimizado para impressão
-            <div class="export-control-description">
-              Ajusta cores e espaçamento para melhor resultado na impressora
-            </div>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- Visualização Rápida -->
-    <div class="export-control-group">
-      <label class="export-control-label">
-         Visualização das Configurações
-      </label>
-      <div id="exportPreview" class="mt-3 p-4 bg-gray-800 rounded-lg border border-gray-700">
-        <div class="flex flex-wrap gap-2 mb-3">
-          <span class="preview-badge">
-            <span class="preview-indicator" style="background:#10b981"></span>
-            Compacto
-          </span>
-          <span class="preview-badge">
-            <span class="preview-indicator" style="background:#3b82f6"></span>
-            Colorido
-          </span>
-          <span class="preview-badge">
-            <span class="preview-indicator" style="background:#6b7280"></span>
-            Com cabeçalho
-          </span>
-        </div>
-        
-        <div class="export-preview-card">
-          <div class="preview-title">Janeiro - Saúde Mental</div>
-          <div class="preview-content">
-            <strong>Tema:</strong> Campanhas de autocuidado e saúde emocional<br>
-            <strong>Objetivo:</strong> Sensibilizar sobre importância do equilíbrio mental
-          </div>
-        </div>
-        
-        <div class="text-xs text-gray-400 mt-3 text-center">
-          Visualização aproximada • Exportação em alta qualidade
-        </div>
-      </div>
-    </div>
-
-    <!-- Ações de Exportação -->
-    <div class="flex flex-wrap gap-3 justify-between items-center mt-6 pt-4 border-t border-gray-700">
-      <div class="text-sm text-gray-300">
-        <strong>Formato:</strong> PNG • <strong>Qualidade:</strong> Alta
-      </div>
-      <div class="flex gap-3">
-        <button id="resetExportConfig" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg text-white font-medium text-sm">
-          Redefinir
-        </button>
-        <button id="quickExport" class="px-6 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold text-sm">
-          Exportar Agora
-        </button>
-      </div>
-    </div>
-
-    <!-- Ajuda Expandida -->
-    <div id="exportHelp" class="mt-4 p-4 bg-blue-900 bg-opacity-20 rounded-lg border border-blue-700 hidden">
-      <h4 class="font-semibold text-blue-300 mb-2"> Dicas de Exportação</h4>
-      <ul class="text-sm text-blue-200 space-y-1">
-        <li>• <strong>Compacto:</strong> Ideal para anexar em emails e documentos</li>
-        <li>• <strong>Alto Contraste:</strong> Melhor legibilidade para impressão</li>
-        <li>• <strong>Profissional:</strong> Tom sépia para relatórios formais</li>
-        <li>• Use "Otimizado para impressão" para economizar tinta</li>
-      </ul>
-    </div>
-  </div>
-
   <!-- HEADER -->
-  <header id="calendarHeader" class="text-center mb-4 hidden">
+  <header id="calendarHeader" class="text-center mb-6 hidden">
     <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Calendário de Campanhas Educacionais 2026</h1>
+    <p class="text-gray-400">Layout Otimizado para Impressão Horizontal</p>
   </header>
 
   <!-- INFO PANEL -->
   <section id="infoPanel" class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-6 mb-8 border-l-4 border-purple-500 hidden">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold text-purple-200">Dados Importantes</h2>
-      <button id="closeInfoPanel" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white font-semibold text-sm">
-        Fechar
-      </button>
+      <div class="flex gap-2">
+        <button id="addImportantData" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-semibold text-sm">
+          Adicionar
+        </button>
+        <button id="closeInfoPanel" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white font-semibold text-sm">
+          Fechar
+        </button>
+      </div>
     </div>
     <div id="importantDataContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Dados importantes serão carregados aqui -->
     </div>
   </section>
 
-  <!-- CALENDAR GRID -->
-  <section id="calendarGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden"></section>
+  <!-- CALENDAR GRID - LAYOUT HORIZONTAL -->
+  <section id="calendarGrid" class="hidden">
+    <!-- As linhas serão geradas dinamicamente pelo JavaScript -->
+  </section>
 
   <footer class="text-center mt-10 text-gray-400 text-sm hidden" id="footerText">
-    Calendário CAED 2026 - Desenvolvido para gestão educacional
+    Calendário CAED 2026 - Desenvolvido para gestão educacional - Layout Horizontal
   </footer>
-</div>
-
-<!-- MODAL -->
-<div id="addDataModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md">
-    <h3 class="text-xl font-bold mb-4">Adicionar Dados</h3>
-    <div class="mb-4">
-      <label class="block text-gray-300 mb-2">Título:</label>
-      <input type="text" id="dataTitle" class="w-full p-2 rounded text-black" placeholder="Digite o título">
-    </div>
-    <div class="mb-4">
-      <label class="block text-gray-300 mb-2">Conteúdo:</label>
-      <textarea id="dataContent" class="w-full p-2 rounded text-black h-32" placeholder="Digite o conteúdo"></textarea>
-    </div>
-    <div class="flex justify-end gap-2">
-      <button id="cancelAddData" class="bg-gray-600 px-4 py-2 rounded text-white">Cancelar</button>
-      <button id="saveImportantData" class="bg-green-600 px-4 py-2 rounded text-white">Salvar</button>
-    </div>
-  </div>
 </div>
 
 <script>
 // =============================================================================
-// CONFIGURAÇÕES E ESTADO GLOBAL - REFATORADO
+// CONFIGURAÇÕES E ESTADO GLOBAL
 // =============================================================================
 
 // Dados do calendário
 let monthsData = {
-  'Janeiro': { color:'#3b82f6', theme:'Saúde Mental', description:'Campanhas de autocuidado.', objective:'Sensibilizar sobre saúde emocional.' },
-  'Fevereiro': { color:'#8b5cf6', theme:'Acolhimento', description:'Integração dos novos alunos.', objective:'Criar ambiente acolhedor.' },
-  'Março': { color:'#f97316', theme:'Conscientização', description:'Debates sobre respeito.', objective:'Combater discriminação.' },
-  'Abril': { color:'#22c55e', theme:'Sustentabilidade', description:'Ações ambientais.', objective:'Estimular práticas ecológicas.' },
-  'Maio': { color:'#eab308', theme:'Saúde Emocional', description:'Oficinas e conversas.', objective:'Promover equilíbrio mental.' },
-  'Junho': { color:'#10b981', theme:'Prevenção', description:'Teatros e visitas.', objective:'Conscientizar sobre vícios.' },
-  'Julho': { color:'#facc15', theme:'Recesso', description:'Descanso e planejamento.', objective:'Preparar retorno.' },
-  'Agosto': { color:'#a855f7', theme:'Direitos das Mulheres', description:'Campanha Agosto Lilás.', objective:'Fortalecer segurança feminina.' },
-  'Setembro': { color:'#eab308', theme:'Prevenção ao Suicídio', description:'Setembro Amarelo.', objective:'Valorizar a vida.' },
-  'Outubro': { color:'#ec4899', theme:'Saúde da Mulher', description:'Outubro Rosa.', objective:'Incentivar autocuidado.' },
-  'Novembro': { color:'#3b82f6', theme:'Saúde do Homem', description:'Novembro Azul.', objective:'Quebrar tabus.' },
-  'Dezembro': { color:'#f97316', theme:'Prevenção ao Câncer', description:'Dezembro Laranja.', objective:'Refletir e planejar.' }
+  'Janeiro': { 
+    color:'#3b82f6', 
+    theme:'Retorno às aulas (Início das aulas)', 
+    description:'Semana inicial de boas-vindas.', 
+    objective:'Realizar dinâmicas e atividades de acolhimento para o novo ciclo escolar.',
+    audience:'alunos, professores e corpo de funcionários',
+    actions:'Dinâmicas e atividades de acolhimento',
+    observations:'',
+    date:'Início das aulas'
+  },
+  'Fevereiro': { 
+    color:'#8b5cf6', 
+    theme:'Volta às Aulas - Acolhimento e integração', 
+    description:'Desenvolver atividades que promovam o acolhimento e integração dos alunos novos, de todos os segmentos da escola.', 
+    objective:'Desenvolver atividades que promovam o acolhimento e integração dos alunos novos, de todos os segmentos da escola, com dinâmicas e brincadeiras para socialização e integração.',
+    audience:'Alunos novos de todos os segmentos',
+    actions:'Dinâmicas e brincadeiras para socialização e integração',
+    observations:'',
+    date:''
+  },
+  'Março': { 
+    color:'#f97316', 
+    theme:'Volta às Aulas - Divulgação das boas-vindas', 
+    description:'Divulgação das boas-vindas, com o apoio da Equipe de Pedagogia e Psicologia Escolar.', 
+    objective:'Divulgação das boas-vindas, com o apoio da Equipe de Pedagogia e Psicologia Escolar.',
+    audience:'Comunidade escolar',
+    actions:'Divulgação institucional',
+    observations:'',
+    date:''
+  },
+  'Abril': { 
+    color:'#ef4444', 
+    theme:'Prevenção ao Bullying', 
+    description:'Respeito e Convivência Saudável. Sensibilizar a comunidade escolar sobre o bullying e cyberbullying.', 
+    objective:'Sensibilizar a comunidade escolar sobre o bullying e cyberbullying, promovendo ações de conscientização e o respeito às diferenças, com palestras, rodas de conversa e dramatizações sobre o tema.',
+    audience:'alunos de todos os segmentos',
+    actions:'Dinâmicas, vídeos e oficinas práticas sobre o tema; confecção de cartazes, murais e folders educativos; socialização de trabalhos e dramatizações em sala.',
+    observations:'Envolvimento de todos os profissionais da escola e incentivo à denúncia de situações de violência e intimidação no ambiente escolar.',
+    date:'Dia Nacional de Combate ao Bullying (07 de abril)'
+  },
+  'Maio': { 
+    color:'#eab308', 
+    theme:'Combate ao Assédio e à Discriminação / Maio Laranja', 
+    description:'Alertar alunos sobre práticas de assédio e violência sexual, promovendo a conscientização e o respeito entre todos.', 
+    objective:'Alertar alunos sobre práticas de assédio e violência sexual, promovendo a conscientização e o respeito entre todos. Promover ações educativas e de prevenção ao abuso e à exploração sexual infantil, com ênfase na importância da denúncia e do cuidado com as vítimas.',
+    audience:'alunos, professores e servidores',
+    actions:'Palestras, exibição de vídeos, debates, produções textuais, divulgação de cartazes e folders educativos, rodas de conversa, vídeos educativos e confecção de materiais de conscientização.',
+    observations:'Campanha Maio Laranja (18/05): "Faça Bonito - Proteja nossas crianças e adolescentes".',
+    date:'Semana do Combate ao Assédio e à Discriminação (Primeira Semana de Maio) / Dia Nacional 18/05'
+  },
+  'Junho': { 
+    color:'#22c55e', 
+    theme:'Meio Ambiente', 
+    description:'Consciência ambiental, sustentabilidade e coleta seletiva.', 
+    objective:'Sensibilizar a comunidade escolar para a preservação ambiental, incentivando o consumo consciente, o uso racional da água, o descarte correto do lixo e o reaproveitamento de materiais recicláveis.',
+    audience:'alunos, professores e funcionários',
+    actions:'Confecção de cartazes, gincanas ecológicas, atividades de coleta seletiva e plantio de árvores.',
+    observations:'',
+    date:'Semana Nacional do Meio Ambiente (primeira semana de junho)'
+  },
+  'Julho': { 
+    color:'#06b6d4', 
+    theme:'Férias', 
+    description:'Lazer e descanso.', 
+    objective:'Incentivar o descanso, relaxamento e o cuidado pessoal.',
+    audience:'Comunidade escolar',
+    actions:'',
+    observations:'',
+    date:''
+  },
+  'Agosto': { 
+    color:'#a855f7', 
+    theme:'Volta às Aulas e Valorização da Vida (Campanha Setembro Amarelo)', 
+    description:'Valorização da vida e da saúde mental.', 
+    objective:'Promover a reflexão sobre o cuidado com a saúde mental, a prevenção ao suicídio e o acolhimento emocional no ambiente escolar.',
+    audience:'alunos, professores e servidores',
+    actions:'Palestras, rodas de conversa, oficinas, vídeos e confecção de cartazes.',
+    observations:'Realizar parcerias com psicólogos e profissionais da saúde mental.',
+    date:''
+  },
+  'Setembro': { 
+    color:'#eab308', 
+    theme:'Campanha Setembro Amarelo', 
+    description:'"Se precisar, peça ajuda!"', 
+    objective:'Valorizar a vida, conscientizar sobre a importância da saúde mental e promover o diálogo sobre o tema.',
+    audience:'Comunidade escolar',
+    actions:'Atividades de conscientização sobre saúde mental e prevenção ao suicídio.',
+    observations:'',
+    date:'Campanha Setembro Amarelo'
+  },
+  'Outubro': { 
+    color:'#ec4899', 
+    theme:'Campanha de Combate ao Racismo', 
+    description:'Diversidade é força!', 
+    objective:'Promover o respeito à diversidade étnico-racial, valorizando a cultura afro-brasileira e combatendo o racismo no ambiente escolar.',
+    audience:'alunos, professores e corpo técnico-administrativo',
+    actions:'Palestras, vídeos, produções culturais e exposição de trabalhos dos alunos.',
+    observations:'',
+    date:'Dia Nacional da Consciência Negra (20 de novembro)'
+  },
+  'Novembro': { 
+    color:'#3b82f6', 
+    theme:'Combate à Violência e Promoção da Cultura da Paz / Saúde do Homem e Saúde da Mulher', 
+    description:'Paz e empatia. Prevenção é a melhor forma de cuidar!', 
+    objective:'Promover a convivência harmoniosa, valorizando o respeito e o diálogo entre os alunos e servidores. Conscientizar sobre a importância da prevenção e diagnóstico precoce de doenças.',
+    audience:'alunos e corpo técnico-administrativo',
+    actions:'Rodas de conversa, vídeos e oficinas sobre comunicação não violenta. Palestras, distribuição de folders, vídeos educativos e atividades informativas sobre saúde.',
+    observations:'Envolver todos os segmentos da escola.',
+    date:''
+  },
+  'Dezembro': { 
+    color:'#f97316', 
+    theme:'Encerramento do Ano Letivo', 
+    description:'Confraternização e balanço anual.', 
+    objective:'Promover momentos de integração e confraternização entre alunos e servidores, celebrando as conquistas do ano letivo e reforçando os valores de união e respeito.',
+    audience:'toda a comunidade escolar',
+    actions:'Apresentações culturais, vídeos e atividades de encerramento.',
+    observations:'Apoiar divulgação com espaço institucional na mídia local (TV, site, exposições e afins, SUAM, rádio entre outros). Convocar alunos de pedagogia para participações mediante certificação de horas de extensão.',
+    date:''
+  }
 };
 
 // Dados importantes
-let importantData = [];
+let importantData = [
+  {
+    id: '1',
+    title: 'Integração Setorial',
+    content: 'A integração com outros setores é essencial durante todo o período anual. A integração das turmas de pedagogia está prevista no RDD - Artigo 26 e deve ser implementada para garantir a conclusão efetiva dos programas educacionais.',
+    color: 'yellow'
+  },
+  {
+    id: '2',
+    title: 'Produção Audiovisual',
+    content: 'Durante todo o ano: Criação de conteúdo audiovisual para conscientização nas telas do IFRO. É fundamental incluir imagens e vídeos criados pelos próprios alunos, promovendo protagonismo estudantil e maior engajamento.',
+    color: 'blue'
+  },
+  {
+    id: '3',
+    title: 'Prevenção a Vícios',
+    content: '26 de Junho: Dia específico para abordar drogas e álcool, tratando vícios em geral. Ações devem incluir teatros e visitas técnicas para conscientização efetiva da comunidade escolar.',
+    color: 'green'
+  },
+  {
+    id: '4',
+    title: 'Observações Gerais',
+    content: 'Todas as campanhas devem ser integradas e complementares, mantendo consistência na abordagem pedagógica e garantindo o cumprimento dos objetivos educacionais estabelecidos no projeto institucional.',
+    color: 'red'
+  }
+];
 
 // Dados de administração
 const adminData = {
@@ -642,960 +707,758 @@ const adminData = {
   }
 };
 
-// Estado da aplicação - REFATORADO
+// Estado da aplicação
 const appState = {
   currentUser: '',
   editMode: false,
-  adminPassword: "Petter feioso",
-  
-  // Configurações de exportação refatoradas - mais intuitivas
-  exportConfig: {
-    size: 'compact',           // 'compact' | 'standard' | 'large'
-    style: 'colorful',         // 'colorful' | 'professional' | 'high-contrast'
-    includeHeader: true,
+  adminPassword: "petter feioso",
+  selectedMonth: null,
+  autoSave: true,
+  exportSettings: {
+    colorScheme: 'color',
+    fontSize: 'medium',
+    layout: 'horizontal',
+    includeTitle: true,
     includeFooter: true,
-    optimizePrint: false
+    highQuality: true,
+    landscape: true
   }
 };
 
 // =============================================================================
-// SISTEMA DE ARMAZENAMENTO - CORRIGIDO
-// =============================================================================
-
-const StorageManager = {
-  // Chaves para localStorage
-  KEYS: {
-    CALENDAR_DATA: 'calendarData_v2',
-    IMPORTANT_DATA: 'importantData_v2',
-    EXPORT_CONFIG: 'exportConfig_v2',
-    ADMIN_DATA: 'adminData_v2'
-  },
-
-  // Salvar todos os dados
-  saveAllData() {
-    try {
-      // Salvar dados do calendário
-      localStorage.setItem(this.KEYS.CALENDAR_DATA, JSON.stringify(monthsData));
-      
-      // Salvar dados importantes
-      localStorage.setItem(this.KEYS.IMPORTANT_DATA, JSON.stringify(importantData));
-      
-      // Salvar configurações de exportação
-      localStorage.setItem(this.KEYS.EXPORT_CONFIG, JSON.stringify(appState.exportConfig));
-      
-      // Salvar dados de admin
-      localStorage.setItem(this.KEYS.ADMIN_DATA, JSON.stringify(adminData));
-      
-      console.log('Todos os dados salvos com sucesso!');
-      return true;
-    } catch (error) {
-      console.error('Erro ao salvar dados:', error);
-      return false;
-    }
-  },
-
-  // Carregar todos os dados
-  loadAllData() {
-    try {
-      // Carregar dados do calendário
-      const savedCalendarData = localStorage.getItem(this.KEYS.CALENDAR_DATA);
-      if (savedCalendarData) {
-        const parsedData = JSON.parse(savedCalendarData);
-        monthsData = { ...monthsData, ...parsedData };
-      }
-
-      // Carregar dados importantes
-      const savedImportantData = localStorage.getItem(this.KEYS.IMPORTANT_DATA);
-      if (savedImportantData) {
-        importantData = JSON.parse(savedImportantData);
-      }
-
-      // Carregar configurações de exportação
-      const savedExportConfig = localStorage.getItem(this.KEYS.EXPORT_CONFIG);
-      if (savedExportConfig) {
-        Object.assign(appState.exportConfig, JSON.parse(savedExportConfig));
-      }
-
-      // Carregar dados de admin
-      const savedAdminData = localStorage.getItem(this.KEYS.ADMIN_DATA);
-      if (savedAdminData) {
-        const parsedAdminData = JSON.parse(savedAdminData);
-        Object.assign(adminData, parsedAdminData);
-        
-        // Restaurar Set de usuários únicos
-        if (parsedAdminData.statistics && parsedAdminData.statistics.uniqueUsers) {
-          adminData.statistics.uniqueUsers = new Set(parsedAdminData.statistics.uniqueUsers);
-        }
-      }
-
-      console.log('Dados carregados com sucesso!');
-      return true;
-    } catch (error) {
-      console.error('Erro ao carregar dados:', error);
-      return false;
-    }
-  },
-
-  // Salvar apenas dados do calendário
-  saveCalendarData() {
-    try {
-      localStorage.setItem(this.KEYS.CALENDAR_DATA, JSON.stringify(monthsData));
-      console.log('Dados do calendário salvos!');
-      return true;
-    } catch (error) {
-      console.error('Erro ao salvar calendário:', error);
-      return false;
-    }
-  },
-
-  // Salvar apenas dados importantes
-  saveImportantData() {
-    try {
-      localStorage.setItem(this.KEYS.IMPORTANT_DATA, JSON.stringify(importantData));
-      console.log('Dados importantes salvos!');
-      return true;
-    } catch (error) {
-      console.error('Erro ao salvar dados importantes:', error);
-      return false;
-    }
-  },
-
-  // Salvar dados de admin
-  saveAdminData() {
-    try {
-      // Converter Set para Array para salvar no localStorage
-      const adminDataToSave = {
-        ...adminData,
-        statistics: {
-          ...adminData.statistics,
-          uniqueUsers: Array.from(adminData.statistics.uniqueUsers)
-        }
-      };
-      
-      localStorage.setItem(this.KEYS.ADMIN_DATA, JSON.stringify(adminDataToSave));
-      console.log('Dados de admin salvos!');
-      return true;
-    } catch (error) {
-      console.error('Erro ao salvar dados de admin:', error);
-      return false;
-    }
-  }
-};
-
-// =============================================================================
-// SISTEMA DE ADMINISTRAÇÃO
-// =============================================================================
-
-const AdminManager = {
-  // Registrar login de usuário
-  logUserLogin(userName) {
-    const timestamp = new Date().toLocaleString('pt-BR');
-    const logEntry = {
-      user: userName,
-      timestamp: timestamp,
-      type: 'login'
-    };
-    
-    adminData.userLogs.unshift(logEntry);
-    adminData.statistics.totalLogins++;
-    adminData.statistics.uniqueUsers.add(userName);
-    
-    // Manter apenas os últimos 50 logs
-    if (adminData.userLogs.length > 50) {
-      adminData.userLogs = adminData.userLogs.slice(0, 50);
-    }
-    
-    this.logActivity(`${userName} fez login no sistema`, 'user');
-    StorageManager.saveAdminData();
-  },
-
-  // Registrar atividade
-  logActivity(description, type = 'system') {
-    const timestamp = new Date().toLocaleString('pt-BR');
-    const activityEntry = {
-      description: description,
-      timestamp: timestamp,
-      type: type
-    };
-    
-    adminData.activityLogs.unshift(activityEntry);
-    
-    // Manter apenas as últimas 50 atividades
-    if (adminData.activityLogs.length > 50) {
-      adminData.activityLogs = adminData.activityLogs.slice(0, 50);
-    }
-    
-    StorageManager.saveAdminData();
-  },
-
-  // Registrar edição
-  logEdit(userName, month, field) {
-    adminData.statistics.totalEdits++;
-    this.logActivity(`${userName} editou ${field} de ${month}`, 'edit');
-  },
-
-  // Registrar exportação
-  logExport(userName) {
-    adminData.statistics.totalExports++;
-    this.logActivity(`${userName} exportou o calendário`, 'export');
-  },
-
-  // Atualizar painel admin
-  updateAdminDashboard() {
-    // Estatísticas
-    document.getElementById('totalUsers').textContent = adminData.statistics.uniqueUsers.size;
-    document.getElementById('totalLogins').textContent = adminData.statistics.totalLogins;
-    document.getElementById('totalEdits').textContent = adminData.statistics.totalEdits;
-    document.getElementById('totalExports').textContent = adminData.statistics.totalExports;
-
-    // Usuários recentes
-    const recentUsersContainer = document.getElementById('recentUsers');
-    recentUsersContainer.innerHTML = '';
-    
-    const recentUsers = adminData.userLogs.slice(0, 10);
-    recentUsers.forEach(log => {
-      const userElement = document.createElement('div');
-      userElement.className = `user-log ${log.type === 'login' ? 'recent' : ''}`;
-      userElement.innerHTML = `
-        <div class="font-semibold">${log.user}</div>
-        <div class="text-xs text-gray-400">${log.timestamp}</div>
-      `;
-      recentUsersContainer.appendChild(userElement);
-    });
-
-    // Atividades recentes
-    const activitiesContainer = document.getElementById('recentActivities');
-    activitiesContainer.innerHTML = '';
-    
-    const recentActivities = adminData.activityLogs.slice(0, 10);
-    recentActivities.forEach(activity => {
-      const activityElement = document.createElement('div');
-      activityElement.className = 'activity-item';
-      activityElement.innerHTML = `
-        <div class="text-sm">${activity.description}</div>
-        <div class="text-xs text-gray-400">${activity.timestamp}</div>
-      `;
-      activitiesContainer.appendChild(activityElement);
-    });
-
-    // Dados do sistema
-    document.getElementById('monthsConfigured').textContent = `${Object.keys(monthsData).length}/12`;
-    document.getElementById('importantDataCount').textContent = importantData.length;
-    
-    const lastBackup = adminData.activityLogs.find(log => log.description.includes('backup'));
-    document.getElementById('lastBackup').textContent = lastBackup ? lastBackup.timestamp : 'Nunca';
-  },
-
-  // Fazer backup
-  backupData() {
-    const backup = {
-      monthsData: monthsData,
-      importantData: importantData,
-      exportConfig: appState.exportConfig,
-      timestamp: new Date().toISOString()
-    };
-    
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `backup_calendario_${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    
-    this.logActivity('Backup dos dados realizado', 'system');
-    alert('Backup realizado com sucesso!');
-  },
-
-  // Limpar logs antigos
-  clearOldLogs() {
-    if (confirm('Tem certeza que deseja limpar todos os logs?')) {
-      adminData.userLogs = [];
-      adminData.activityLogs = [];
-      StorageManager.saveAdminData();
-      this.updateAdminDashboard();
-      this.logActivity('Logs antigos foram limpos', 'system');
-      alert('Logs limpos com sucesso!');
-    }
-  },
-
-  // Resetar todos os dados
-  resetAllData() {
-    if (confirm(' ATENÇÃO: Isso irá resetar TODOS os dados do sistema. Tem certeza?')) {
-      if (confirm(' CONFIRMAÇÃO FINAL: Esta ação não pode ser desfeita!')) {
-        localStorage.clear();
-        location.reload();
-      }
-    }
-  }
-};
-
-// =============================================================================
-// GERENCIADOR DE DADOS IMPORTANTES - CORRIGIDO
-// =============================================================================
-
-const ImportantDataManager = {
-  // ... (código anterior mantido igual) ...
-  initialize() {
-    this.loadImportantData();
-    this.renderImportantData();
-  },
-
-  loadImportantData() {
-    if (importantData.length === 0) {
-      importantData = [
-        {
-          id: this.generateId(),
-          title: 'Integração Setorial',
-          content: 'A integração com outros setores é essencial durante todo o período anual.',
-          color: 'yellow'
-        },
-        {
-          id: this.generateId(),
-          title: 'Produção Audiovisual',
-          content: 'Incentivar alunos a produzir imagens e vídeos para as campanhas.',
-          color: 'blue'
-        }
-      ];
-    }
-  },
-
-  renderImportantData() {
-    const container = document.getElementById('importantDataContainer');
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    if (importantData.length === 0) {
-      container.innerHTML = `
-        <div class="col-span-2 text-center py-8">
-          <p class="text-gray-400">Nenhum dado importante adicionado ainda.</p>
-          <button id="addFirstData" class="mt-4 bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-lg text-white font-semibold">
-            Adicionar Primeiro Dado
-          </button>
-        </div>
-      `;
-
-      document.getElementById('addFirstData')?.addEventListener('click', () => {
-        document.getElementById('addDataModal').classList.remove('hidden');
-      });
-      return;
-    }
-
-    importantData.forEach(item => {
-      const dataElement = document.createElement('div');
-      dataElement.className = 'bg-gray-800 bg-opacity-50 rounded-lg p-5';
-      dataElement.innerHTML = `
-        <div class="flex justify-between items-start mb-3">
-          <h3 class="text-lg font-semibold text-${item.color}-300">${item.title}</h3>
-          <button class="delete-important-data text-red-400 hover:text-red-300 text-sm" data-id="${item.id}">
-            🗑️
-          </button>
-        </div>
-        <p class="text-gray-300 text-sm leading-relaxed">${item.content}</p>
-      `;
-      container.appendChild(dataElement);
-    });
-
-    this.attachDeleteListeners();
-  },
-
-  addNewData(title, content) {
-    const newData = {
-      id: this.generateId(),
-      title: title.trim(),
-      content: content.trim(),
-      color: this.getRandomColor()
-    };
-
-    importantData.push(newData);
-    StorageManager.saveImportantData();
-    this.renderImportantData();
-    
-    AdminManager.logActivity(`${appState.currentUser} adicionou dado importante: ${title}`, 'data');
-    
-    return newData;
-  },
-
-  removeData(id) {
-    const index = importantData.findIndex(item => item.id === id);
-    if (index !== -1) {
-      const removedItem = importantData[index];
-      importantData.splice(index, 1);
-      StorageManager.saveImportantData();
-      this.renderImportantData();
-      
-      AdminManager.logActivity(`${appState.currentUser} removeu dado importante: ${removedItem.title}`, 'data');
-      
-      return true;
-    }
-    return false;
-  },
-
-  attachDeleteListeners() {
-    document.querySelectorAll('.delete-important-data').forEach(button => {
-      button.addEventListener('click', (e) => {
-        const id = e.target.closest('button').dataset.id;
-        if (confirm('Tem certeza que deseja excluir este dado importante?')) {
-          this.removeData(id);
-        }
-      });
-    });
-  },
-
-  generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-  },
-
-  getRandomColor() {
-    const colors = ['yellow', 'blue', 'green', 'purple', 'pink', 'indigo'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
-};
-
-// =============================================================================
-// GERENCIADOR DE CONFIGURAÇÕES DE EXPORTAÇÃO - REFATORADO
-// =============================================================================
-
-const ExportConfigManager = {
-  // ... (código anterior mantido igual) ...
-  settings: {
-    size: {
-      compact: {
-        label: 'Compacto',
-        description: 'Para documentos e anexos',
-        fontSize: '12px',
-        titleSize: '16px',
-        cardPadding: '8px',
-        spacing: 'compact'
-      },
-      standard: {
-        label: 'Padrão',
-        description: 'Uso geral e visualização',
-        fontSize: '14px',
-        titleSize: '20px',
-        cardPadding: '12px',
-        spacing: 'normal'
-      },
-      large: {
-        label: 'Grande',
-        description: 'Apresentações e posters',
-        fontSize: '16px',
-        titleSize: '24px',
-        cardPadding: '16px',
-        spacing: 'large'
-      }
-    },
-    
-    style: {
-      colorful: {
-        label: 'Colorido',
-        description: 'Cores vibrantes originais',
-        backgroundColor: '#ffffff',
-        textColor: '#000000',
-        accentColors: true,
-        highContrast: false
-      },
-      professional: {
-        label: 'Profissional',
-        description: 'Tom sépia para documentos formais',
-        backgroundColor: '#fefefe',
-        textColor: '#374151',
-        accentColors: false,
-        palette: ['#8b5cf6', '#f97316', '#3b82f6', '#22c55e'],
-        highContrast: false
-      },
-      'high-contrast': {
-        label: 'Alto Contraste',
-        description: 'Máxima acessibilidade',
-        backgroundColor: '#ffffff',
-        textColor: '#000000',
-        accentColors: false,
-        highContrast: true
-      }
-    }
-  },
-
-  initializeControls() {
-    this.loadSavedConfig();
-    this.setupButtonGroups();
-    this.setupCheckboxControls();
-    this.setupActionButtons();
-    this.updatePreview();
-  },
-
-  loadSavedConfig() {
-    this.updateButtonGroup('size', appState.exportConfig.size);
-    this.updateButtonGroup('style', appState.exportConfig.style);
-    
-    document.getElementById('includeHeader').checked = appState.exportConfig.includeHeader;
-    document.getElementById('includeFooter').checked = appState.exportConfig.includeFooter;
-    document.getElementById('optimizePrint').checked = appState.exportConfig.optimizePrint;
-  },
-
-  setupButtonGroups() {
-    document.querySelectorAll('[data-type="size"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const value = e.currentTarget.dataset.value;
-        this.updateButtonGroup('size', value);
-        this.updateConfig('size', value);
-      });
-    });
-
-    document.querySelectorAll('[data-type="style"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const value = e.currentTarget.dataset.value;
-        this.updateButtonGroup('style', value);
-        this.updateConfig('style', value);
-      });
-    });
-  },
-
-  updateButtonGroup(type, value) {
-    document.querySelectorAll(`[data-type="${type}"]`).forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.value === value);
-    });
-  },
-
-  setupCheckboxControls() {
-    const checkboxes = [
-      { id: 'includeHeader', key: 'includeHeader' },
-      { id: 'includeFooter', key: 'includeFooter' },
-      { id: 'optimizePrint', key: 'optimizePrint' }
-    ];
-
-    checkboxes.forEach(({ id, key }) => {
-      const checkbox = document.getElementById(id);
-      if (checkbox) {
-        checkbox.addEventListener('change', (e) => {
-          this.updateConfig(key, e.target.checked);
-        });
-      }
-    });
-  },
-
-  setupActionButtons() {
-    document.getElementById('toggleExportHelp').addEventListener('click', () => {
-      document.getElementById('exportHelp').classList.toggle('hidden');
-    });
-
-    document.getElementById('resetExportConfig').addEventListener('click', () => {
-      this.resetToDefaults();
-    });
-
-    document.getElementById('quickExport').addEventListener('click', () => {
-      ExportManager.exportCalendar();
-    });
-  },
-
-  updateConfig(key, value) {
-    if (key in appState.exportConfig) {
-      appState.exportConfig[key] = value;
-      this.updatePreview();
-      this.updateStatus();
-      StorageManager.saveAllData();
-    }
-  },
-
-  resetToDefaults() {
-    appState.exportConfig = {
-      size: 'compact',
-      style: 'colorful',
-      includeHeader: true,
-      includeFooter: true,
-      optimizePrint: false
-    };
-    
-    this.initializeControls();
-    this.showNotification('Configurações redefinidas para padrão', 'success');
-    StorageManager.saveAllData();
-  },
-
-  updatePreview() {
-    const config = appState.exportConfig;
-    const previewContainer = document.getElementById('exportPreview');
-    
-    if (!previewContainer) return;
-
-    const badgesHtml = `
-      <span class="preview-badge">
-        <span class="preview-indicator" style="background:#10b981"></span>
-        ${this.settings.size[config.size].label}
-      </span>
-      <span class="preview-badge">
-        <span class="preview-indicator" style="background:#3b82f6"></span>
-        ${this.settings.style[config.style].label}
-      </span>
-      ${config.includeHeader ? `
-        <span class="preview-badge">
-          <span class="preview-indicator" style="background:#6b7280"></span>
-          Com cabeçalho
-        </span>
-      ` : ''}
-      ${config.optimizePrint ? `
-        <span class="preview-badge">
-          <span class="preview-indicator" style="background:#f59e0b"></span>
-          Otimizado
-        </span>
-      ` : ''}
-    `;
-    
-    previewContainer.querySelector('.flex-wrap').innerHTML = badgesHtml;
-  },
-
-  updateStatus() {
-    const statusElement = document.getElementById('configStatus');
-    if (statusElement) {
-      statusElement.textContent = 'Configurações atualizadas';
-      statusElement.className = 'text-sm text-green-400 bg-green-900 bg-opacity-30 px-3 py-1 rounded-full';
-      
-      setTimeout(() => {
-        statusElement.textContent = 'Configurações prontas';
-      }, 2000);
-    }
-  },
-
-  showNotification(message, type = 'info') {
-    console.log(`${type.toUpperCase()}: ${message}`);
-  },
-
-  getCurrentSettings() {
-    const config = appState.exportConfig;
-    return {
-      size: this.settings.size[config.size],
-      style: this.settings.style[config.style],
-      options: config
-    };
-  }
-};
-
-// =============================================================================
-// GERENCIADOR DE EXPORTAÇÃO - CORRIGIDO
-// =============================================================================
-
-const ExportManager = {
-  // Exportar calendário como imagem
-  async exportCalendar() {
-    try {
-      this.showExportingState();
-      
-      const exportContainer = this.createExportContainer();
-      document.body.appendChild(exportContainer);
-
-      // CORREÇÃO: Aguardar um pouco para garantir que o container foi renderizado
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      const canvas = await html2canvas(exportContainer, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        allowTaint: true,
-        removeContainer: true
-      });
-
-      this.downloadImage(canvas);
-      document.body.removeChild(exportContainer);
-      
-      this.showSuccessMessage();
-      
-      // Registrar no admin
-      AdminManager.logExport(appState.currentUser);
-
-    } catch (error) {
-      console.error('Erro detalhado na exportação:', error);
-      this.handleExportError(error);
-    } finally {
-      this.hideExportingState();
-    }
-  },
-
-  // Mostrar estado de exportação
-  showExportingState() {
-    const exportBtn = document.getElementById('quickExport');
-    const mainExportBtn = document.getElementById('exportImage');
-    
-    if (exportBtn) {
-      exportBtn.innerHTML = ' Exportando...';
-      exportBtn.disabled = true;
-    }
-    if (mainExportBtn) {
-      mainExportBtn.innerHTML = ' Exportando...';
-      mainExportBtn.disabled = true;
-    }
-  },
-
-  // Esconder estado de exportação
-  hideExportingState() {
-    const exportBtn = document.getElementById('quickExport');
-    const mainExportBtn = document.getElementById('exportImage');
-    
-    if (exportBtn) {
-      exportBtn.innerHTML = 'Exportar Agora';
-      exportBtn.disabled = false;
-    }
-    if (mainExportBtn) {
-      mainExportBtn.innerHTML = 'Exportar Calendário';
-      mainExportBtn.disabled = false;
-    }
-  },
-
-  // Criar container para exportação
-  createExportContainer() {
-    const container = document.createElement('div');
-    const settings = ExportConfigManager.getCurrentSettings();
-    
-    // Aplicar configurações de estilo
-    Object.assign(container.style, {
-      backgroundColor: settings.style.backgroundColor,
-      color: settings.style.textColor,
-      padding: '24px',
-      maxWidth: '1200px',
-      margin: '0 auto',
-      fontFamily: 'Arial, sans-serif',
-      fontSize: settings.size.fontSize,
-      lineHeight: '1.4'
-    });
-
-    // Adicionar conteúdo baseado nas configurações
-    if (appState.exportConfig.includeHeader) {
-      container.appendChild(this.createHeader(settings));
-    }
-    
-    container.appendChild(this.createCalendarGrid(settings));
-    
-    if (appState.exportConfig.includeFooter) {
-      container.appendChild(this.createFooter(settings));
-    }
-
-    return container;
-  },
-
-  // Criar cabeçalho
-  createHeader(settings) {
-    const header = document.createElement('div');
-    header.style.marginBottom = '24px';
-    header.style.textAlign = 'center';
-    
-    const title = document.createElement('h1');
-    title.textContent = 'Calendário de Campanhas Educacionais 2026 - CAED';
-    title.style.fontSize = settings.size.titleSize;
-    title.style.fontWeight = 'bold';
-    title.style.marginBottom = '8px';
-    title.style.color = settings.style.highContrast ? '#000000' : '#1e40af';
-    
-    const subtitle = document.createElement('p');
-    subtitle.textContent = `Exportado em ${new Date().toLocaleDateString('pt-BR')} • ${settings.size.label} • ${settings.style.label}`;
-    subtitle.style.fontSize = '12px';
-    subtitle.style.color = '#666';
-    
-    header.appendChild(title);
-    header.appendChild(subtitle);
-    
-    return header;
-  },
-
-  // Criar grid do calendário
-  createCalendarGrid(settings) {
-    const grid = document.createElement('div');
-    grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
-    grid.style.gap = settings.size.spacing === 'compact' ? '12px' : '20px';
-    
-    Object.entries(monthsData).forEach(([month, data]) => {
-      grid.appendChild(this.createMonthCard(month, data, settings));
-    });
-
-    return grid;
-  },
-
-  // Criar card do mês - CORREÇÃO: typo corrigido
-  createMonthCard(month, data, settings) {
-    const card = document.createElement('div');
-    
-    // Configurações visuais baseadas no estilo
-    const borderColor = settings.style.highContrast ? '#000000' : 
-                       settings.style.accentColors ? data.color : 
-                       settings.style.palette ? settings.style.palette[0] : data.color;
-    
-    Object.assign(card.style, {
-      border: '1px solid #e5e7eb',
-      borderLeft: `4px solid ${borderColor}`,
-      borderRadius: '8px',
-      padding: settings.size.cardPadding,
-      backgroundColor: '#ffffff',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-    });
-
-    // Título do mês
-    const title = document.createElement('h3');
-    title.textContent = month;
-    title.style.fontSize = settings.size === 'compact' ? '16px' : '18px';
-    title.style.fontWeight = 'bold';
-    title.style.marginBottom = '8px';
-    title.style.color = borderColor;
-
-    // Conteúdo
-    const content = document.createElement('div');
-    content.style.fontSize = settings.size.fontSize;
-    
-    content.appendChild(this.createInfoRow('Tema', data.theme));
-    content.appendChild(this.createInfoRow('Descrição', data.description));
-    content.appendChild(this.createInfoRow('Objetivo', data.objective, settings.style.highContrast ? '#000000' : '#1e40af'));
-
-    card.appendChild(title);
-    card.appendChild(content);
-    
-    return card;
-  },
-
-  // Criar linha de informação
-  createInfoRow(label, content, color = '#000000') {
-    const row = document.createElement('p');
-    row.style.margin = '4px 0';
-    row.style.color = color;
-    row.innerHTML = `<strong>${label}:</strong> ${content}`;
-    return row;
-  },
-
-  // Criar rodapé
-  createFooter(settings) {
-    const footer = document.createElement('div');
-    footer.style.marginTop = '24px';
-    footer.style.paddingTop = '16px';
-    footer.style.borderTop = '1px solid #e5e7eb';
-    footer.style.textAlign = 'center';
-    footer.style.fontSize = '11px';
-    footer.style.color = '#666';
-    
-    footer.textContent = `Calendário CAED 2026 - Desenvolvido para gestão educacional • ${settings.size.label} • ${settings.style.label}`;
-    
-    return footer;
-  },
-
-  // Download da imagem
-  downloadImage(canvas) {
-    const link = document.createElement('a');
-    link.download = this.generateFileName();
-    link.href = canvas.toDataURL('image/png');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  },
-
-  // Gerar nome do arquivo
-  generateFileName() {
-    const config = appState.exportConfig;
-    const date = new Date().toISOString().split('T')[0];
-    return `calendario_caed_2026_${config.size}_${config.style}_${date}.png`;
-  },
-
-  // Mensagem de sucesso
-  showSuccessMessage() {
-    alert('✅ Calendário exportado com sucesso!');
-  },
-
-  // Tratamento de erro
-  handleExportError(error) {
-    console.error('Erro na exportação:', error);
-    alert('❌ Erro ao exportar calendário. Verifique o console para detalhes.');
-  }
-};
-
-// =============================================================================
-// FUNÇÕES PRINCIPAIS (CORRIGIDAS)
+// FUNÇÕES PRINCIPAIS
 // =============================================================================
 
 function loadSaved() {
-  StorageManager.loadAllData();
+  try {
+    const savedCalendarData = localStorage.getItem('calendarData');
+    if (savedCalendarData) {
+      const parsedData = JSON.parse(savedCalendarData);
+      Object.assign(monthsData, parsedData);
+    }
+
+    const savedImportantData = localStorage.getItem('importantData');
+    if (savedImportantData) {
+      importantData = JSON.parse(savedImportantData);
+    }
+
+    const savedAdminData = localStorage.getItem('adminData');
+    if (savedAdminData) {
+      const parsedAdminData = JSON.parse(savedAdminData);
+      Object.assign(adminData, parsedAdminData);
+      
+      if (parsedAdminData.statistics && parsedAdminData.statistics.uniqueUsers) {
+        adminData.statistics.uniqueUsers = new Set(parsedAdminData.statistics.uniqueUsers);
+      }
+    }
+
+    const savedAutoSave = localStorage.getItem('autoSave');
+    if (savedAutoSave !== null) {
+      appState.autoSave = JSON.parse(savedAutoSave);
+    }
+
+    const savedExportSettings = localStorage.getItem('exportSettings');
+    if (savedExportSettings) {
+      appState.exportSettings = JSON.parse(savedExportSettings);
+    }
+  } catch (error) {
+    console.error('Erro ao carregar dados:', error);
+  }
+}
+
+function saveData() {
+  try {
+    localStorage.setItem('calendarData', JSON.stringify(monthsData));
+    localStorage.setItem('importantData', JSON.stringify(importantData));
+    localStorage.setItem('autoSave', JSON.stringify(appState.autoSave));
+    localStorage.setItem('exportSettings', JSON.stringify(appState.exportSettings));
+    
+    const adminDataToSave = {
+      ...adminData,
+      statistics: {
+        ...adminData.statistics,
+        uniqueUsers: Array.from(adminData.statistics.uniqueUsers)
+      }
+    };
+    localStorage.setItem('adminData', JSON.stringify(adminDataToSave));
+    
+    adminData.activityLogs.unshift({
+      description: `${appState.currentUser} salvou os dados manualmente`,
+      timestamp: new Date().toLocaleString('pt-BR'),
+      type: 'save'
+    });
+    
+    document.getElementById('importantDataCount').textContent = importantData.length;
+    
+    return true;
+  } catch (error) {
+    console.error('Erro ao salvar dados:', error);
+    return false;
+  }
+}
+
+function autoSave() {
+  if (appState.autoSave) {
+    const success = saveData();
+    if (success) {
+      console.log('Auto-save realizado com sucesso');
+    }
+  }
 }
 
 function renderCalendar() {
   const grid = document.getElementById('calendarGrid');
+  if (!grid) {
+    console.error('Elemento calendarGrid não encontrado');
+    return;
+  }
+  
   grid.innerHTML = '';
   
-  Object.entries(monthsData).forEach(([month, data]) => {
-    const card = document.createElement('div');
-    card.className = 'month-card';
-    card.style.borderLeftColor = data.color;
+  // Criar layout horizontal com 4 meses por linha
+  const months = Object.entries(monthsData);
+  
+  for (let i = 0; i < months.length; i += 4) {
+    const rowMonths = months.slice(i, i + 4);
+    const row = document.createElement('div');
+    row.className = 'calendar-row';
     
-    let content = '';
+    rowMonths.forEach(([month, data]) => {
+      const card = document.createElement('div');
+      card.className = `month-card ${appState.selectedMonth === month ? 'selected-month' : ''}`;
+      card.style.borderLeftColor = data.color;
+      card.dataset.month = month;
+      
+      let content = '';
+      
+      if (appState.editMode && appState.currentUser.toLowerCase().includes('bianca')) {
+        content = `
+          <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
+          <div class="mb-2">
+            <label class="block text-white text-sm mb-1">Cor:</label>
+            <input type="color" value="${data.color}" class="edit-color" data-field="color">
+          </div>
+          <div class="mb-2">
+            <label class="block text-white text-sm mb-1">Tema:</label>
+            <input type="text" value="${data.theme}" class="edit-input" data-field="theme">
+          </div>
+          <div class="mb-2">
+            <label class="block text-white text-sm mb-1">Descrição:</label>
+            <textarea class="edit-textarea" data-field="description">${data.description}</textarea>
+          </div>
+          <div class="mb-2">
+            <label class="block text-white text-sm mb-1">Objetivo:</label>
+            <textarea class="edit-textarea" data-field="objective">${data.objective}</textarea>
+          </div>
+          <div class="mb-2">
+            <label class="block text-white text-sm mb-1">Público-alvo:</label>
+            <input type="text" value="${data.audience}" class="edit-input" data-field="audience">
+          </div>
+          <div class="mb-2">
+            <label class="block text-white text-sm mb-1">Ações:</label>
+            <textarea class="edit-textarea" data-field="actions">${data.actions}</textarea>
+          </div>
+          <div class="mb-2">
+            <label class="block text-white text-sm mb-1">Observações:</label>
+            <textarea class="edit-textarea" data-field="observations">${data.observations}</textarea>
+          </div>
+          <div class="mb-2">
+            <label class="block text-white text-sm mb-1">Data:</label>
+            <input type="text" value="${data.date}" class="edit-input" data-field="date">
+          </div>
+        `;
+      } else {
+        content = `
+          <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
+          ${data.date ? `<p class="text-gray-400 text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+          <p class="text-gray-300 mb-2"><strong>Tema:</strong> ${data.theme}</p>
+          <p class="text-gray-300 mb-2 text-sm"><strong>Descrição:</strong> ${data.description}</p>
+          <p class="text-blue-400 mb-2 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
+          <p class="text-green-400 mb-2 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
+          <p class="text-purple-400 mb-2 text-sm"><strong>Ações:</strong> ${data.actions}</p>
+          ${data.observations ? `<p class="text-yellow-400 mb-2 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+        `;
+      }
+      
+      card.innerHTML = content;
+      row.appendChild(card);
+      
+      if (appState.editMode && appState.currentUser.toLowerCase().includes('bianca')) {
+        setupEditListeners(card, month);
+      }
+
+      if (document.getElementById('designControls') && !document.getElementById('designControls').classList.contains('hidden')) {
+        card.addEventListener('click', () => {
+          appState.selectedMonth = month;
+          renderCalendar();
+        });
+      }
+    });
     
-    if (appState.editMode) {
-      content = `
-        <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
-        <div class="mb-2">
-          <label class="block text-white text-sm mb-1">Cor:</label>
-          <input type="color" value="${data.color}" class="edit-color" data-field="color">
-        </div>
-        <div class="mb-2">
-          <label class="block text-white text-sm mb-1">Tema:</label>
-          <input type="text" value="${data.theme}" class="edit-input" data-field="theme">
-        </div>
-        <div class="mb-2">
-          <label class="block text-white text-sm mb-1">Descrição:</label>
-          <textarea class="edit-textarea" data-field="description">${data.description}</textarea>
-        </div>
-        <div class="mb-2">
-          <label class="block text-white text-sm mb-1">Objetivo:</label>
-          <textarea class="edit-textarea" data-field="objective">${data.objective}</textarea>
-        </div>
-      `;
-    } else {
-      content = `
-        <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
-        <p class="text-gray-300"><strong>Tema:</strong> ${data.theme}</p>
-        <p class="text-gray-300"><strong>Descrição:</strong> ${data.description}</p>
-        <p class="text-blue-400"><strong>Objetivo:</strong> ${data.objective}</p>
-      `;
-    }
-    
-    card.innerHTML = content;
-    grid.appendChild(card);
-    
-    if (appState.editMode) {
-      setupEditListeners(card, month);
-    }
-  });
+    grid.appendChild(row);
+  }
 }
 
 function setupEditListeners(card, month) {
-  const colorInput = card.querySelector('.edit-color');
-  const themeInput = card.querySelector('input[data-field="theme"]');
-  const descInput = card.querySelector('textarea[data-field="description"]');
-  const objInput = card.querySelector('textarea[data-field="objective"]');
+  const inputs = card.querySelectorAll('input, textarea');
   
-  if (colorInput) {
-    colorInput.addEventListener('input', (e) => {
-      monthsData[month].color = e.target.value;
-      card.style.borderLeftColor = e.target.value;
-      const title = card.querySelector('h3');
-      if (title) {
-        title.style.color = e.target.value;
+  inputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+      const field = e.target.dataset.field;
+      monthsData[month][field] = e.target.value;
+      
+      if (field === 'color') {
+        card.style.borderLeftColor = e.target.value;
+        const title = card.querySelector('h3');
+        if (title) {
+          title.style.color = e.target.value;
+        }
       }
-      AdminManager.logEdit(appState.currentUser, month, 'cor');
+      
+      adminData.statistics.totalEdits++;
+      adminData.activityLogs.unshift({
+        description: `${appState.currentUser} editou ${field} de ${month}`,
+        timestamp: new Date().toLocaleString('pt-BR'),
+        type: 'edit'
+      });
+      
+      if (appState.autoSave) {
+        setTimeout(autoSave, 500);
+      }
     });
+  });
+}
+
+// =============================================================================
+// FUNÇÕES DE DADOS IMPORTANTES - CORRIGIDAS
+// =============================================================================
+
+function renderImportantData() {
+  const container = document.getElementById('importantDataContainer');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  importantData.forEach(item => {
+    const dataElement = document.createElement('div');
+    dataElement.className = `important-data-item ${item.color}`;
+    dataElement.dataset.id = item.id;
+    
+    const canEdit = appState.currentUser.toLowerCase().includes('bianca') && appState.editMode;
+    
+    if (canEdit) {
+      dataElement.innerHTML = `
+        <div class="mb-2">
+          <label class="block text-white text-sm mb-1">Título:</label>
+          <input type="text" value="${item.title}" class="edit-input important-data-field" data-id="${item.id}" data-field="title">
+        </div>
+        <div class="mb-2">
+          <label class="block text-white text-sm mb-1">Conteúdo:</label>
+          <textarea class="edit-textarea important-data-field" data-id="${item.id}" data-field="content">${item.content}</textarea>
+        </div>
+        <div class="mb-2">
+          <label class="block text-white text-sm mb-1">Cor:</label>
+          <select class="edit-input important-data-field" data-id="${item.id}" data-field="color">
+            <option value="yellow" ${item.color === 'yellow' ? 'selected' : ''}>Amarelo</option>
+            <option value="blue" ${item.color === 'blue' ? 'selected' : ''}>Azul</option>
+            <option value="green" ${item.color === 'green' ? 'selected' : ''}>Verde</option>
+            <option value="red" ${item.color === 'red' ? 'selected' : ''}>Vermelho</option>
+            <option value="purple" ${item.color === 'purple' ? 'selected' : ''}>Roxo</option>
+          </select>
+        </div>
+        <div class="important-data-actions">
+          <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded delete-important-data" data-id="${item.id}">Excluir</button>
+        </div>
+      `;
+    } else {
+      dataElement.innerHTML = `
+        <h3 class="text-lg font-semibold mb-3">${item.title}</h3>
+        <p class="text-gray-300 text-sm leading-relaxed">${item.content}</p>
+      `;
+    }
+    
+    container.appendChild(dataElement);
+  });
+
+  // Configurar os listeners
+  setupImportantDataListeners();
+}
+
+function setupImportantDataListeners() {
+  // Listeners para campos editáveis
+  const inputs = document.querySelectorAll('.important-data-field');
+  inputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+      const id = e.target.dataset.id;
+      const field = e.target.dataset.field;
+      const item = importantData.find(d => d.id === id);
+      
+      if (item) {
+        item[field] = e.target.value;
+        
+        // Atualizar visualização em tempo real
+        if (field === 'color') {
+          const parent = e.target.closest('.important-data-item');
+          if (parent) {
+            parent.className = `important-data-item ${e.target.value}`;
+          }
+        }
+        
+        if (appState.autoSave) {
+          setTimeout(autoSave, 500);
+        }
+      }
+    });
+  });
+
+  // Listeners para botões de exclusão
+  const deleteButtons = document.querySelectorAll('.delete-important-data');
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      if (confirm('Tem certeza que deseja excluir este dado importante?')) {
+        importantData = importantData.filter(d => d.id !== id);
+        renderImportantData();
+        autoSave();
+      }
+    });
+  });
+}
+
+function addImportantData() {
+  if (!appState.currentUser.toLowerCase().includes('bianca')) {
+    alert('Apenas a Bianca pode adicionar dados importantes.');
+    return;
   }
   
-  if (themeInput) {
-    themeInput.addEventListener('input', (e) => {
-      monthsData[month].theme = e.target.value;
-      AdminManager.logEdit(appState.currentUser, month, 'tema');
-    });
-  }
+  const newId = Date.now().toString();
+  const newData = {
+    id: newId,
+    title: 'Novo Dado Importante',
+    content: 'Digite o conteúdo aqui...',
+    color: 'blue'
+  };
   
-  if (descInput) {
-    descInput.addEventListener('input', (e) => {
-      monthsData[month].description = e.target.value;
-      AdminManager.logEdit(appState.currentUser, month, 'descrição');
-    });
+  importantData.push(newData);
+  renderImportantData();
+  autoSave();
+}
+
+// =============================================================================
+// FUNÇÕES DE EXPORTAÇÃO - CORRIGIDAS
+// =============================================================================
+
+function updateExportSettings() {
+  const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
+  const fontSize = document.querySelector('input[name="fontSize"]:checked').value;
+  const layout = document.querySelector('input[name="layout"]:checked').value;
+  const includeTitle = document.getElementById('includeTitle').checked;
+  const includeFooter = document.getElementById('includeFooter').checked;
+  const highQuality = document.getElementById('highQuality').checked;
+  const landscape = document.getElementById('landscape').checked;
+
+  appState.exportSettings = {
+    colorScheme,
+    fontSize,
+    layout,
+    includeTitle,
+    includeFooter,
+    highQuality,
+    landscape
+  };
+
+  updateExportPreview();
+}
+
+function updateExportPreview() {
+  const preview = document.getElementById('exportPreview');
+  if (!preview) return;
+
+  let previewHTML = '';
+
+  // Título
+  if (appState.exportSettings.includeTitle) {
+    previewHTML += `
+      <div class="text-center mb-6" style="color: black;">
+        <h1 class="font-bold ${getFontSizeClass('title')}" style="color: black;">
+          Calendário de Campanhas Educacionais 2026
+        </h1>
+        <p class="text-sm mt-2" style="color: black;">Layout Otimizado para Impressão</p>
+      </div>
+    `;
   }
+
+  // Grid de meses baseado no layout escolhido
+  const months = Object.entries(monthsData);
   
-  if (objInput) {
-    objInput.addEventListener('input', (e) => {
-      monthsData[month].objective = e.target.value;
-      AdminManager.logEdit(appState.currentUser, month, 'objetivo');
+  if (appState.exportSettings.layout === 'horizontal') {
+    // Layout horizontal - 4 meses por linha
+    for (let i = 0; i < months.length; i += 4) {
+      const rowMonths = months.slice(i, i + 4);
+      previewHTML += '<div class="export-row">';
+      
+      rowMonths.forEach(([month, data]) => {
+        const borderColor = getExportColor(data.color);
+        const textColor = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
+        
+        previewHTML += `
+          <div class="export-month-card ${getFontSizeClass('content')}" style="border-left-color: ${borderColor}; background: white; color: ${textColor}">
+            <h3 class="font-bold mb-2" style="color: ${borderColor}">${month}</h3>
+            ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+            <p class="mb-1"><strong>Tema:</strong> ${data.theme}</p>
+            <p class="mb-1 text-sm"><strong>Descrição:</strong> ${data.description}</p>
+            <p class="mb-1 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
+            <p class="mb-1 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
+            <p class="mb-1 text-sm"><strong>Ações:</strong> ${data.actions}</p>
+            ${data.observations ? `<p class="mb-1 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+          </div>
+        `;
+      });
+      
+      previewHTML += '</div>';
+    }
+  } else if (appState.exportSettings.layout === 'quarters') {
+    // Layout por trimestres
+    const quarters = [
+      months.slice(0, 3),  // Q1: Jan-Mar
+      months.slice(3, 6),  // Q2: Apr-Jun
+      months.slice(6, 9),  // Q3: Jul-Sep
+      months.slice(9, 12)  // Q4: Oct-Dec
+    ];
+    
+    quarters.forEach((quarter, index) => {
+      previewHTML += `<div class="export-quarter mb-6">`;
+      previewHTML += `<h3 class="font-bold text-lg mb-3" style="color: black;">${index + 1}º Trimestre</h3>`;
+      previewHTML += '<div class="export-row">';
+      
+      quarter.forEach(([month, data]) => {
+        const borderColor = getExportColor(data.color);
+        const textColor = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
+        
+        previewHTML += `
+          <div class="export-month-card ${getFontSizeClass('content')}" style="border-left-color: ${borderColor}; background: white; color: ${textColor}">
+            <h3 class="font-bold mb-2" style="color: ${borderColor}">${month}</h3>
+            ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+            <p class="mb-1"><strong>Tema:</strong> ${data.theme}</p>
+            <p class="mb-1 text-sm"><strong>Descrição:</strong> ${data.description}</p>
+            <p class="mb-1 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
+            <p class="mb-1 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
+            <p class="mb-1 text-sm"><strong>Ações:</strong> ${data.actions}</p>
+            ${data.observations ? `<p class="mb-1 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+          </div>
+        `;
+      });
+      
+      previewHTML += '</div></div>';
     });
+  } else {
+    // Layout vertical (original)
+    previewHTML += '<div class="space-y-4">';
+    months.forEach(([month, data]) => {
+      const borderColor = getExportColor(data.color);
+      const textColor = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
+      
+      previewHTML += `
+        <div class="export-month-card ${getFontSizeClass('content')}" style="border-left-color: ${borderColor}; background: white; color: ${textColor}">
+          <h3 class="font-bold mb-2" style="color: ${borderColor}">${month}</h3>
+          ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+          <p class="mb-2"><strong>Tema:</strong> ${data.theme}</p>
+          <p class="mb-2"><strong>Descrição:</strong> ${data.description}</p>
+          <p class="mb-2"><strong>Objetivo:</strong> ${data.objective}</p>
+          <p class="mb-2"><strong>Público-alvo:</strong> ${data.audience}</p>
+          <p class="mb-2"><strong>Ações:</strong> ${data.actions}</p>
+          ${data.observations ? `<p class="mb-2"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+        </div>
+      `;
+    });
+    previewHTML += '</div>';
+  }
+
+  // Rodapé
+  if (appState.exportSettings.includeFooter) {
+    previewHTML += `
+      <div class="text-center mt-6 text-sm" style="color: black;">
+        Calendário CAED 2026 - Desenvolvido para gestão educacional - Layout Otimizado
+      </div>
+    `;
+  }
+
+  preview.innerHTML = previewHTML;
+}
+
+function getExportColor(originalColor) {
+  switch (appState.exportSettings.colorScheme) {
+    case 'bw':
+      return '#000000'; // Preto
+    case 'grayscale':
+      // Converter cor para escala de cinza
+      const hex = originalColor.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+      return `#${gray.toString(16).padStart(2, '0').repeat(3)}`;
+    case 'color':
+    default:
+      return originalColor;
+  }
+}
+
+function getFontSizeClass(type) {
+  const baseSizes = {
+    title: { small: 'text-2xl', medium: 'text-3xl', large: 'text-4xl', xlarge: 'text-5xl' },
+    content: { small: 'export-small', medium: 'export-medium', large: 'export-large', xlarge: 'export-xlarge' }
+  };
+  
+  return baseSizes[type][appState.exportSettings.fontSize] || baseSizes[type].medium;
+}
+
+function showExportPanel() {
+  // Carregar configurações salvas
+  document.querySelector(`input[name="colorScheme"][value="${appState.exportSettings.colorScheme}"]`).checked = true;
+  document.querySelector(`input[name="fontSize"][value="${appState.exportSettings.fontSize}"]`).checked = true;
+  document.querySelector(`input[name="layout"][value="${appState.exportSettings.layout}"]`).checked = true;
+  document.getElementById('includeTitle').checked = appState.exportSettings.includeTitle;
+  document.getElementById('includeFooter').checked = appState.exportSettings.includeFooter;
+  document.getElementById('highQuality').checked = appState.exportSettings.highQuality;
+  document.getElementById('landscape').checked = appState.exportSettings.landscape;
+
+  updateExportPreview();
+  document.getElementById('exportPanel').classList.remove('hidden');
+}
+
+async function exportCalendar() {
+  try {
+    const exportBtn = document.getElementById('confirmExport');
+    exportBtn.innerHTML = '⏳ Exportando...';
+    exportBtn.disabled = true;
+
+    // Criar container temporário para exportação
+    const exportContainer = document.createElement('div');
+    exportContainer.style.backgroundColor = 'white';
+    exportContainer.style.color = 'black';
+    exportContainer.style.padding = '30px';
+    exportContainer.style.maxWidth = appState.exportSettings.landscape ? '1200px' : '800px';
+    exportContainer.style.margin = '0 auto';
+
+    // Adicionar título
+    if (appState.exportSettings.includeTitle) {
+      const title = document.createElement('div');
+      title.className = 'text-center mb-8';
+      title.innerHTML = `
+        <h1 class="font-bold ${getFontSizeClass('title')}" style="color: black;">
+          Calendário de Campanhas Educacionais 2026
+        </h1>
+        <p class="text-sm mt-2" style="color: black;">Layout Otimizado para Impressão</p>
+      `;
+      exportContainer.appendChild(title);
+    }
+
+    // Adicionar meses baseado no layout escolhido
+    const months = Object.entries(monthsData);
+    
+    if (appState.exportSettings.layout === 'horizontal') {
+      // Layout horizontal
+      for (let i = 0; i < months.length; i += 4) {
+        const rowMonths = months.slice(i, i + 4);
+        const row = document.createElement('div');
+        row.style.display = 'grid';
+        row.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        row.style.gap = '12px';
+        row.style.marginBottom = '12px';
+        
+        rowMonths.forEach(([month, data]) => {
+          const card = document.createElement('div');
+          card.className = `export-month-card ${getFontSizeClass('content')}`;
+          card.style.borderLeftColor = getExportColor(data.color);
+          card.style.background = 'white';
+          card.style.color = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
+          card.style.padding = '10px';
+          card.style.minHeight = '200px';
+          
+          let content = `
+            <h3 class="font-bold mb-2" style="color: ${getExportColor(data.color)}">${month}</h3>
+            ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+            <p class="mb-1"><strong>Tema:</strong> ${data.theme}</p>
+            <p class="mb-1 text-sm"><strong>Descrição:</strong> ${data.description}</p>
+            <p class="mb-1 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
+            <p class="mb-1 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
+            <p class="mb-1 text-sm"><strong>Ações:</strong> ${data.actions}</p>
+            ${data.observations ? `<p class="mb-1 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+          `;
+          
+          card.innerHTML = content;
+          row.appendChild(card);
+        });
+        
+        exportContainer.appendChild(row);
+      }
+    } else {
+      // Layout vertical (fallback)
+      const grid = document.createElement('div');
+      grid.className = 'space-y-4';
+      
+      months.forEach(([month, data]) => {
+        const card = document.createElement('div');
+        card.className = `export-month-card ${getFontSizeClass('content')}`;
+        card.style.borderLeftColor = getExportColor(data.color);
+        card.style.background = 'white';
+        card.style.color = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
+        
+        let content = `
+          <h3 class="font-bold mb-2" style="color: ${getExportColor(data.color)}">${month}</h3>
+          ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+          <p class="mb-2"><strong>Tema:</strong> ${data.theme}</p>
+          <p class="mb-2"><strong>Descrição:</strong> ${data.description}</p>
+          <p class="mb-2"><strong>Objetivo:</strong> ${data.objective}</p>
+          <p class="mb-2"><strong>Público-alvo:</strong> ${data.audience}</p>
+          <p class="mb-2"><strong>Ações:</strong> ${data.actions}</p>
+          ${data.observations ? `<p class="mb-2"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+        `;
+        
+        card.innerHTML = content;
+        grid.appendChild(card);
+      });
+      
+      exportContainer.appendChild(grid);
+    }
+
+    // Adicionar rodapé
+    if (appState.exportSettings.includeFooter) {
+      const footer = document.createElement('div');
+      footer.className = 'text-center mt-8 text-sm';
+      footer.style.color = 'black';
+      footer.textContent = 'Calendário CAED 2026 - Desenvolvido para gestão educacional - Layout Otimizado';
+      exportContainer.appendChild(footer);
+    }
+
+    // Adicionar ao DOM temporariamente
+    document.body.appendChild(exportContainer);
+
+    // Configurações de exportação
+    const scale = appState.exportSettings.highQuality ? 2 : 1;
+    
+    // Exportar
+    const canvas = await html2canvas(exportContainer, { 
+      scale: scale,
+      backgroundColor: '#ffffff',
+      useCORS: true
+    });
+
+    const link = document.createElement('a');
+    link.download = `calendario_campanhas_2026_${new Date().toISOString().split('T')[0]}.png`;
+    link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Limpar
+    document.body.removeChild(exportContainer);
+
+    // Registrar exportação
+    adminData.statistics.totalExports++;
+    adminData.activityLogs.unshift({
+      description: `${appState.currentUser} exportou o calendário em layout horizontal`,
+      timestamp: new Date().toLocaleString('pt-BR'),
+      type: 'export'
+    });
+    
+    alert('✅ Calendário exportado com sucesso!');
+
+  } catch (error) {
+    console.error('Erro na exportação:', error);
+    alert('❌ Erro ao exportar calendário.');
+  } finally {
+    const exportBtn = document.getElementById('confirmExport');
+    exportBtn.innerHTML = 'Exportar Calendário';
+    exportBtn.disabled = false;
+    document.getElementById('exportPanel').classList.add('hidden');
+  }
+}
+
+// =============================================================================
+// FUNÇÕES DE ADMINISTRAÇÃO
+// =============================================================================
+
+function updateAdminDashboard() {
+  document.getElementById('totalUsers').textContent = adminData.statistics.uniqueUsers.size;
+  document.getElementById('totalLogins').textContent = adminData.statistics.totalLogins;
+  document.getElementById('totalEdits').textContent = adminData.statistics.totalEdits;
+  document.getElementById('totalExports').textContent = adminData.statistics.totalExports;
+
+  const recentUsersContainer = document.getElementById('recentUsers');
+  recentUsersContainer.innerHTML = '';
+  
+  const recentUsers = adminData.userLogs.slice(0, 10);
+  recentUsers.forEach(log => {
+    const userElement = document.createElement('div');
+    userElement.className = `user-log ${log.type === 'login' ? 'recent' : ''}`;
+    userElement.innerHTML = `
+      <div class="font-semibold">${log.user}</div>
+      <div class="text-xs text-gray-400">${log.timestamp}</div>
+    `;
+    recentUsersContainer.appendChild(userElement);
+  });
+
+  const activitiesContainer = document.getElementById('recentActivities');
+  activitiesContainer.innerHTML = '';
+  
+  const recentActivities = adminData.activityLogs.slice(0, 10);
+  recentActivities.forEach(activity => {
+    const activityElement = document.createElement('div');
+    activityElement.className = 'activity-item';
+    activityElement.innerHTML = `
+      <div class="text-sm">${activity.description}</div>
+      <div class="text-xs text-gray-400">${activity.timestamp}</div>
+    `;
+    activitiesContainer.appendChild(activityElement);
+  });
+
+  document.getElementById('importantDataCount').textContent = importantData.length;
+  document.getElementById('lastBackup').textContent = new Date().toLocaleString('pt-BR');
+}
+
+function backupData() {
+  const backup = {
+    monthsData: monthsData,
+    importantData: importantData,
+    adminData: adminData,
+    timestamp: new Date().toISOString()
+  };
+  
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `backup_calendario_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  adminData.activityLogs.unshift({
+    description: 'Backup dos dados realizado',
+    timestamp: new Date().toLocaleString('pt-BR'),
+    type: 'system'
+  });
+  
+  alert('Backup realizado com sucesso!');
+}
+
+function clearOldLogs() {
+  if (confirm('Tem certeza que deseja limpar todos os logs?')) {
+    adminData.userLogs = [];
+    adminData.activityLogs = [];
+    saveData();
+    updateAdminDashboard();
+    alert('Logs limpos com sucesso!');
+  }
+}
+
+function resetAllData() {
+  if (confirm('⚠️ ATENÇÃO: Isso irá resetar TODOS os dados do sistema. Tem certeza?')) {
+    if (confirm('⚠️ CONFIRMAÇÃO FINAL: Esta ação não pode ser desfeita!')) {
+      localStorage.clear();
+      location.reload();
+    }
   }
 }
 
@@ -1610,10 +1473,10 @@ function handleLogin() {
   
   if (userName.toLowerCase().includes('bianca')) {
     if (userPassword !== appState.adminPassword) {
-      alert('Senha incorreta!');
+      alert('Senha incorreta! A senha é "petter feioso"');
       return;
     }
-    appState.currentUser = 'Bianca Rufino Santos';
+    appState.currentUser = 'Bianca';
     document.getElementById('adminPanel').classList.remove('hidden');
     document.getElementById('adminNameLabel').textContent = appState.currentUser;
     document.body.style.paddingTop = '120px';
@@ -1621,8 +1484,19 @@ function handleLogin() {
     appState.currentUser = userName;
   }
   
-  // Registrar login no admin
-  AdminManager.logUserLogin(appState.currentUser);
+  adminData.userLogs.unshift({
+    user: appState.currentUser,
+    timestamp: new Date().toLocaleString('pt-BR'),
+    type: 'login'
+  });
+  adminData.statistics.totalLogins++;
+  adminData.statistics.uniqueUsers.add(appState.currentUser);
+  
+  adminData.activityLogs.unshift({
+    description: `${appState.currentUser} fez login no sistema`,
+    timestamp: new Date().toLocaleString('pt-BR'),
+    type: 'user'
+  });
   
   afterLogin();
 }
@@ -1633,17 +1507,42 @@ function afterLogin() {
   document.getElementById('calendarHeader').classList.remove('hidden');
   document.getElementById('calendarGrid').classList.remove('hidden');
   document.getElementById('controlButtons').classList.remove('hidden');
-  document.getElementById('exportControls').classList.remove('hidden');
   document.getElementById('footerText').classList.remove('hidden');
   
   document.getElementById('welcomeText').textContent = `Bem-vindo(a), ${appState.currentUser}!`;
-  renderCalendar();
   
-  ImportantDataManager.initialize();
+  const autoSaveButton = document.getElementById('autoSaveToggle');
+  if (autoSaveButton) {
+    autoSaveButton.textContent = `Auto-save: ${appState.autoSave ? 'ON' : 'OFF'}`;
+    autoSaveButton.className = appState.autoSave ? 
+      'bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold' :
+      'bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg text-white font-semibold';
+  }
+  
+  renderCalendar();
+}
+
+function toggleAutoSave() {
+  appState.autoSave = !appState.autoSave;
+  const button = document.getElementById('autoSaveToggle');
+  if (button) {
+    button.textContent = `Auto-save: ${appState.autoSave ? 'ON' : 'OFF'}`;
+    button.className = appState.autoSave ? 
+      'bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold' :
+      'bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg text-white font-semibold';
+  }
+  
+  localStorage.setItem('autoSave', JSON.stringify(appState.autoSave));
+  
+  adminData.activityLogs.unshift({
+    description: `${appState.currentUser} ${appState.autoSave ? 'ativou' : 'desativou'} o auto-save`,
+    timestamp: new Date().toLocaleString('pt-BR'),
+    type: 'system'
+  });
 }
 
 // =============================================================================
-// INICIALIZAÇÃO - CORRIGIDA
+// INICIALIZAÇÃO
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1658,17 +1557,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Controles principais
   document.getElementById('editToggle').addEventListener('click', function() {
+    if (!appState.currentUser.toLowerCase().includes('bianca')) {
+      alert('Apenas a Bianca pode editar o calendário.');
+      return;
+    }
+    
     appState.editMode = !appState.editMode;
     this.textContent = appState.editMode ? 'Visualizar' : 'Editar';
     renderCalendar();
+    
+    if (!document.getElementById('infoPanel').classList.contains('hidden')) {
+      renderImportantData();
+    }
   });
 
   document.getElementById('saveData').addEventListener('click', function() {
-    if (StorageManager.saveAllData()) {
-      alert('✅ Todos os dados foram salvos com sucesso!');
-      AdminManager.logActivity(`${appState.currentUser} salvou todos os dados`, 'system');
+    if (saveData()) {
+      alert('✅ Dados salvos com sucesso!');
     } else {
-      alert('❌ Erro ao salvar dados. Verifique o console.');
+      alert('❌ Erro ao salvar dados!');
     }
   });
 
@@ -1677,49 +1584,43 @@ document.addEventListener('DOMContentLoaded', function() {
     infoPanel.classList.toggle('hidden');
     
     if (!infoPanel.classList.contains('hidden')) {
-      ImportantDataManager.renderImportantData();
+      renderImportantData();
     }
   });
 
-  document.getElementById('closeInfoPanel')?.addEventListener('click', function() {
+  document.getElementById('closeInfoPanel').addEventListener('click', function() {
     document.getElementById('infoPanel').classList.add('hidden');
   });
 
-  document.getElementById('addImportantData').addEventListener('click', function() {
-    document.getElementById('addDataModal').classList.remove('hidden');
-  });
+  document.getElementById('addImportantData').addEventListener('click', addImportantData);
 
-  document.getElementById('cancelAddData').addEventListener('click', function() {
-    document.getElementById('addDataModal').classList.add('hidden');
-    document.getElementById('dataTitle').value = '';
-    document.getElementById('dataContent').value = '';
-  });
-
-  document.getElementById('saveImportantData').addEventListener('click', function() {
-    const title = document.getElementById('dataTitle').value;
-    const content = document.getElementById('dataContent').value;
-    
-    if (title && content) {
-      ImportantDataManager.addNewData(title, content);
-      
-      document.getElementById('addDataModal').classList.add('hidden');
-      document.getElementById('dataTitle').value = '';
-      document.getElementById('dataContent').value = '';
-      
-      document.getElementById('infoPanel').classList.remove('hidden');
-    } else {
-      alert('⚠️ Preencha todos os campos!');
-    }
-  });
+  // Auto-save
+  document.getElementById('autoSaveToggle').addEventListener('click', toggleAutoSave);
 
   // Exportação
-  document.getElementById('exportImage').addEventListener('click', function() {
-    ExportManager.exportCalendar();
+  document.getElementById('exportImage').addEventListener('click', showExportPanel);
+
+  // Painel de Exportação
+  document.getElementById('closeExportPanel').addEventListener('click', function() {
+    document.getElementById('exportPanel').classList.add('hidden');
+  });
+
+  document.getElementById('updatePreview').addEventListener('click', updateExportSettings);
+  document.getElementById('confirmExport').addEventListener('click', exportCalendar);
+
+  // Configurações de exportação
+  document.querySelectorAll('input[name="colorScheme"], input[name="fontSize"], input[name="layout"], #includeTitle, #includeFooter, #highQuality, #landscape').forEach(input => {
+    input.addEventListener('change', updateExportSettings);
   });
 
   // Admin panel
   document.getElementById('toggleDevMode').addEventListener('click', function() {
-    document.getElementById('designControls').classList.toggle('hidden');
+    const designControls = document.getElementById('designControls');
+    designControls.classList.toggle('hidden');
+    
+    if (!designControls.classList.contains('hidden')) {
+      renderCalendar();
+    }
   });
 
   document.getElementById('closeAdminBtn').addEventListener('click', function() {
@@ -1732,13 +1633,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (newPassword) {
       appState.adminPassword = newPassword;
       alert('Senha alterada!');
-      AdminManager.logActivity('Senha de administrador alterada', 'system');
     }
   });
 
-  // Painel Admin
+  // Painel Admin Dashboard
   document.getElementById('showAdminDashboard').addEventListener('click', function() {
-    AdminManager.updateAdminDashboard();
+    updateAdminDashboard();
     document.getElementById('adminDashboard').classList.remove('hidden');
   });
 
@@ -1747,23 +1647,26 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Ações do painel admin
-  document.getElementById('backupData').addEventListener('click', function() {
-    AdminManager.backupData();
+  document.getElementById('backupData').addEventListener('click', backupData);
+  document.getElementById('clearOldLogs').addEventListener('click', clearOldLogs);
+  document.getElementById('resetAllData').addEventListener('click', resetAllData);
+
+  // Color pickers
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('color-picker') && appState.selectedMonth) {
+      const color = e.target.dataset.color;
+      monthsData[appState.selectedMonth].color = color;
+      renderCalendar();
+      autoSave();
+    }
   });
 
-  document.getElementById('clearOldLogs').addEventListener('click', function() {
-    AdminManager.clearOldLogs();
+  // Auto-save antes de fechar
+  window.addEventListener('beforeunload', function() {
+    if (appState.autoSave) {
+      saveData();
+    }
   });
-
-  document.getElementById('resetAllData').addEventListener('click', function() {
-    AdminManager.resetAllData();
-  });
-
-  // Inicializar configurações de exportação
-  ExportConfigManager.initializeControls();
-
-  // Mostrar painel de login
-  document.getElementById('loginPanel').classList.remove('hidden');
 });
 </script>
 </body>

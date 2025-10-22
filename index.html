@@ -44,9 +44,6 @@
     padding: 12px; 
     box-shadow: 0 6px 18px rgba(0,0,0,.5); 
   }
-  .selected-month { 
-    outline: 3px dashed rgba(255,255,255,.35); 
-  }
   
   .edit-input {
     background: #4b5563 !important;
@@ -203,32 +200,6 @@
     display: none !important;
   }
 
-  .export-month-card {
-    border-left: 6px solid;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 12px;
-    page-break-inside: avoid;
-    min-height: 200px;
-  }
-
-  .export-small { font-size: 10px; }
-  .export-medium { font-size: 12px; }
-  .export-large { font-size: 14px; }
-  .export-xlarge { font-size: 16px; }
-
-  .export-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 12px;
-    page-break-after: always;
-  }
-
-  .export-quarter {
-    page-break-inside: avoid;
-  }
-
   .calendar-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -247,295 +218,324 @@
       grid-template-columns: 1fr;
     }
   }
+  
+  /* ESTILOS PARA EXPORTAÇÃO - MESMO LAYOUT DA TELA INICIAL */
+  .export-container {
+    background: white !important;
+    color: black !important;
+    padding: 20px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1400px;
+  }
+  
+  /* Layout IDÊNTICO ao da tela inicial - 4 colunas */
+  .export-month-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .export-month-card {
+    border-left: 6px solid;
+    padding: 15px;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-height: 280px;
+  }
+  
+  .export-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: black !important;
+  }
+  
+  .export-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #6b7280 !important;
+  }
+
+  .delete-btn {
+    background: #ef4444 !important;
+    color: white !important;
+    border: none !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    margin-top: 8px !important;
+  }
+
+  .delete-btn:hover {
+    background: #dc2626 !important;
+  }
+
+  /* Estilos para o editor de dados importantes */
+  .editor-toolbar {
+    background: #374151;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .editor-toolbar button {
+    background: #4b5563;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .editor-toolbar button:hover {
+    background: #6b7280;
+  }
+
+  .editor-content {
+    background: #4b5563;
+    border: 1px solid #6b7280;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    min-height: 120px;
+    margin-bottom: 8px;
+  }
+
+  .editor-content:focus {
+    outline: none;
+    border-color: #3b82f6;
+  }
 </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
 
 <div class="container mx-auto px-4 py-8">
-  <!-- LOGIN -->
-  <div id="loginPanel" class="text-center">
-    <h1 class="text-3xl font-bold mb-4">Digite seu nome para acessar o calendário:</h1>
-    <input id="userName" type="text" placeholder="Seu nome" class="text-black p-2 rounded-lg mb-2 w-64" />
-    <br>
-    <input id="userPassword" type="password" placeholder="Senha (só para Bianca)" class="text-black p-2 rounded-lg mb-4 w-64 hidden" />
-    <br>
-    <button id="enterBtn" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Entrar</button>
-  </div>
-
-  <!-- WELCOME -->
-  <div id="welcomePanel" class="text-center mb-6 hidden">
-    <h2 id="welcomeText" class="text-2xl font-semibold"></h2>
-  </div>
-
-  <!-- CONTROLS -->
-  <div id="controlButtons" class="flex flex-wrap justify-center gap-4 mb-8 hidden">
-    <button id="editToggle" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Modo Edição</button>
-    <button id="saveData" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">Salvar</button>
-    <button id="infoToggle" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg text-white font-semibold">Dados Importantes</button>
-    <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg text-white font-semibold">Exportar Calendário</button>
-    <button id="autoSaveToggle" class="bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold">Auto-save: ON</button>
-  </div>
-
-  <!-- ADMIN PANEL -->
-  <div id="adminPanel" class="hidden">
-    <div class="flex flex-wrap items-center gap-3">
-      <button id="toggleDevMode" class="bg-blue-600 px-4 py-2 rounded-lg text-white font-semibold">Modo Desenvolvedor</button>
-      <button id="viewAsUserBtn" class="bg-gray-600 px-4 py-2 rounded-lg text-white font-semibold">Ver como Usuário</button>
-      <button id="changePasswordBtn" class="bg-yellow-600 px-4 py-2 rounded-lg text-white font-semibold">Trocar Senha</button>
-      <button id="showAdminDashboard" class="bg-indigo-600 px-4 py-2 rounded-lg text-white font-semibold">Painel Admin</button>
-      <button id="closeAdminBtn" class="bg-red-600 px-4 py-2 rounded-lg text-white font-semibold">Fechar</button>
-      <div class="ml-auto text-sm text-gray-300">Admin: <span id="adminNameLabel">—</span></div>
+    <!-- LOGIN -->
+    <div id="loginPanel" class="text-center">
+        <h1 class="text-3xl font-bold mb-4">Digite seu nome para acessar o calendário:</h1>
+        <input id="userName" type="text" placeholder="Seu nome" class="text-black p-2 rounded-lg mb-2 w-64" />
+        <br>
+        <input id="userPassword" type="password" placeholder="Senha (só para Bianca)" class="text-black p-2 rounded-lg mb-4 w-64 hidden" />
+        <br>
+        <button id="enterBtn" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Entrar</button>
     </div>
-    <div id="designControls" class="hidden mt-4">
-      <p class="text-gray-200 mb-2">Clique em um mês para selecionar e depois escolha uma cor:</p>
-      <div class="grid grid-cols-6 gap-3 mb-3">
-        <div class="color-picker" style="background:#8b5cf6" data-color="#8b5cf6"></div>
-        <div class="color-picker" style="background:#f97316" data-color="#f97316"></div>
-        <div class="color-picker" style="background:#3b82f6" data-color="#3b82f6"></div>
-        <div class="color-picker" style="background:#22c55e" data-color="#22c55e"></div>
-        <div class="color-picker" style="background:#eab308" data-color="#eab308"></div>
-        <div class="color-picker" style="background:#ec4899" data-color="#ec4899"></div>
-      </div>
+
+    <!-- WELCOME -->
+    <div id="welcomePanel" class="text-center mb-6 hidden">
+        <h2 id="welcomeText" class="text-2xl font-semibold"></h2>
     </div>
-  </div>
 
-  <!-- PAINEL DE EXPORTAÇÃO -->
-  <div id="exportPanel" class="export-panel hidden">
-    <div class="bg-gray-800 rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-white">Personalizar Exportação</h3>
-        <button id="closeExportPanel" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold">
-          Fechar
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-        <!-- Configurações de Cor -->
-        <div class="bg-gray-700 rounded-lg p-4">
-          <h4 class="text-lg font-semibold mb-3 text-blue-300">🎨 Esquema de Cores</h4>
-          <div class="space-y-3">
-            <label class="flex items-center">
-              <input type="radio" name="colorScheme" value="color" checked class="mr-2">
-              <span>Cores Originais</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="colorScheme" value="bw" class="mr-2">
-              <span>Preto e Branco</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="colorScheme" value="grayscale" class="mr-2">
-              <span>Escala de Cinza</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Tamanho da Fonte -->
-        <div class="bg-gray-700 rounded-lg p-4">
-          <h4 class="text-lg font-semibold mb-3 text-green-300">🔠 Tamanho da Fonte</h4>
-          <div class="space-y-3">
-            <label class="flex items-center">
-              <input type="radio" name="fontSize" value="small" class="mr-2">
-              <span>Pequeno</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="fontSize" value="medium" checked class="mr-2">
-              <span>Médio</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="fontSize" value="large" class="mr-2">
-              <span>Grande</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="fontSize" value="xlarge" class="mr-2">
-              <span>Extra Grande</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Layout -->
-        <div class="bg-gray-700 rounded-lg p-4">
-          <h4 class="text-lg font-semibold mb-3 text-purple-300">📐 Layout</h4>
-          <div class="space-y-3">
-            <label class="flex items-center">
-              <input type="radio" name="layout" value="horizontal" checked class="mr-2">
-              <span>Horizontal (4 por linha)</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="layout" value="vertical" class="mr-2">
-              <span>Vertical</span>
-            </label>
-            <label class="flex items-center">
-              <input type="radio" name="layout" value="quarters" class="mr-2">
-              <span>Por Trimestres</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Opções Adicionais -->
-        <div class="bg-gray-700 rounded-lg p-4">
-          <h4 class="text-lg font-semibold mb-3 text-yellow-300">⚙️ Opções</h4>
-          <div class="space-y-3">
-            <label class="flex items-center">
-              <input type="checkbox" id="includeTitle" checked class="mr-2">
-              <span>Incluir Título</span>
-            </label>
-            <label class="flex items-center">
-              <input type="checkbox" id="includeFooter" checked class="mr-2">
-              <span>Incluir Rodapé</span>
-            </label>
-            <label class="flex items-center">
-              <input type="checkbox" id="highQuality" checked class="mr-2">
-              <span>Alta Qualidade (2x)</span>
-            </label>
-            <label class="flex items-center">
-              <input type="checkbox" id="landscape" checked class="mr-2">
-              <span>Modo Paisagem</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Preview -->
-      <div class="bg-gray-700 rounded-lg p-4 mb-6">
-        <h4 class="text-lg font-semibold mb-3 text-yellow-300">👁️ Preview (Layout Horizontal)</h4>
-        <div id="exportPreview" class="export-preview">
-          <!-- Preview será gerado aqui -->
-        </div>
-      </div>
-
-      <!-- Ações -->
-      <div class="flex justify-end gap-4">
-        <button id="updatePreview" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">
-          Atualizar Preview
-        </button>
-        <button id="confirmExport" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">
-          Exportar Calendário
-        </button>
-      </div>
+    <!-- CONTROLS -->
+    <div id="controlButtons" class="flex flex-wrap justify-center gap-4 mb-8 hidden">
+        <button id="editToggle" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">Modo Edição</button>
+        <button id="saveData" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">Salvar</button>
+        <button id="infoToggle" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg text-white font-semibold">Dados Importantes</button>
+        <button id="exportImage" class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-lg text-white font-semibold">Exportar Calendário</button>
+        <button id="autoSaveToggle" class="bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold">Auto-save: ON</button>
     </div>
-  </div>
 
-  <!-- ADMIN DASHBOARD -->
-  <div id="adminDashboard" class="admin-dashboard hidden">
-    <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-white">Painel de Administração</h3>
-        <button id="closeAdminDashboard" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold">
-          Fechar
-        </button>
-      </div>
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel" class="hidden">
+        <div class="flex flex-wrap items-center gap-3">
+            <button id="showAdminDashboard" class="bg-indigo-600 px-4 py-2 rounded-lg text-white font-semibold">Painel Admin</button>
+            <button id="changePasswordBtn" class="bg-yellow-600 px-4 py-2 rounded-lg text-white font-semibold">Trocar Senha</button>
+            <button id="closeAdminBtn" class="bg-red-600 px-4 py-2 rounded-lg text-white font-semibold">Fechar</button>
+            <div class="ml-auto text-sm text-gray-300">Admin: <span id="adminNameLabel">—</span></div>
+        </div>
+    </div>
 
-      <!-- Estatísticas -->
-      <div class="admin-stats-grid">
-        <div class="stat-card">
-          <div class="stat-number" id="totalUsers">0</div>
-          <div class="stat-label">Usuários Únicos</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalLogins">0</div>
-          <div class="stat-label">Total de Logins</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalEdits">0</div>
-          <div class="stat-label">Edições Realizadas</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalExports">0</div>
-          <div class="stat-label">Exportações</div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Usuários Recentes -->
-        <div class="bg-gray-700 rounded-lg p-4">
-          <h4 class="text-lg font-semibold mb-3 text-blue-300">📊 Usuários Recentes</h4>
-          <div id="recentUsers" class="space-y-2 max-h-60 overflow-y-auto">
-            <!-- Lista de usuários será preenchida aqui -->
-          </div>
-        </div>
-
-        <!-- Atividades Recentes -->
-        <div class="bg-gray-700 rounded-lg p-4">
-          <h4 class="text-lg font-semibold mb-3 text-green-300">🔄 Atividades Recentes</h4>
-          <div id="recentActivities" class="space-y-2 max-h-60 overflow-y-auto">
-            <!-- Lista de atividades será preenchida aqui -->
-          </div>
-        </div>
-
-        <!-- Dados do Sistema -->
-        <div class="bg-gray-700 rounded-lg p-4">
-          <h4 class="text-lg font-semibold mb-3 text-purple-300">⚙️ Dados do Sistema</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span>Meses Configurados:</span>
-              <span class="font-semibold" id="monthsConfigured">12/12</span>
+    <!-- PAINEL DE EXPORTAÇÃO -->
+    <div id="exportPanel" class="export-panel hidden">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">Exportar Calendário</h3>
+                <button id="closeExportPanel" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold">
+                    Fechar
+                </button>
             </div>
-            <div class="flex justify-between">
-              <span>Dados Importantes:</span>
-              <span class="font-semibold" id="importantDataCount">4</span>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Configurações de Cor -->
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold mb-3 text-blue-300">🎨 Esquema de Cores</h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="radio" name="colorScheme" value="color" checked class="mr-2">
+                            <span>Cores Originais</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="colorScheme" value="bw" class="mr-2">
+                            <span>Preto e Branco</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Tamanho da Fonte -->
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold mb-3 text-green-300">🔠 Tamanho da Fonte</h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="radio" name="fontSize" value="small" class="mr-2">
+                            <span>Pequeno</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="fontSize" value="medium" checked class="mr-2">
+                            <span>Médio</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="fontSize" value="large" class="mr-2">
+                            <span>Grande</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Opções Adicionais -->
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold mb-3 text-yellow-300">⚙️ Opções</h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="includeTitle" checked class="mr-2">
+                            <span>Incluir Título</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="includeFooter" checked class="mr-2">
+                            <span>Incluir Rodapé</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" id="highQuality" checked class="mr-2">
+                            <span>Alta Qualidade</span>
+                        </label>
+                    </div>
+                </div>
             </div>
-            <div class="flex justify-between">
-              <span>Último Backup:</span>
-              <span class="font-semibold" id="lastBackup">—</span>
+
+            <!-- Preview -->
+            <div class="bg-gray-700 rounded-lg p-4 mb-6">
+                <h4 class="text-lg font-semibold mb-3 text-yellow-300">👁️ Preview</h4>
+                <div id="exportPreview" class="export-preview">
+                    <!-- Preview será gerado aqui -->
+                </div>
             </div>
-            <div class="flex justify-between">
-              <span>Versão do Sistema:</span>
-              <span class="font-semibold">2.0</span>
+
+            <!-- Ações -->
+            <div class="flex justify-end gap-4">
+                <button id="updatePreview" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-semibold">
+                    Atualizar Preview
+                </button>
+                <button id="confirmExport" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">
+                    Exportar Calendário
+                </button>
             </div>
-          </div>
         </div>
+    </div>
 
-        <!-- Ações Rápidas -->
-        <div class="bg-gray-700 rounded-lg p-4">
-          <h4 class="text-lg font-semibold mb-3 text-yellow-300">🚀 Ações Rápidas</h4>
-          <div class="space-y-2">
-            <button id="backupData" class="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white text-sm">
-              Fazer Backup dos Dados
-            </button>
-            <button id="clearOldLogs" class="w-full bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white text-sm">
-              Limpar Logs Antigos
-            </button>
-            <button id="resetAllData" class="w-full bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white text-sm">
-              Resetar Todos os Dados
-            </button>
-          </div>
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminDashboard" class="admin-dashboard hidden">
+        <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">Painel de Administração</h3>
+                <button id="closeAdminDashboard" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold">
+                    Fechar
+                </button>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="admin-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">Usuários Únicos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalLogins">0</div>
+                    <div class="stat-label">Total de Logins</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalEdits">0</div>
+                    <div class="stat-label">Edições Realizadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalExports">0</div>
+                    <div class="stat-label">Exportações</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Usuários Recentes -->
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold mb-3 text-blue-300">📊 Usuários Recentes</h4>
+                    <div id="recentUsers" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- Lista de usuários será preenchida aqui -->
+                    </div>
+                </div>
+
+                <!-- Atividades Recentes -->
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold mb-3 text-green-300">🔄 Atividades Recentes</h4>
+                    <div id="recentActivities" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- Lista de atividades será preenchida aqui -->
+                    </div>
+                </div>
+
+                <!-- Ações Rápidas -->
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold mb-3 text-yellow-300">🚀 Ações Rápidas</h4>
+                    <div class="space-y-2">
+                        <button id="backupData" class="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white text-sm">
+                            Fazer Backup dos Dados
+                        </button>
+                        <button id="clearOldLogs" class="w-full bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white text-sm">
+                            Limpar Logs Antigos
+                        </button>
+                        <button id="resetAllData" class="w-full bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white text-sm">
+                            Resetar Todos os Dados
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <!-- HEADER -->
-  <header id="calendarHeader" class="text-center mb-6 hidden">
-    <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Calendário de Campanhas Educacionais 2026</h1>
-    <p class="text-gray-400">Layout Otimizado para Impressão Horizontal</p>
-  </header>
+    <!-- HEADER -->
+    <header id="calendarHeader" class="text-center mb-6 hidden">
+        <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">CAMPANHAS TEMÁTICAS NO AMBIENTE ESCOLAR – 2026</h1>
+        <p class="text-gray-400">Sistema Completo de Gestão</p>
+    </header>
 
-  <!-- INFO PANEL -->
-  <section id="infoPanel" class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-6 mb-8 border-l-4 border-purple-500 hidden">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-purple-200">Dados Importantes</h2>
-      <div class="flex gap-2">
-        <button id="addImportantData" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-semibold text-sm">
-          Adicionar
-        </button>
-        <button id="closeInfoPanel" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white font-semibold text-sm">
-          Fechar
-        </button>
-      </div>
-    </div>
-    <div id="importantDataContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- Dados importantes serão carregados aqui -->
-    </div>
-  </section>
+    <!-- INFO PANEL -->
+    <section id="infoPanel" class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-lg p-6 mb-8 border-l-4 border-purple-500 hidden">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-purple-200">Dados Importantes</h2>
+            <div class="flex gap-2">
+                <button id="addImportantData" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-semibold text-sm">
+                    Adicionar
+                </button>
+                <button id="closeInfoPanel" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white font-semibold text-sm">
+                    Fechar
+                </button>
+            </div>
+        </div>
+        <div id="importantDataContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Dados importantes serão carregados aqui -->
+        </div>
+    </section>
 
-  <!-- CALENDAR GRID - LAYOUT HORIZONTAL -->
-  <section id="calendarGrid" class="hidden">
-    <!-- As linhas serão geradas dinamicamente pelo JavaScript -->
-  </section>
+    <!-- CALENDAR GRID -->
+    <section id="calendarGrid" class="hidden">
+        <!-- As linhas serão geradas dinamicamente pelo JavaScript -->
+    </section>
 
-  <footer class="text-center mt-10 text-gray-400 text-sm hidden" id="footerText">
-    Calendário CAED 2026 - Desenvolvido para gestão educacional - Layout Horizontal
-  </footer>
+    <footer class="text-center mt-10 text-gray-400 text-sm hidden" id="footerText">
+        Calendário CAED 2026 - Desenvolvido para gestão educacional
+    </footer>
 </div>
 
 <script>
@@ -543,186 +543,185 @@
 // CONFIGURAÇÕES E ESTADO GLOBAL
 // =============================================================================
 
-// Dados do calendário
+// Dados do calendário atualizados com os novos textos
 let monthsData = {
-  'Janeiro': { 
-    color:'#3b82f6', 
-    theme:'Retorno às aulas (Início das aulas)', 
-    description:'Semana inicial de boas-vindas.', 
-    objective:'Realizar dinâmicas e atividades de acolhimento para o novo ciclo escolar.',
-    audience:'alunos, professores e corpo de funcionários',
-    actions:'Dinâmicas e atividades de acolhimento',
-    observations:'',
-    date:'Início das aulas'
-  },
-  'Fevereiro': { 
-    color:'#8b5cf6', 
-    theme:'Volta às Aulas - Acolhimento e integração', 
-    description:'Desenvolver atividades que promovam o acolhimento e integração dos alunos novos, de todos os segmentos da escola.', 
-    objective:'Desenvolver atividades que promovam o acolhimento e integração dos alunos novos, de todos os segmentos da escola, com dinâmicas e brincadeiras para socialização e integração.',
-    audience:'Alunos novos de todos os segmentos',
-    actions:'Dinâmicas e brincadeiras para socialização e integração',
-    observations:'',
-    date:''
-  },
-  'Março': { 
-    color:'#f97316', 
-    theme:'Volta às Aulas - Divulgação das boas-vindas', 
-    description:'Divulgação das boas-vindas, com o apoio da Equipe de Pedagogia e Psicologia Escolar.', 
-    objective:'Divulgação das boas-vindas, com o apoio da Equipe de Pedagogia e Psicologia Escolar.',
-    audience:'Comunidade escolar',
-    actions:'Divulgação institucional',
-    observations:'',
-    date:''
-  },
-  'Abril': { 
-    color:'#ef4444', 
-    theme:'Prevenção ao Bullying', 
-    description:'Respeito e Convivência Saudável. Sensibilizar a comunidade escolar sobre o bullying e cyberbullying.', 
-    objective:'Sensibilizar a comunidade escolar sobre o bullying e cyberbullying, promovendo ações de conscientização e o respeito às diferenças, com palestras, rodas de conversa e dramatizações sobre o tema.',
-    audience:'alunos de todos os segmentos',
-    actions:'Dinâmicas, vídeos e oficinas práticas sobre o tema; confecção de cartazes, murais e folders educativos; socialização de trabalhos e dramatizações em sala.',
-    observations:'Envolvimento de todos os profissionais da escola e incentivo à denúncia de situações de violência e intimidação no ambiente escolar.',
-    date:'Dia Nacional de Combate ao Bullying (07 de abril)'
-  },
-  'Maio': { 
-    color:'#eab308', 
-    theme:'Combate ao Assédio e à Discriminação / Maio Laranja', 
-    description:'Alertar alunos sobre práticas de assédio e violência sexual, promovendo a conscientização e o respeito entre todos.', 
-    objective:'Alertar alunos sobre práticas de assédio e violência sexual, promovendo a conscientização e o respeito entre todos. Promover ações educativas e de prevenção ao abuso e à exploração sexual infantil, com ênfase na importância da denúncia e do cuidado com as vítimas.',
-    audience:'alunos, professores e servidores',
-    actions:'Palestras, exibição de vídeos, debates, produções textuais, divulgação de cartazes e folders educativos, rodas de conversa, vídeos educativos e confecção de materiais de conscientização.',
-    observations:'Campanha Maio Laranja (18/05): "Faça Bonito - Proteja nossas crianças e adolescentes".',
-    date:'Semana do Combate ao Assédio e à Discriminação (Primeira Semana de Maio) / Dia Nacional 18/05'
-  },
-  'Junho': { 
-    color:'#22c55e', 
-    theme:'Meio Ambiente', 
-    description:'Consciência ambiental, sustentabilidade e coleta seletiva.', 
-    objective:'Sensibilizar a comunidade escolar para a preservação ambiental, incentivando o consumo consciente, o uso racional da água, o descarte correto do lixo e o reaproveitamento de materiais recicláveis.',
-    audience:'alunos, professores e funcionários',
-    actions:'Confecção de cartazes, gincanas ecológicas, atividades de coleta seletiva e plantio de árvores.',
-    observations:'',
-    date:'Semana Nacional do Meio Ambiente (primeira semana de junho)'
-  },
-  'Julho': { 
-    color:'#06b6d4', 
-    theme:'Férias', 
-    description:'Lazer e descanso.', 
-    objective:'Incentivar o descanso, relaxamento e o cuidado pessoal.',
-    audience:'Comunidade escolar',
-    actions:'',
-    observations:'',
-    date:''
-  },
-  'Agosto': { 
-    color:'#a855f7', 
-    theme:'Volta às Aulas e Valorização da Vida (Campanha Setembro Amarelo)', 
-    description:'Valorização da vida e da saúde mental.', 
-    objective:'Promover a reflexão sobre o cuidado com a saúde mental, a prevenção ao suicídio e o acolhimento emocional no ambiente escolar.',
-    audience:'alunos, professores e servidores',
-    actions:'Palestras, rodas de conversa, oficinas, vídeos e confecção de cartazes.',
-    observations:'Realizar parcerias com psicólogos e profissionais da saúde mental.',
-    date:''
-  },
-  'Setembro': { 
-    color:'#eab308', 
-    theme:'Campanha Setembro Amarelo', 
-    description:'"Se precisar, peça ajuda!"', 
-    objective:'Valorizar a vida, conscientizar sobre a importância da saúde mental e promover o diálogo sobre o tema.',
-    audience:'Comunidade escolar',
-    actions:'Atividades de conscientização sobre saúde mental e prevenção ao suicídio.',
-    observations:'',
-    date:'Campanha Setembro Amarelo'
-  },
-  'Outubro': { 
-    color:'#ec4899', 
-    theme:'Campanha de Combate ao Racismo', 
-    description:'Diversidade é força!', 
-    objective:'Promover o respeito à diversidade étnico-racial, valorizando a cultura afro-brasileira e combatendo o racismo no ambiente escolar.',
-    audience:'alunos, professores e corpo técnico-administrativo',
-    actions:'Palestras, vídeos, produções culturais e exposição de trabalhos dos alunos.',
-    observations:'',
-    date:'Dia Nacional da Consciência Negra (20 de novembro)'
-  },
-  'Novembro': { 
-    color:'#3b82f6', 
-    theme:'Combate à Violência e Promoção da Cultura da Paz / Saúde do Homem e Saúde da Mulher', 
-    description:'Paz e empatia. Prevenção é a melhor forma de cuidar!', 
-    objective:'Promover a convivência harmoniosa, valorizando o respeito e o diálogo entre os alunos e servidores. Conscientizar sobre a importância da prevenção e diagnóstico precoce de doenças.',
-    audience:'alunos e corpo técnico-administrativo',
-    actions:'Rodas de conversa, vídeos e oficinas sobre comunicação não violenta. Palestras, distribuição de folders, vídeos educativos e atividades informativas sobre saúde.',
-    observations:'Envolver todos os segmentos da escola.',
-    date:''
-  },
-  'Dezembro': { 
-    color:'#f97316', 
-    theme:'Encerramento do Ano Letivo', 
-    description:'Confraternização e balanço anual.', 
-    objective:'Promover momentos de integração e confraternização entre alunos e servidores, celebrando as conquistas do ano letivo e reforçando os valores de união e respeito.',
-    audience:'toda a comunidade escolar',
-    actions:'Apresentações culturais, vídeos e atividades de encerramento.',
-    observations:'Apoiar divulgação com espaço institucional na mídia local (TV, site, exposições e afins, SUAM, rádio entre outros). Convocar alunos de pedagogia para participações mediante certificação de horas de extensão.',
-    date:''
-  }
+    'Janeiro': { 
+        color:'#FFFFFF', 
+        theme:'Janeiro Branco - Saúde Mental e Autocuidado', 
+        description:'Início do ano letivo com foco em saúde mental.', 
+        objective:'Promover a saúde mental e o autocuidado no início do ano letivo.',
+        audience:'Comunidade escolar',
+        actions:'Mural interativo sobre "meus compromissos de autocuidado para o ano", roda de conversa sobre saúde mental na escola e no trabalho.',
+        observations:'',
+        date:'Janeiro Branco (início do ano letivo)'
+    },
+    'Fevereiro': { 
+        color:'#8b5cf6', 
+        theme:'Volta às Aulas - Acolhimento, Integração e Adaptação Escolar', 
+        description:'Período de acolhimento e integração dos estudantes.', 
+        objective:'Desenvolver atividades que promovam o acolhimento e integração dos alunos novos e veteranos.',
+        audience:'Alunos de todos os segmentos',
+        actions:'Dinâmica de boas-vindas, roda de conversa sobre ansiedade e expectativas, oficinas de planejamento e organização dos estudos, guia de acolhimento para ingressantes.',
+        observations:'',
+        date:'Fevereiro e Março'
+    },
+    'Março': { 
+        color:'#f97316', 
+        theme:'Volta às Aulas - Organização e Liderança', 
+        description:'Consolidação do processo de adaptação e organização das turmas.', 
+        objective:'Fortalecer a organização estudantil e a liderança nas turmas.',
+        audience:'Alunos e estagiários de pedagogia',
+        actions:'Escolha dos líderes de turma, com o auxílio dos estagiários de pedagogia.',
+        observations:'',
+        date:'Março'
+    },
+    'Abril': { 
+        color:'#ef4444', 
+        theme:'Prevenção ao Bullying (Dia Nacional 07/04)', 
+        description:'Respeito e Convivência Saudável.', 
+        objective:'Sensibilizar a comunidade escolar sobre o bullying e cyberbullying.',
+        audience:'Alunos de todos os segmentos',
+        actions:'Campanha de conscientização sobre bullying e cyberbullying; palestra "Bullying não é brincadeira: o que é, como identificar, como agir"; panfletagem; produção de cartazes e vídeos feitos pelos estudantes; exibição de um filme com debate sobre o tema; oficina prática sobre empatia; lançamento de um pacto pela Convivência Respeitosa com assinatura simbólica de alunos e servidores.',
+        observations:'Férias Bruna (10 dias)',
+        date:'Dia Nacional de Combate ao Bullying (07 de abril)'
+    },
+    'Maio': { 
+        color:'#eab308', 
+        theme:'Combate ao Assédio e Discriminação / Maio Laranja', 
+        description:'Alertar sobre práticas de assédio, discriminação e violência sexual.', 
+        objective:'Combater o assédio, a discriminação e promover a proteção de crianças e adolescentes.',
+        audience:'Alunos, professores e servidores',
+        actions:'Palestras para os estudantes da graduação ministradas por integrantes do Poder Judiciário; palestra para servidores sobre assédio moral e sexual; oficina interativa sobre "O que é e o que não é assédio?"; palestras/rodas de conversa sobre sinais de alerta; oficinas sobre direitos, autocuidado e segurança digital; campanha visual com cartazes e cards digitais "Faça Bonito – Proteja nossas crianças e adolescentes"; atividade simbólica com mural de flores amarelas de papel.',
+        observations:'Campanha Maio Laranja (18/05)',
+        date:'Semana de Combate ao Assédio (Primeira semana) / Dia Nacional 18/05'
+    },
+    'Junho': { 
+        color:'#22c55e', 
+        theme:'Junho Verde - Meio Ambiente e Sustentabilidade / Combate às Drogas', 
+        description:'Consciência ambiental e prevenção ao uso de drogas.', 
+        objective:'Promover a sustentabilidade e prevenir o uso de álcool e outras drogas.',
+        audience:'Alunos, professores e funcionários',
+        actions:'Oficinas sustentáveis (hortas, artesanato com reciclagem); rodas de conversa sobre contato com áreas verdes e bem-estar; mindfulness na natureza; plantio de mudas; mutirão de limpeza; exposição fotográfica; aula de yoga ou meditação; piquenique; palestras educativas (convidar SEPOAD); dramatizações; rodas de conversa sobre prazer e risco; depoimento de profissionais da saúde.',
+        observations:'Dia Internacional de Combate às Drogas (26/06)',
+        date:'Junho Verde / Dia Internacional 26.06'
+    },
+    'Julho': { 
+        color:'#06b6d4', 
+        theme:'Férias', 
+        description:'Lazer e descanso.', 
+        objective:'Incentivar o descanso, relaxamento e o cuidado pessoal.',
+        audience:'Comunidade escolar',
+        actions:'',
+        observations:'',
+        date:''
+    },
+    'Agosto': { 
+        color:'#a855f7', 
+        theme:'Agosto Lilás - Enfrentamento à Violência contra a Mulher', 
+        description:'Conscientização sobre a violência contra a mulher.', 
+        objective:'Conscientizar sobre a violência doméstica e familiar contra a mulher.',
+        audience:'Alunos, professores e servidores',
+        actions:'Palestras com os psicólogos do TJ, rodas de conversa e oficinas sobre relacionamentos abusivos, mural colaborativo "respeito começa aqui", aula sobre defesa pessoal para mulheres.',
+        observations:'Campanha Agosto Lilás',
+        date:'Agosto Lilás'
+    },
+    'Setembro': { 
+        color:'#eab308', 
+        theme:'Setembro Amarelo - Prevenção ao Suicídio', 
+        description:'Valorização da Vida.', 
+        objective:'Valorizar a vida, conscientizar sobre saúde mental e promover o diálogo.',
+        audience:'Comunidade escolar',
+        actions:'Campanha digital com cards, mural "o que me faz querer viver", oficinas de regulação emocional, intervenção de psicoeducação em sala, produção audiovisual pelos alunos com concurso de melhor vídeo.',
+        observations:'',
+        date:'Campanha Setembro Amarelo'
+    },
+    'Outubro': { 
+        color:'#ec4899', 
+        theme:'Outubro Rosa - Prevenção ao Câncer de Mama e Promoção de Saúde da Mulher', 
+        description:'Saúde integral da mulher.', 
+        objective:'Promover a saúde integral da mulher e a prevenção ao câncer de mama.',
+        audience:'Comunidade escolar',
+        actions:'Palestra sobre prevenção e autocuidado, mural interativo sobre "cuidar de mim é...", panfletagem, cards com frases curtas e educativas, ação simbólica Dia do Rosa.',
+        observations:'',
+        date:'Outubro Rosa'
+    },
+    'Novembro': { 
+        color:'#3b82f6', 
+        theme:'Novembro Azul - Saúde do Homem', 
+        description:'Quebrando Tabus sobre Saúde Masculina.', 
+        objective:'Promover a saúde masculina e quebrar tabus sobre cuidados preventivos.',
+        audience:'Alunos e corpo técnico-administrativo',
+        actions:'Palestra sobre saúde mental dos homens, cuidados preventivos e autocuidado, panfletagem, cards com frases curtas, ação coletiva Dia do Azul, plantão de escuta para homens.',
+        observations:'Férias Bruna (10 dias)',
+        date:'Novembro Azul'
+    },
+    'Dezembro': { 
+        color:'#f97316', 
+        theme:'Encerramento do Ano Letivo - Prevenção e Balanço', 
+        description:'Prevenção ao câncer de pele, gratidão e perspectivas.', 
+        objective:'Promover a prevenção ao câncer de pele e celebrar as conquistas do ano.',
+        audience:'Toda a comunidade escolar',
+        actions:'Palestra com dermatologista; Teste de Fotoipo de Pele (Classificação de Fitzpatrick); cards digitais com mensagens educativas; painel interativo: "Qual é o seu compromisso de autocuidado para o verão?"; mural "minhas conquistas do ano"; dinâmica de encerramento.',
+        observations:'Apoiar divulgação com espaço institucional na mídia local. Convocar alunos de pedagogia para participações mediante certificação de horas de extensão.',
+        date:'Dezembro'
+    }
 };
 
 // Dados importantes
 let importantData = [
-  {
-    id: '1',
-    title: 'Integração Setorial',
-    content: 'A integração com outros setores é essencial durante todo o período anual. A integração das turmas de pedagogia está prevista no RDD - Artigo 26 e deve ser implementada para garantir a conclusão efetiva dos programas educacionais.',
-    color: 'yellow'
-  },
-  {
-    id: '2',
-    title: 'Produção Audiovisual',
-    content: 'Durante todo o ano: Criação de conteúdo audiovisual para conscientização nas telas do IFRO. É fundamental incluir imagens e vídeos criados pelos próprios alunos, promovendo protagonismo estudantil e maior engajamento.',
-    color: 'blue'
-  },
-  {
-    id: '3',
-    title: 'Prevenção a Vícios',
-    content: '26 de Junho: Dia específico para abordar drogas e álcool, tratando vícios em geral. Ações devem incluir teatros e visitas técnicas para conscientização efetiva da comunidade escolar.',
-    color: 'green'
-  },
-  {
-    id: '4',
-    title: 'Observações Gerais',
-    content: 'Todas as campanhas devem ser integradas e complementares, mantendo consistência na abordagem pedagógica e garantindo o cumprimento dos objetivos educacionais estabelecidos no projeto institucional.',
-    color: 'red'
-  }
+    {
+        id: '1',
+        title: 'Integração Setorial',
+        content: 'A integração com outros setores é essencial durante todo o período anual. A integração das turmas de pedagogia está prevista no RDD - Artigo 26 e deve ser implementada para garantir a conclusão efetiva dos programas educacionais.',
+        color: 'yellow'
+    },
+    {
+        id: '2',
+        title: 'Produção Audiovisual',
+        content: 'Durante todo o ano: Criação de conteúdo audiovisual para conscientização nas telas do IFRO. É fundamental incluir imagens e vídeos criados pelos próprios alunos, promovendo protagonismo estudantil e maior engajamento.',
+        color: 'blue'
+    },
+    {
+        id: '3',
+        title: 'Prevenção a Vícios',
+        content: '26 de Junho: Dia específico para abordar drogas e álcool, tratando vícios em geral. Ações devem incluir teatros e visitas técnicas para conscientização efetiva da comunidade escolar.',
+        color: 'green'
+    },
+    {
+        id: '4',
+        title: 'Sugestões Gerais',
+        content: '- Ampla divulgação nos espaços institucionais de exibição: TV, telas computadores, AVA, SUAP, redes sociais do campus;<br>- Convidar estudantes de pedagogia para participação mediante certificação de carga horária;<br>- Camisetas para toda a equipe com o logo da Assistência Estudantil.',
+        color: 'red'
+    }
 ];
 
 // Dados de administração
 const adminData = {
-  userLogs: [],
-  activityLogs: [],
-  statistics: {
-    totalLogins: 0,
-    totalEdits: 0,
-    totalExports: 0,
-    uniqueUsers: new Set()
-  }
+    userLogs: [],
+    activityLogs: [],
+    statistics: {
+        totalLogins: 0,
+        totalEdits: 0,
+        totalExports: 0,
+        uniqueUsers: new Set()
+    }
 };
 
 // Estado da aplicação
 const appState = {
-  currentUser: '',
-  editMode: false,
-  adminPassword: "petter feioso",
-  selectedMonth: null,
-  autoSave: true,
-  exportSettings: {
-    colorScheme: 'color',
-    fontSize: 'medium',
-    layout: 'horizontal',
-    includeTitle: true,
-    includeFooter: true,
-    highQuality: true,
-    landscape: true
-  }
+    currentUser: '',
+    editMode: false,
+    adminPassword: "petter feioso",
+    selectedMonth: null,
+    autoSave: true,
+    exportSettings: {
+        layout: 'screen',
+        colorScheme: 'color',
+        fontSize: 'medium',
+        includeTitle: true,
+        includeFooter: true,
+        highQuality: true
+    }
 };
 
 // =============================================================================
@@ -730,650 +729,586 @@ const appState = {
 // =============================================================================
 
 function loadSaved() {
-  try {
-    const savedCalendarData = localStorage.getItem('calendarData');
-    if (savedCalendarData) {
-      const parsedData = JSON.parse(savedCalendarData);
-      Object.assign(monthsData, parsedData);
-    }
+    try {
+        const savedCalendarData = localStorage.getItem('calendarData');
+        if (savedCalendarData) {
+            const parsedData = JSON.parse(savedCalendarData);
+            Object.assign(monthsData, parsedData);
+        }
 
-    const savedImportantData = localStorage.getItem('importantData');
-    if (savedImportantData) {
-      importantData = JSON.parse(savedImportantData);
-    }
+        const savedImportantData = localStorage.getItem('importantData');
+        if (savedImportantData) {
+            importantData = JSON.parse(savedImportantData);
+        }
 
-    const savedAdminData = localStorage.getItem('adminData');
-    if (savedAdminData) {
-      const parsedAdminData = JSON.parse(savedAdminData);
-      Object.assign(adminData, parsedAdminData);
-      
-      if (parsedAdminData.statistics && parsedAdminData.statistics.uniqueUsers) {
-        adminData.statistics.uniqueUsers = new Set(parsedAdminData.statistics.uniqueUsers);
-      }
-    }
+        const savedAdminData = localStorage.getItem('adminData');
+        if (savedAdminData) {
+            const parsedAdminData = JSON.parse(savedAdminData);
+            Object.assign(adminData, parsedAdminData);
+            
+            if (parsedAdminData.statistics && parsedAdminData.statistics.uniqueUsers) {
+                adminData.statistics.uniqueUsers = new Set(parsedAdminData.statistics.uniqueUsers);
+            }
+        }
 
-    const savedAutoSave = localStorage.getItem('autoSave');
-    if (savedAutoSave !== null) {
-      appState.autoSave = JSON.parse(savedAutoSave);
-    }
+        const savedAutoSave = localStorage.getItem('autoSave');
+        if (savedAutoSave !== null) {
+            appState.autoSave = JSON.parse(savedAutoSave);
+        }
 
-    const savedExportSettings = localStorage.getItem('exportSettings');
-    if (savedExportSettings) {
-      appState.exportSettings = JSON.parse(savedExportSettings);
+        const savedExportSettings = localStorage.getItem('exportSettings');
+        if (savedExportSettings) {
+            appState.exportSettings = JSON.parse(savedExportSettings);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
     }
-  } catch (error) {
-    console.error('Erro ao carregar dados:', error);
-  }
 }
 
 function saveData() {
-  try {
-    localStorage.setItem('calendarData', JSON.stringify(monthsData));
-    localStorage.setItem('importantData', JSON.stringify(importantData));
-    localStorage.setItem('autoSave', JSON.stringify(appState.autoSave));
-    localStorage.setItem('exportSettings', JSON.stringify(appState.exportSettings));
-    
-    const adminDataToSave = {
-      ...adminData,
-      statistics: {
-        ...adminData.statistics,
-        uniqueUsers: Array.from(adminData.statistics.uniqueUsers)
-      }
-    };
-    localStorage.setItem('adminData', JSON.stringify(adminDataToSave));
-    
-    adminData.activityLogs.unshift({
-      description: `${appState.currentUser} salvou os dados manualmente`,
-      timestamp: new Date().toLocaleString('pt-BR'),
-      type: 'save'
-    });
-    
-    document.getElementById('importantDataCount').textContent = importantData.length;
-    
-    return true;
-  } catch (error) {
-    console.error('Erro ao salvar dados:', error);
-    return false;
-  }
+    try {
+        localStorage.setItem('calendarData', JSON.stringify(monthsData));
+        localStorage.setItem('importantData', JSON.stringify(importantData));
+        localStorage.setItem('autoSave', JSON.stringify(appState.autoSave));
+        localStorage.setItem('exportSettings', JSON.stringify(appState.exportSettings));
+        
+        const adminDataToSave = {
+            ...adminData,
+            statistics: {
+                ...adminData.statistics,
+                uniqueUsers: Array.from(adminData.statistics.uniqueUsers)
+            }
+        };
+        localStorage.setItem('adminData', JSON.stringify(adminDataToSave));
+        
+        adminData.activityLogs.unshift({
+            description: `${appState.currentUser} salvou os dados manualmente`,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            type: 'save'
+        });
+        
+        return true;
+    } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+        return false;
+    }
 }
 
 function autoSave() {
-  if (appState.autoSave) {
-    const success = saveData();
-    if (success) {
-      console.log('Auto-save realizado com sucesso');
+    if (appState.autoSave) {
+        const success = saveData();
+        if (success) {
+            console.log('Auto-save realizado com sucesso');
+        }
     }
-  }
 }
 
 function renderCalendar() {
-  const grid = document.getElementById('calendarGrid');
-  if (!grid) {
-    console.error('Elemento calendarGrid não encontrado');
-    return;
-  }
-  
-  grid.innerHTML = '';
-  
-  // Criar layout horizontal com 4 meses por linha
-  const months = Object.entries(monthsData);
-  
-  for (let i = 0; i < months.length; i += 4) {
-    const rowMonths = months.slice(i, i + 4);
-    const row = document.createElement('div');
-    row.className = 'calendar-row';
+    const grid = document.getElementById('calendarGrid');
+    if (!grid) {
+        console.error('Elemento calendarGrid não encontrado');
+        return;
+    }
     
-    rowMonths.forEach(([month, data]) => {
-      const card = document.createElement('div');
-      card.className = `month-card ${appState.selectedMonth === month ? 'selected-month' : ''}`;
-      card.style.borderLeftColor = data.color;
-      card.dataset.month = month;
-      
-      let content = '';
-      
-      if (appState.editMode && appState.currentUser.toLowerCase().includes('bianca')) {
-        content = `
-          <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
-          <div class="mb-2">
-            <label class="block text-white text-sm mb-1">Cor:</label>
-            <input type="color" value="${data.color}" class="edit-color" data-field="color">
-          </div>
-          <div class="mb-2">
-            <label class="block text-white text-sm mb-1">Tema:</label>
-            <input type="text" value="${data.theme}" class="edit-input" data-field="theme">
-          </div>
-          <div class="mb-2">
-            <label class="block text-white text-sm mb-1">Descrição:</label>
-            <textarea class="edit-textarea" data-field="description">${data.description}</textarea>
-          </div>
-          <div class="mb-2">
-            <label class="block text-white text-sm mb-1">Objetivo:</label>
-            <textarea class="edit-textarea" data-field="objective">${data.objective}</textarea>
-          </div>
-          <div class="mb-2">
-            <label class="block text-white text-sm mb-1">Público-alvo:</label>
-            <input type="text" value="${data.audience}" class="edit-input" data-field="audience">
-          </div>
-          <div class="mb-2">
-            <label class="block text-white text-sm mb-1">Ações:</label>
-            <textarea class="edit-textarea" data-field="actions">${data.actions}</textarea>
-          </div>
-          <div class="mb-2">
-            <label class="block text-white text-sm mb-1">Observações:</label>
-            <textarea class="edit-textarea" data-field="observations">${data.observations}</textarea>
-          </div>
-          <div class="mb-2">
-            <label class="block text-white text-sm mb-1">Data:</label>
-            <input type="text" value="${data.date}" class="edit-input" data-field="date">
-          </div>
-        `;
-      } else {
-        content = `
-          <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
-          ${data.date ? `<p class="text-gray-400 text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
-          <p class="text-gray-300 mb-2"><strong>Tema:</strong> ${data.theme}</p>
-          <p class="text-gray-300 mb-2 text-sm"><strong>Descrição:</strong> ${data.description}</p>
-          <p class="text-blue-400 mb-2 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
-          <p class="text-green-400 mb-2 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
-          <p class="text-purple-400 mb-2 text-sm"><strong>Ações:</strong> ${data.actions}</p>
-          ${data.observations ? `<p class="text-yellow-400 mb-2 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
-        `;
-      }
-      
-      card.innerHTML = content;
-      row.appendChild(card);
-      
-      if (appState.editMode && appState.currentUser.toLowerCase().includes('bianca')) {
-        setupEditListeners(card, month);
-      }
-
-      if (document.getElementById('designControls') && !document.getElementById('designControls').classList.contains('hidden')) {
-        card.addEventListener('click', () => {
-          appState.selectedMonth = month;
-          renderCalendar();
+    grid.innerHTML = '';
+    
+    // Criar layout horizontal com 4 meses por linha
+    const months = Object.entries(monthsData);
+    
+    // Criar 3 linhas com 4 meses cada
+    for (let i = 0; i < months.length; i += 4) {
+        const rowMonths = months.slice(i, i + 4);
+        const row = document.createElement('div');
+        row.className = 'calendar-row';
+        
+        rowMonths.forEach(([month, data]) => {
+            const card = document.createElement('div');
+            card.className = 'month-card';
+            card.style.borderLeftColor = data.color;
+            card.dataset.month = month;
+            
+            let content = '';
+            
+            if (appState.editMode && appState.currentUser.toLowerCase().includes('bianca')) {
+                content = `
+                    <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
+                    <div class="mb-2">
+                        <label class="block text-white text-sm mb-1">Cor:</label>
+                        <input type="color" value="${data.color}" class="edit-color" data-field="color">
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-white text-sm mb-1">Tema:</label>
+                        <input type="text" value="${data.theme}" class="edit-input" data-field="theme">
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-white text-sm mb-1">Descrição:</label>
+                        <textarea class="edit-textarea" data-field="description">${data.description}</textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-white text-sm mb-1">Objetivo:</label>
+                        <textarea class="edit-textarea" data-field="objective">${data.objective}</textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-white text-sm mb-1">Público-alvo:</label>
+                        <input type="text" value="${data.audience}" class="edit-input" data-field="audience">
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-white text-sm mb-1">Ações:</label>
+                        <textarea class="edit-textarea" data-field="actions">${data.actions}</textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-white text-sm mb-1">Observações:</label>
+                        <textarea class="edit-textarea" data-field="observations">${data.observations}</textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-white text-sm mb-1">Data:</label>
+                        <input type="text" value="${data.date}" class="edit-input" data-field="date">
+                    </div>
+                    <button class="delete-btn delete-month" data-month="${month}">🗑️ Excluir Mês</button>
+                `;
+            } else {
+                content = `
+                    <h3 class="text-lg font-bold mb-2" style="color: ${data.color}">${month}</h3>
+                    ${data.date ? `<p class="text-gray-400 text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+                    <p class="text-gray-300 mb-2"><strong>Tema:</strong> ${data.theme}</p>
+                    <p class="text-gray-300 mb-2 text-sm"><strong>Descrição:</strong> ${data.description}</p>
+                    <p class="text-blue-400 mb-2 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
+                    <p class="text-green-400 mb-2 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
+                    <p class="text-purple-400 mb-2 text-sm"><strong>Ações:</strong> ${data.actions}</p>
+                    ${data.observations ? `<p class="text-yellow-400 mb-2 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+                `;
+            }
+            
+            card.innerHTML = content;
+            row.appendChild(card);
+            
+            if (appState.editMode && appState.currentUser.toLowerCase().includes('bianca')) {
+                setupEditListeners(card, month);
+            }
         });
-      }
-    });
-    
-    grid.appendChild(row);
-  }
+        
+        grid.appendChild(row);
+    }
+
+    // Adicionar listeners para botões de exclusão de meses
+    if (appState.editMode && appState.currentUser.toLowerCase().includes('bianca')) {
+        document.querySelectorAll('.delete-month').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const month = e.target.dataset.month;
+                if (confirm(`Tem certeza que deseja excluir o mês de ${month}?`)) {
+                    delete monthsData[month];
+                    renderCalendar();
+                    autoSave();
+                    alert(`Mês de ${month} excluído com sucesso!`);
+                }
+            });
+        });
+    }
 }
 
 function setupEditListeners(card, month) {
-  const inputs = card.querySelectorAll('input, textarea');
-  
-  inputs.forEach(input => {
-    input.addEventListener('input', (e) => {
-      const field = e.target.dataset.field;
-      monthsData[month][field] = e.target.value;
-      
-      if (field === 'color') {
-        card.style.borderLeftColor = e.target.value;
-        const title = card.querySelector('h3');
-        if (title) {
-          title.style.color = e.target.value;
-        }
-      }
-      
-      adminData.statistics.totalEdits++;
-      adminData.activityLogs.unshift({
-        description: `${appState.currentUser} editou ${field} de ${month}`,
-        timestamp: new Date().toLocaleString('pt-BR'),
-        type: 'edit'
-      });
-      
-      if (appState.autoSave) {
-        setTimeout(autoSave, 500);
-      }
+    const inputs = card.querySelectorAll('input, textarea');
+    
+    inputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            const field = e.target.dataset.field;
+            monthsData[month][field] = e.target.value;
+            
+            if (field === 'color') {
+                card.style.borderLeftColor = e.target.value;
+                const title = card.querySelector('h3');
+                if (title) {
+                    title.style.color = e.target.value;
+                }
+            }
+            
+            adminData.statistics.totalEdits++;
+            adminData.activityLogs.unshift({
+                description: `${appState.currentUser} editou ${field} de ${month}`,
+                timestamp: new Date().toLocaleString('pt-BR'),
+                type: 'edit'
+            });
+            
+            if (appState.autoSave) {
+                setTimeout(autoSave, 500);
+            }
+        });
     });
-  });
 }
 
 // =============================================================================
-// FUNÇÕES DE DADOS IMPORTANTES - CORRIGIDAS
+// FUNÇÕES DE DADOS IMPORTANTES COM EDITOR
 // =============================================================================
 
 function renderImportantData() {
-  const container = document.getElementById('importantDataContainer');
-  if (!container) return;
+    const container = document.getElementById('importantDataContainer');
+    if (!container) return;
 
-  container.innerHTML = '';
+    container.innerHTML = '';
 
-  importantData.forEach(item => {
-    const dataElement = document.createElement('div');
-    dataElement.className = `important-data-item ${item.color}`;
-    dataElement.dataset.id = item.id;
-    
-    const canEdit = appState.currentUser.toLowerCase().includes('bianca') && appState.editMode;
-    
-    if (canEdit) {
-      dataElement.innerHTML = `
-        <div class="mb-2">
-          <label class="block text-white text-sm mb-1">Título:</label>
-          <input type="text" value="${item.title}" class="edit-input important-data-field" data-id="${item.id}" data-field="title">
-        </div>
-        <div class="mb-2">
-          <label class="block text-white text-sm mb-1">Conteúdo:</label>
-          <textarea class="edit-textarea important-data-field" data-id="${item.id}" data-field="content">${item.content}</textarea>
-        </div>
-        <div class="mb-2">
-          <label class="block text-white text-sm mb-1">Cor:</label>
-          <select class="edit-input important-data-field" data-id="${item.id}" data-field="color">
-            <option value="yellow" ${item.color === 'yellow' ? 'selected' : ''}>Amarelo</option>
-            <option value="blue" ${item.color === 'blue' ? 'selected' : ''}>Azul</option>
-            <option value="green" ${item.color === 'green' ? 'selected' : ''}>Verde</option>
-            <option value="red" ${item.color === 'red' ? 'selected' : ''}>Vermelho</option>
-            <option value="purple" ${item.color === 'purple' ? 'selected' : ''}>Roxo</option>
-          </select>
-        </div>
-        <div class="important-data-actions">
-          <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded delete-important-data" data-id="${item.id}">Excluir</button>
-        </div>
-      `;
-    } else {
-      dataElement.innerHTML = `
-        <h3 class="text-lg font-semibold mb-3">${item.title}</h3>
-        <p class="text-gray-300 text-sm leading-relaxed">${item.content}</p>
-      `;
+    importantData.forEach(item => {
+        const dataElement = document.createElement('div');
+        dataElement.className = `important-data-item ${item.color}`;
+        dataElement.dataset.id = item.id;
+        
+        const canEdit = appState.currentUser.toLowerCase().includes('bianca') && appState.editMode;
+        
+        if (canEdit) {
+            dataElement.innerHTML = `
+                <div class="mb-2">
+                    <label class="block text-white text-sm mb-1">Título:</label>
+                    <input type="text" value="${item.title}" class="edit-input important-data-field" data-id="${item.id}" data-field="title">
+                </div>
+                <div class="mb-2">
+                    <label class="block text-white text-sm mb-1">Conteúdo:</label>
+                    <div class="editor-toolbar">
+                        <button type="button" onclick="formatText('bold', '${item.id}')"><b>B</b></button>
+                        <button type="button" onclick="formatText('italic', '${item.id}')"><i>I</i></button>
+                        <button type="button" onclick="formatText('underline', '${item.id}')"><u>U</u></button>
+                        <button type="button" onclick="formatText('insertUnorderedList', '${item.id}')">• Lista</button>
+                        <button type="button" onclick="formatText('insertOrderedList', '${item.id}')">1. Lista</button>
+                    </div>
+                    <div class="editor-content" contenteditable="true" data-id="${item.id}" data-field="content">${item.content}</div>
+                </div>
+                <div class="mb-2">
+                    <label class="block text-white text-sm mb-1">Cor:</label>
+                    <select class="edit-input important-data-field" data-id="${item.id}" data-field="color">
+                        <option value="yellow" ${item.color === 'yellow' ? 'selected' : ''}>Amarelo</option>
+                        <option value="blue" ${item.color === 'blue' ? 'selected' : ''}>Azul</option>
+                        <option value="green" ${item.color === 'green' ? 'selected' : ''}>Verde</option>
+                        <option value="red" ${item.color === 'red' ? 'selected' : ''}>Vermelho</option>
+                        <option value="purple" ${item.color === 'purple' ? 'selected' : ''}>Roxo</option>
+                    </select>
+                </div>
+                <div class="important-data-actions">
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded delete-important-data" data-id="${item.id}">🗑️ Excluir</button>
+                </div>
+            `;
+        } else {
+            dataElement.innerHTML = `
+                <h3 class="text-lg font-semibold mb-3">${item.title}</h3>
+                <div class="text-gray-300 text-sm leading-relaxed">${item.content}</div>
+                ${canEdit ? `<button class="delete-btn delete-important-data" data-id="${item.id}">🗑️ Excluir</button>` : ''}
+            `;
+        }
+        
+        container.appendChild(dataElement);
+    });
+
+    setupImportantDataListeners();
+}
+
+// Função para formatação de texto no editor
+function formatText(command, id) {
+    const editor = document.querySelector(`.editor-content[data-id="${id}"]`);
+    if (editor) {
+        document.execCommand(command, false, null);
+        editor.focus();
+        
+        // Atualizar dados
+        const item = importantData.find(d => d.id === id);
+        if (item) {
+            item.content = editor.innerHTML;
+            if (appState.autoSave) {
+                setTimeout(autoSave, 500);
+            }
+        }
     }
-    
-    container.appendChild(dataElement);
-  });
-
-  // Configurar os listeners
-  setupImportantDataListeners();
 }
 
 function setupImportantDataListeners() {
-  // Listeners para campos editáveis
-  const inputs = document.querySelectorAll('.important-data-field');
-  inputs.forEach(input => {
-    input.addEventListener('input', (e) => {
-      const id = e.target.dataset.id;
-      const field = e.target.dataset.field;
-      const item = importantData.find(d => d.id === id);
-      
-      if (item) {
-        item[field] = e.target.value;
-        
-        // Atualizar visualização em tempo real
-        if (field === 'color') {
-          const parent = e.target.closest('.important-data-item');
-          if (parent) {
-            parent.className = `important-data-item ${e.target.value}`;
-          }
-        }
-        
-        if (appState.autoSave) {
-          setTimeout(autoSave, 500);
-        }
-      }
+    // Inputs regulares
+    const inputs = document.querySelectorAll('.important-data-field:not(.editor-content)');
+    inputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            const id = e.target.dataset.id;
+            const field = e.target.dataset.field;
+            const item = importantData.find(d => d.id === id);
+            
+            if (item) {
+                item[field] = e.target.value;
+                
+                if (field === 'color') {
+                    const parent = e.target.closest('.important-data-item');
+                    if (parent) {
+                        parent.className = `important-data-item ${e.target.value}`;
+                    }
+                }
+                
+                if (appState.autoSave) {
+                    setTimeout(autoSave, 500);
+                }
+            }
+        });
     });
-  });
 
-  // Listeners para botões de exclusão
-  const deleteButtons = document.querySelectorAll('.delete-important-data');
-  deleteButtons.forEach(button => {
-    button.addEventListener('click', (e) => {
-      const id = e.target.dataset.id;
-      if (confirm('Tem certeza que deseja excluir este dado importante?')) {
-        importantData = importantData.filter(d => d.id !== id);
-        renderImportantData();
-        autoSave();
-      }
+    // Editores de conteúdo
+    const editors = document.querySelectorAll('.editor-content');
+    editors.forEach(editor => {
+        editor.addEventListener('input', (e) => {
+            const id = e.target.dataset.id;
+            const item = importantData.find(d => d.id === id);
+            
+            if (item) {
+                item.content = e.target.innerHTML;
+                
+                if (appState.autoSave) {
+                    setTimeout(autoSave, 500);
+                }
+            }
+        });
     });
-  });
+
+    const deleteButtons = document.querySelectorAll('.delete-important-data');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const id = e.target.dataset.id;
+            if (confirm('Tem certeza que deseja excluir este dado importante?')) {
+                importantData = importantData.filter(d => d.id !== id);
+                renderImportantData();
+                autoSave();
+                alert('Dado importante excluído com sucesso!');
+            }
+        });
+    });
 }
 
 function addImportantData() {
-  if (!appState.currentUser.toLowerCase().includes('bianca')) {
-    alert('Apenas a Bianca pode adicionar dados importantes.');
-    return;
-  }
-  
-  const newId = Date.now().toString();
-  const newData = {
-    id: newId,
-    title: 'Novo Dado Importante',
-    content: 'Digite o conteúdo aqui...',
-    color: 'blue'
-  };
-  
-  importantData.push(newData);
-  renderImportantData();
-  autoSave();
+    if (!appState.currentUser.toLowerCase().includes('bianca')) {
+        alert('Apenas a Bianca pode adicionar dados importantes.');
+        return;
+    }
+    
+    const newId = Date.now().toString();
+    const newData = {
+        id: newId,
+        title: 'Novo Dado Importante',
+        content: 'Digite o conteúdo aqui...',
+        color: 'blue'
+    };
+    
+    importantData.push(newData);
+    renderImportantData();
+    autoSave();
 }
 
 // =============================================================================
-// FUNÇÕES DE EXPORTAÇÃO - CORRIGIDAS
+// FUNÇÕES DE EXPORTAÇÃO - LAYOUT IDÊNTICO AO DA TELA INICIAL
 // =============================================================================
 
 function updateExportSettings() {
-  const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
-  const fontSize = document.querySelector('input[name="fontSize"]:checked').value;
-  const layout = document.querySelector('input[name="layout"]:checked').value;
-  const includeTitle = document.getElementById('includeTitle').checked;
-  const includeFooter = document.getElementById('includeFooter').checked;
-  const highQuality = document.getElementById('highQuality').checked;
-  const landscape = document.getElementById('landscape').checked;
+    const colorScheme = document.querySelector('input[name="colorScheme"]:checked')?.value || 'color';
+    const fontSize = document.querySelector('input[name="fontSize"]:checked')?.value || 'medium';
+    const includeTitle = document.getElementById('includeTitle')?.checked || true;
+    const includeFooter = document.getElementById('includeFooter')?.checked || true;
+    const highQuality = document.getElementById('highQuality')?.checked || true;
 
-  appState.exportSettings = {
-    colorScheme,
-    fontSize,
-    layout,
-    includeTitle,
-    includeFooter,
-    highQuality,
-    landscape
-  };
+    appState.exportSettings = {
+        layout: 'screen',
+        colorScheme,
+        fontSize,
+        includeTitle,
+        includeFooter,
+        highQuality
+    };
 
-  updateExportPreview();
+    updateExportPreview();
 }
 
 function updateExportPreview() {
-  const preview = document.getElementById('exportPreview');
-  if (!preview) return;
+    const preview = document.getElementById('exportPreview');
+    if (!preview) return;
 
-  let previewHTML = '';
+    let previewHTML = '';
 
-  // Título
-  if (appState.exportSettings.includeTitle) {
-    previewHTML += `
-      <div class="text-center mb-6" style="color: black;">
-        <h1 class="font-bold ${getFontSizeClass('title')}" style="color: black;">
-          Calendário de Campanhas Educacionais 2026
-        </h1>
-        <p class="text-sm mt-2" style="color: black;">Layout Otimizado para Impressão</p>
-      </div>
-    `;
-  }
-
-  // Grid de meses baseado no layout escolhido
-  const months = Object.entries(monthsData);
-  
-  if (appState.exportSettings.layout === 'horizontal') {
-    // Layout horizontal - 4 meses por linha
-    for (let i = 0; i < months.length; i += 4) {
-      const rowMonths = months.slice(i, i + 4);
-      previewHTML += '<div class="export-row">';
-      
-      rowMonths.forEach(([month, data]) => {
-        const borderColor = getExportColor(data.color);
-        const textColor = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
-        
+    // Título
+    if (appState.exportSettings.includeTitle) {
         previewHTML += `
-          <div class="export-month-card ${getFontSizeClass('content')}" style="border-left-color: ${borderColor}; background: white; color: ${textColor}">
-            <h3 class="font-bold mb-2" style="color: ${borderColor}">${month}</h3>
-            ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
-            <p class="mb-1"><strong>Tema:</strong> ${data.theme}</p>
-            <p class="mb-1 text-sm"><strong>Descrição:</strong> ${data.description}</p>
-            <p class="mb-1 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
-            <p class="mb-1 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
-            <p class="mb-1 text-sm"><strong>Ações:</strong> ${data.actions}</p>
-            ${data.observations ? `<p class="mb-1 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
-          </div>
+            <div class="export-title">
+                <h1 class="text-2xl font-bold mb-2" style="color: black;">CAMPANHAS TEMÁTICAS NO AMBIENTE ESCOLAR – 2026</h1>
+                <p class="text-gray-600">Layout idêntico à visualização da tela</p>
+            </div>
         `;
-      });
-      
-      previewHTML += '</div>';
     }
-  } else if (appState.exportSettings.layout === 'quarters') {
-    // Layout por trimestres
-    const quarters = [
-      months.slice(0, 3),  // Q1: Jan-Mar
-      months.slice(3, 6),  // Q2: Apr-Jun
-      months.slice(6, 9),  // Q3: Jul-Sep
-      months.slice(9, 12)  // Q4: Oct-Dec
-    ];
+
+    const months = Object.entries(monthsData);
     
-    quarters.forEach((quarter, index) => {
-      previewHTML += `<div class="export-quarter mb-6">`;
-      previewHTML += `<h3 class="font-bold text-lg mb-3" style="color: black;">${index + 1}º Trimestre</h3>`;
-      previewHTML += '<div class="export-row">';
-      
-      quarter.forEach(([month, data]) => {
-        const borderColor = getExportColor(data.color);
-        const textColor = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
+    // Layout IDÊNTICO ao da tela inicial - 3 linhas de 4 colunas
+    for (let i = 0; i < months.length; i += 4) {
+        const rowMonths = months.slice(i, i + 4);
+        previewHTML += '<div class="export-month-row">';
         
+        rowMonths.forEach(([month, data]) => {
+            const borderColor = getExportColor(data.color);
+            const textColor = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
+            
+            previewHTML += `
+                <div class="export-month-card" style="border-left-color: ${borderColor}; color: ${textColor}">
+                    <h3 class="text-lg font-bold mb-2" style="color: ${borderColor}">${month}</h3>
+                    ${data.date ? `<p class="text-gray-600 text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+                    <p class="mb-2"><strong>Tema:</strong> ${data.theme}</p>
+                    <p class="mb-2 text-sm"><strong>Descrição:</strong> ${data.description}</p>
+                    <p class="mb-2 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
+                    <p class="mb-2 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
+                    <p class="mb-2 text-sm"><strong>Ações:</strong> ${data.actions}</p>
+                    ${data.observations ? `<p class="mb-2 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+                </div>
+            `;
+        });
+        
+        previewHTML += '</div>';
+    }
+
+    // Rodapé
+    if (appState.exportSettings.includeFooter) {
         previewHTML += `
-          <div class="export-month-card ${getFontSizeClass('content')}" style="border-left-color: ${borderColor}; background: white; color: ${textColor}">
-            <h3 class="font-bold mb-2" style="color: ${borderColor}">${month}</h3>
-            ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
-            <p class="mb-1"><strong>Tema:</strong> ${data.theme}</p>
-            <p class="mb-1 text-sm"><strong>Descrição:</strong> ${data.description}</p>
-            <p class="mb-1 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
-            <p class="mb-1 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
-            <p class="mb-1 text-sm"><strong>Ações:</strong> ${data.actions}</p>
-            ${data.observations ? `<p class="mb-1 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
-          </div>
+            <div class="export-footer">
+                Calendário CAED 2026 - Desenvolvido para gestão educacional
+            </div>
         `;
-      });
-      
-      previewHTML += '</div></div>';
-    });
-  } else {
-    // Layout vertical (original)
-    previewHTML += '<div class="space-y-4">';
-    months.forEach(([month, data]) => {
-      const borderColor = getExportColor(data.color);
-      const textColor = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
-      
-      previewHTML += `
-        <div class="export-month-card ${getFontSizeClass('content')}" style="border-left-color: ${borderColor}; background: white; color: ${textColor}">
-          <h3 class="font-bold mb-2" style="color: ${borderColor}">${month}</h3>
-          ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
-          <p class="mb-2"><strong>Tema:</strong> ${data.theme}</p>
-          <p class="mb-2"><strong>Descrição:</strong> ${data.description}</p>
-          <p class="mb-2"><strong>Objetivo:</strong> ${data.objective}</p>
-          <p class="mb-2"><strong>Público-alvo:</strong> ${data.audience}</p>
-          <p class="mb-2"><strong>Ações:</strong> ${data.actions}</p>
-          ${data.observations ? `<p class="mb-2"><strong>Observações:</strong> ${data.observations}</p>` : ''}
-        </div>
-      `;
-    });
-    previewHTML += '</div>';
-  }
+    }
 
-  // Rodapé
-  if (appState.exportSettings.includeFooter) {
-    previewHTML += `
-      <div class="text-center mt-6 text-sm" style="color: black;">
-        Calendário CAED 2026 - Desenvolvido para gestão educacional - Layout Otimizado
-      </div>
-    `;
-  }
-
-  preview.innerHTML = previewHTML;
+    preview.innerHTML = previewHTML;
 }
 
 function getExportColor(originalColor) {
-  switch (appState.exportSettings.colorScheme) {
-    case 'bw':
-      return '#000000'; // Preto
-    case 'grayscale':
-      // Converter cor para escala de cinza
-      const hex = originalColor.replace('#', '');
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-      return `#${gray.toString(16).padStart(2, '0').repeat(3)}`;
-    case 'color':
-    default:
-      return originalColor;
-  }
-}
-
-function getFontSizeClass(type) {
-  const baseSizes = {
-    title: { small: 'text-2xl', medium: 'text-3xl', large: 'text-4xl', xlarge: 'text-5xl' },
-    content: { small: 'export-small', medium: 'export-medium', large: 'export-large', xlarge: 'export-xlarge' }
-  };
-  
-  return baseSizes[type][appState.exportSettings.fontSize] || baseSizes[type].medium;
+    return appState.exportSettings.colorScheme === 'bw' ? '#000000' : originalColor;
 }
 
 function showExportPanel() {
-  // Carregar configurações salvas
-  document.querySelector(`input[name="colorScheme"][value="${appState.exportSettings.colorScheme}"]`).checked = true;
-  document.querySelector(`input[name="fontSize"][value="${appState.exportSettings.fontSize}"]`).checked = true;
-  document.querySelector(`input[name="layout"][value="${appState.exportSettings.layout}"]`).checked = true;
-  document.getElementById('includeTitle').checked = appState.exportSettings.includeTitle;
-  document.getElementById('includeFooter').checked = appState.exportSettings.includeFooter;
-  document.getElementById('highQuality').checked = appState.exportSettings.highQuality;
-  document.getElementById('landscape').checked = appState.exportSettings.landscape;
+    const savedSettings = appState.exportSettings;
+    
+    const colorInput = document.querySelector(`input[name="colorScheme"][value="${savedSettings.colorScheme}"]`);
+    const fontSizeInput = document.querySelector(`input[name="fontSize"][value="${savedSettings.fontSize}"]`);
+    
+    if (colorInput) colorInput.checked = true;
+    if (fontSizeInput) fontSizeInput.checked = true;
+    
+    const includeTitle = document.getElementById('includeTitle');
+    const includeFooter = document.getElementById('includeFooter');
+    const highQuality = document.getElementById('highQuality');
+    
+    if (includeTitle) includeTitle.checked = savedSettings.includeTitle;
+    if (includeFooter) includeFooter.checked = savedSettings.includeFooter;
+    if (highQuality) highQuality.checked = savedSettings.highQuality;
 
-  updateExportPreview();
-  document.getElementById('exportPanel').classList.remove('hidden');
+    updateExportPreview();
+    document.getElementById('exportPanel').classList.remove('hidden');
 }
 
 async function exportCalendar() {
-  try {
-    const exportBtn = document.getElementById('confirmExport');
-    exportBtn.innerHTML = '⏳ Exportando...';
-    exportBtn.disabled = true;
+    try {
+        const exportBtn = document.getElementById('confirmExport');
+        if (exportBtn) {
+            exportBtn.innerHTML = '⏳ Exportando...';
+            exportBtn.disabled = true;
+        }
 
-    // Criar container temporário para exportação
-    const exportContainer = document.createElement('div');
-    exportContainer.style.backgroundColor = 'white';
-    exportContainer.style.color = 'black';
-    exportContainer.style.padding = '30px';
-    exportContainer.style.maxWidth = appState.exportSettings.landscape ? '1200px' : '800px';
-    exportContainer.style.margin = '0 auto';
-
-    // Adicionar título
-    if (appState.exportSettings.includeTitle) {
-      const title = document.createElement('div');
-      title.className = 'text-center mb-8';
-      title.innerHTML = `
-        <h1 class="font-bold ${getFontSizeClass('title')}" style="color: black;">
-          Calendário de Campanhas Educacionais 2026
-        </h1>
-        <p class="text-sm mt-2" style="color: black;">Layout Otimizado para Impressão</p>
-      `;
-      exportContainer.appendChild(title);
-    }
-
-    // Adicionar meses baseado no layout escolhido
-    const months = Object.entries(monthsData);
-    
-    if (appState.exportSettings.layout === 'horizontal') {
-      // Layout horizontal
-      for (let i = 0; i < months.length; i += 4) {
-        const rowMonths = months.slice(i, i + 4);
-        const row = document.createElement('div');
-        row.style.display = 'grid';
-        row.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        row.style.gap = '12px';
-        row.style.marginBottom = '12px';
+        // Criar container para exportação com layout IDÊNTICO ao da tela
+        const exportContainer = document.createElement('div');
+        exportContainer.className = `export-container`;
+        exportContainer.style.width = '1400px'; // Forçar largura para formato paisagem
+        exportContainer.style.height = 'auto'; // Altura automática para acomodar todos os meses
+        exportContainer.style.background = 'white';
+        exportContainer.style.color = 'black';
+        exportContainer.style.padding = '20px';
         
-        rowMonths.forEach(([month, data]) => {
-          const card = document.createElement('div');
-          card.className = `export-month-card ${getFontSizeClass('content')}`;
-          card.style.borderLeftColor = getExportColor(data.color);
-          card.style.background = 'white';
-          card.style.color = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
-          card.style.padding = '10px';
-          card.style.minHeight = '200px';
-          
-          let content = `
-            <h3 class="font-bold mb-2" style="color: ${getExportColor(data.color)}">${month}</h3>
-            ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
-            <p class="mb-1"><strong>Tema:</strong> ${data.theme}</p>
-            <p class="mb-1 text-sm"><strong>Descrição:</strong> ${data.description}</p>
-            <p class="mb-1 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
-            <p class="mb-1 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
-            <p class="mb-1 text-sm"><strong>Ações:</strong> ${data.actions}</p>
-            ${data.observations ? `<p class="mb-1 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
-          `;
-          
-          card.innerHTML = content;
-          row.appendChild(card);
+        // Adicionar título
+        if (appState.exportSettings.includeTitle) {
+            const title = document.createElement('div');
+            title.className = 'export-title';
+            title.innerHTML = `
+                <h1 class="text-2xl font-bold mb-2" style="color: black;">CAMPANHAS TEMÁTICAS NO AMBIENTE ESCOLAR – 2026</h1>
+                <p class="text-gray-600">Layout idêntico à visualização da tela</p>
+            `;
+            exportContainer.appendChild(title);
+        }
+
+        const months = Object.entries(monthsData);
+        
+        // Layout IDÊNTICO ao da tela inicial - 3 linhas de 4 colunas
+        for (let i = 0; i < months.length; i += 4) {
+            const rowMonths = months.slice(i, i + 4);
+            const row = document.createElement('div');
+            row.className = 'export-month-row';
+            
+            rowMonths.forEach(([month, data]) => {
+                const card = document.createElement('div');
+                card.className = 'export-month-card';
+                card.style.borderLeftColor = getExportColor(data.color);
+                card.style.color = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
+                
+                let content = `
+                    <h3 class="text-lg font-bold mb-2" style="color: ${getExportColor(data.color)}">${month}</h3>
+                    ${data.date ? `<p class="text-gray-600 text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
+                    <p class="mb-2"><strong>Tema:</strong> ${data.theme}</p>
+                    <p class="mb-2 text-sm"><strong>Descrição:</strong> ${data.description}</p>
+                    <p class="mb-2 text-sm"><strong>Objetivo:</strong> ${data.objective}</p>
+                    <p class="mb-2 text-sm"><strong>Público-alvo:</strong> ${data.audience}</p>
+                    <p class="mb-2 text-sm"><strong>Ações:</strong> ${data.actions}</p>
+                    ${data.observations ? `<p class="mb-2 text-sm"><strong>Observações:</strong> ${data.observations}</p>` : ''}
+                `;
+                
+                card.innerHTML = content;
+                row.appendChild(card);
+            });
+            
+            exportContainer.appendChild(row);
+        }
+
+        // Adicionar rodapé
+        if (appState.exportSettings.includeFooter) {
+            const footer = document.createElement('div');
+            footer.className = 'export-footer';
+            footer.textContent = 'Calendário CAED 2026 - Desenvolvido para gestão educacional';
+            exportContainer.appendChild(footer);
+        }
+
+        // Adicionar ao DOM
+        document.body.appendChild(exportContainer);
+
+        // Exportar FORÇANDO formato paisagem
+        const scale = appState.exportSettings.highQuality ? 2 : 1;
+        
+        const canvas = await html2canvas(exportContainer, { 
+            scale: scale,
+            backgroundColor: '#ffffff',
+            useCORS: true,
+            width: exportContainer.scrollWidth,
+            height: exportContainer.scrollHeight,
+            windowWidth: exportContainer.scrollWidth,
+            windowHeight: exportContainer.scrollHeight
+        });
+
+        const link = document.createElement('a');
+        link.download = `calendario_campanhas_2026_paisagem_${new Date().toISOString().split('T')[0]}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        // Limpar
+        document.body.removeChild(exportContainer);
+
+        // Registrar exportação
+        adminData.statistics.totalExports++;
+        adminData.activityLogs.unshift({
+            description: `${appState.currentUser} exportou o calendário em formato paisagem`,
+            timestamp: new Date().toLocaleString('pt-BR'),
+            type: 'export'
         });
         
-        exportContainer.appendChild(row);
-      }
-    } else {
-      // Layout vertical (fallback)
-      const grid = document.createElement('div');
-      grid.className = 'space-y-4';
-      
-      months.forEach(([month, data]) => {
-        const card = document.createElement('div');
-        card.className = `export-month-card ${getFontSizeClass('content')}`;
-        card.style.borderLeftColor = getExportColor(data.color);
-        card.style.background = 'white';
-        card.style.color = appState.exportSettings.colorScheme === 'bw' ? 'black' : 'inherit';
-        
-        let content = `
-          <h3 class="font-bold mb-2" style="color: ${getExportColor(data.color)}">${month}</h3>
-          ${data.date ? `<p class="text-sm mb-2"><strong>Data:</strong> ${data.date}</p>` : ''}
-          <p class="mb-2"><strong>Tema:</strong> ${data.theme}</p>
-          <p class="mb-2"><strong>Descrição:</strong> ${data.description}</p>
-          <p class="mb-2"><strong>Objetivo:</strong> ${data.objective}</p>
-          <p class="mb-2"><strong>Público-alvo:</strong> ${data.audience}</p>
-          <p class="mb-2"><strong>Ações:</strong> ${data.actions}</p>
-          ${data.observations ? `<p class="mb-2"><strong>Observações:</strong> ${data.observations}</p>` : ''}
-        `;
-        
-        card.innerHTML = content;
-        grid.appendChild(card);
-      });
-      
-      exportContainer.appendChild(grid);
+        alert('✅ Calendário exportado com sucesso! Agora em formato PAISAGEM igual à tela inicial.');
+
+    } catch (error) {
+        console.error('Erro na exportação:', error);
+        alert('❌ Erro ao exportar calendário. Tente novamente.');
+    } finally {
+        const exportBtn = document.getElementById('confirmExport');
+        if (exportBtn) {
+            exportBtn.innerHTML = 'Exportar Calendário';
+            exportBtn.disabled = false;
+        }
+        document.getElementById('exportPanel').classList.add('hidden');
     }
-
-    // Adicionar rodapé
-    if (appState.exportSettings.includeFooter) {
-      const footer = document.createElement('div');
-      footer.className = 'text-center mt-8 text-sm';
-      footer.style.color = 'black';
-      footer.textContent = 'Calendário CAED 2026 - Desenvolvido para gestão educacional - Layout Otimizado';
-      exportContainer.appendChild(footer);
-    }
-
-    // Adicionar ao DOM temporariamente
-    document.body.appendChild(exportContainer);
-
-    // Configurações de exportação
-    const scale = appState.exportSettings.highQuality ? 2 : 1;
-    
-    // Exportar
-    const canvas = await html2canvas(exportContainer, { 
-      scale: scale,
-      backgroundColor: '#ffffff',
-      useCORS: true
-    });
-
-    const link = document.createElement('a');
-    link.download = `calendario_campanhas_2026_${new Date().toISOString().split('T')[0]}.png`;
-    link.href = canvas.toDataURL('image/png');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    // Limpar
-    document.body.removeChild(exportContainer);
-
-    // Registrar exportação
-    adminData.statistics.totalExports++;
-    adminData.activityLogs.unshift({
-      description: `${appState.currentUser} exportou o calendário em layout horizontal`,
-      timestamp: new Date().toLocaleString('pt-BR'),
-      type: 'export'
-    });
-    
-    alert('✅ Calendário exportado com sucesso!');
-
-  } catch (error) {
-    console.error('Erro na exportação:', error);
-    alert('❌ Erro ao exportar calendário.');
-  } finally {
-    const exportBtn = document.getElementById('confirmExport');
-    exportBtn.innerHTML = 'Exportar Calendário';
-    exportBtn.disabled = false;
-    document.getElementById('exportPanel').classList.add('hidden');
-  }
 }
 
 // =============================================================================
@@ -1381,164 +1316,170 @@ async function exportCalendar() {
 // =============================================================================
 
 function updateAdminDashboard() {
-  document.getElementById('totalUsers').textContent = adminData.statistics.uniqueUsers.size;
-  document.getElementById('totalLogins').textContent = adminData.statistics.totalLogins;
-  document.getElementById('totalEdits').textContent = adminData.statistics.totalEdits;
-  document.getElementById('totalExports').textContent = adminData.statistics.totalExports;
+    const totalUsers = document.getElementById('totalUsers');
+    const totalLogins = document.getElementById('totalLogins');
+    const totalEdits = document.getElementById('totalEdits');
+    const totalExports = document.getElementById('totalExports');
+    
+    if (totalUsers) totalUsers.textContent = adminData.statistics.uniqueUsers.size;
+    if (totalLogins) totalLogins.textContent = adminData.statistics.totalLogins;
+    if (totalEdits) totalEdits.textContent = adminData.statistics.totalEdits;
+    if (totalExports) totalExports.textContent = adminData.statistics.totalExports;
 
-  const recentUsersContainer = document.getElementById('recentUsers');
-  recentUsersContainer.innerHTML = '';
-  
-  const recentUsers = adminData.userLogs.slice(0, 10);
-  recentUsers.forEach(log => {
-    const userElement = document.createElement('div');
-    userElement.className = `user-log ${log.type === 'login' ? 'recent' : ''}`;
-    userElement.innerHTML = `
-      <div class="font-semibold">${log.user}</div>
-      <div class="text-xs text-gray-400">${log.timestamp}</div>
-    `;
-    recentUsersContainer.appendChild(userElement);
-  });
+    const recentUsersContainer = document.getElementById('recentUsers');
+    if (recentUsersContainer) {
+        recentUsersContainer.innerHTML = '';
+        
+        const recentUsers = adminData.userLogs.slice(0, 10);
+        recentUsers.forEach(log => {
+            const userElement = document.createElement('div');
+            userElement.className = `user-log ${log.type === 'login' ? 'recent' : ''}`;
+            userElement.innerHTML = `
+                <div class="font-semibold">${log.user}</div>
+                <div class="text-xs text-gray-400">${log.timestamp}</div>
+            `;
+            recentUsersContainer.appendChild(userElement);
+        });
+    }
 
-  const activitiesContainer = document.getElementById('recentActivities');
-  activitiesContainer.innerHTML = '';
-  
-  const recentActivities = adminData.activityLogs.slice(0, 10);
-  recentActivities.forEach(activity => {
-    const activityElement = document.createElement('div');
-    activityElement.className = 'activity-item';
-    activityElement.innerHTML = `
-      <div class="text-sm">${activity.description}</div>
-      <div class="text-xs text-gray-400">${activity.timestamp}</div>
-    `;
-    activitiesContainer.appendChild(activityElement);
-  });
-
-  document.getElementById('importantDataCount').textContent = importantData.length;
-  document.getElementById('lastBackup').textContent = new Date().toLocaleString('pt-BR');
+    const activitiesContainer = document.getElementById('recentActivities');
+    if (activitiesContainer) {
+        activitiesContainer.innerHTML = '';
+        
+        const recentActivities = adminData.activityLogs.slice(0, 10);
+        recentActivities.forEach(activity => {
+            const activityElement = document.createElement('div');
+            activityElement.className = 'activity-item';
+            activityElement.innerHTML = `
+                <div class="text-sm">${activity.description}</div>
+                <div class="text-xs text-gray-400">${activity.timestamp}</div>
+            `;
+            activitiesContainer.appendChild(activityElement);
+        });
+    }
 }
 
 function backupData() {
-  const backup = {
-    monthsData: monthsData,
-    importantData: importantData,
-    adminData: adminData,
-    timestamp: new Date().toISOString()
-  };
-  
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `backup_calendario_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  
-  adminData.activityLogs.unshift({
-    description: 'Backup dos dados realizado',
-    timestamp: new Date().toLocaleString('pt-BR'),
-    type: 'system'
-  });
-  
-  alert('Backup realizado com sucesso!');
+    const backup = {
+        monthsData: monthsData,
+        importantData: importantData,
+        adminData: adminData,
+        timestamp: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup_calendario_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    adminData.activityLogs.unshift({
+        description: 'Backup dos dados realizado',
+        timestamp: new Date().toLocaleString('pt-BR'),
+        type: 'system'
+    });
+    
+    alert('Backup realizado com sucesso!');
 }
 
 function clearOldLogs() {
-  if (confirm('Tem certeza que deseja limpar todos os logs?')) {
-    adminData.userLogs = [];
-    adminData.activityLogs = [];
-    saveData();
-    updateAdminDashboard();
-    alert('Logs limpos com sucesso!');
-  }
+    if (confirm('Tem certeza que deseja limpar todos os logs?')) {
+        adminData.userLogs = [];
+        adminData.activityLogs = [];
+        saveData();
+        updateAdminDashboard();
+        alert('Logs limpos com sucesso!');
+    }
 }
 
 function resetAllData() {
-  if (confirm('⚠️ ATENÇÃO: Isso irá resetar TODOS os dados do sistema. Tem certeza?')) {
-    if (confirm('⚠️ CONFIRMAÇÃO FINAL: Esta ação não pode ser desfeita!')) {
-      localStorage.clear();
-      location.reload();
+    if (confirm('⚠️ ATENÇÃO: Isso irá resetar TODOS os dados do sistema. Tem certeza?')) {
+        if (confirm('⚠️ CONFIRMAÇÃO FINAL: Esta ação não pode ser desfeita!')) {
+            localStorage.clear();
+            location.reload();
+        }
     }
-  }
 }
 
 function handleLogin() {
-  const userName = document.getElementById('userName').value.trim();
-  const userPassword = document.getElementById('userPassword').value;
-  
-  if (!userName) {
-    alert('Digite seu nome!');
-    return;
-  }
-  
-  if (userName.toLowerCase().includes('bianca')) {
-    if (userPassword !== appState.adminPassword) {
-      alert('Senha incorreta! A senha é "petter feioso"');
-      return;
+    const userName = document.getElementById('userName').value.trim();
+    const userPassword = document.getElementById('userPassword').value;
+    
+    if (!userName) {
+        alert('Digite seu nome!');
+        return;
     }
-    appState.currentUser = 'Bianca';
-    document.getElementById('adminPanel').classList.remove('hidden');
-    document.getElementById('adminNameLabel').textContent = appState.currentUser;
-    document.body.style.paddingTop = '120px';
-  } else {
-    appState.currentUser = userName;
-  }
-  
-  adminData.userLogs.unshift({
-    user: appState.currentUser,
-    timestamp: new Date().toLocaleString('pt-BR'),
-    type: 'login'
-  });
-  adminData.statistics.totalLogins++;
-  adminData.statistics.uniqueUsers.add(appState.currentUser);
-  
-  adminData.activityLogs.unshift({
-    description: `${appState.currentUser} fez login no sistema`,
-    timestamp: new Date().toLocaleString('pt-BR'),
-    type: 'user'
-  });
-  
-  afterLogin();
+    
+    if (userName.toLowerCase().includes('bianca')) {
+        if (userPassword !== appState.adminPassword) {
+            alert('Senha incorreta! A senha é "petter feioso"');
+            return;
+        }
+        appState.currentUser = 'Bianca';
+        document.getElementById('adminPanel').classList.remove('hidden');
+        document.getElementById('adminNameLabel').textContent = appState.currentUser;
+        document.body.style.paddingTop = '80px';
+    } else {
+        appState.currentUser = userName;
+    }
+    
+    adminData.userLogs.unshift({
+        user: appState.currentUser,
+        timestamp: new Date().toLocaleString('pt-BR'),
+        type: 'login'
+    });
+    adminData.statistics.totalLogins++;
+    adminData.statistics.uniqueUsers.add(appState.currentUser);
+    
+    adminData.activityLogs.unshift({
+        description: `${appState.currentUser} fez login no sistema`,
+        timestamp: new Date().toLocaleString('pt-BR'),
+        type: 'user'
+    });
+    
+    afterLogin();
 }
 
 function afterLogin() {
-  document.getElementById('loginPanel').classList.add('hidden');
-  document.getElementById('welcomePanel').classList.remove('hidden');
-  document.getElementById('calendarHeader').classList.remove('hidden');
-  document.getElementById('calendarGrid').classList.remove('hidden');
-  document.getElementById('controlButtons').classList.remove('hidden');
-  document.getElementById('footerText').classList.remove('hidden');
-  
-  document.getElementById('welcomeText').textContent = `Bem-vindo(a), ${appState.currentUser}!`;
-  
-  const autoSaveButton = document.getElementById('autoSaveToggle');
-  if (autoSaveButton) {
-    autoSaveButton.textContent = `Auto-save: ${appState.autoSave ? 'ON' : 'OFF'}`;
-    autoSaveButton.className = appState.autoSave ? 
-      'bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold' :
-      'bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg text-white font-semibold';
-  }
-  
-  renderCalendar();
+    document.getElementById('loginPanel').classList.add('hidden');
+    document.getElementById('welcomePanel').classList.remove('hidden');
+    document.getElementById('calendarHeader').classList.remove('hidden');
+    document.getElementById('calendarGrid').classList.remove('hidden');
+    document.getElementById('controlButtons').classList.remove('hidden');
+    document.getElementById('footerText').classList.remove('hidden');
+    
+    document.getElementById('welcomeText').textContent = `Bem-vindo(a), ${appState.currentUser}!`;
+    
+    const autoSaveButton = document.getElementById('autoSaveToggle');
+    if (autoSaveButton) {
+        autoSaveButton.textContent = `Auto-save: ${appState.autoSave ? 'ON' : 'OFF'}`;
+        autoSaveButton.className = appState.autoSave ? 
+            'bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold' :
+            'bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg text-white font-semibold';
+    }
+    
+    renderCalendar();
 }
 
 function toggleAutoSave() {
-  appState.autoSave = !appState.autoSave;
-  const button = document.getElementById('autoSaveToggle');
-  if (button) {
-    button.textContent = `Auto-save: ${appState.autoSave ? 'ON' : 'OFF'}`;
-    button.className = appState.autoSave ? 
-      'bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold' :
-      'bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg text-white font-semibold';
-  }
-  
-  localStorage.setItem('autoSave', JSON.stringify(appState.autoSave));
-  
-  adminData.activityLogs.unshift({
-    description: `${appState.currentUser} ${appState.autoSave ? 'ativou' : 'desativou'} o auto-save`,
-    timestamp: new Date().toLocaleString('pt-BR'),
-    type: 'system'
-  });
+    appState.autoSave = !appState.autoSave;
+    const button = document.getElementById('autoSaveToggle');
+    if (button) {
+        button.textContent = `Auto-save: ${appState.autoSave ? 'ON' : 'OFF'}`;
+        button.className = appState.autoSave ? 
+            'bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg text-white font-semibold' :
+            'bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg text-white font-semibold';
+    }
+    
+    localStorage.setItem('autoSave', JSON.stringify(appState.autoSave));
+    
+    adminData.activityLogs.unshift({
+        description: `${appState.currentUser} ${appState.autoSave ? 'ativou' : 'desativou'} o auto-save`,
+        timestamp: new Date().toLocaleString('pt-BR'),
+        type: 'system'
+    });
 }
 
 // =============================================================================
@@ -1546,127 +1487,167 @@ function toggleAutoSave() {
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
-  loadSaved();
-  
-  // Login
-  document.getElementById('enterBtn').addEventListener('click', handleLogin);
-  document.getElementById('userName').addEventListener('input', function() {
-    const isBianca = this.value.toLowerCase().includes('bianca');
-    document.getElementById('userPassword').classList.toggle('hidden', !isBianca);
-  });
-
-  // Controles principais
-  document.getElementById('editToggle').addEventListener('click', function() {
-    if (!appState.currentUser.toLowerCase().includes('bianca')) {
-      alert('Apenas a Bianca pode editar o calendário.');
-      return;
-    }
+    loadSaved();
     
-    appState.editMode = !appState.editMode;
-    this.textContent = appState.editMode ? 'Visualizar' : 'Editar';
-    renderCalendar();
+    // Login
+    const enterBtn = document.getElementById('enterBtn');
+    const userName = document.getElementById('userName');
     
-    if (!document.getElementById('infoPanel').classList.contains('hidden')) {
-      renderImportantData();
+    if (enterBtn && userName) {
+        enterBtn.addEventListener('click', handleLogin);
+        userName.addEventListener('input', function() {
+            const isBianca = this.value.toLowerCase().includes('bianca');
+            document.getElementById('userPassword').classList.toggle('hidden', !isBianca);
+        });
     }
-  });
 
-  document.getElementById('saveData').addEventListener('click', function() {
-    if (saveData()) {
-      alert('✅ Dados salvos com sucesso!');
-    } else {
-      alert('❌ Erro ao salvar dados!');
+    // Controles principais
+    const editToggle = document.getElementById('editToggle');
+    if (editToggle) {
+        editToggle.addEventListener('click', function() {
+            if (!appState.currentUser.toLowerCase().includes('bianca')) {
+                alert('Apenas a Bianca pode editar o calendário.');
+                return;
+            }
+            
+            appState.editMode = !appState.editMode;
+            this.textContent = appState.editMode ? 'Visualizar' : 'Editar';
+            renderCalendar();
+            
+            if (!document.getElementById('infoPanel').classList.contains('hidden')) {
+                renderImportantData();
+            }
+        });
     }
-  });
 
-  document.getElementById('infoToggle').addEventListener('click', function() {
-    const infoPanel = document.getElementById('infoPanel');
-    infoPanel.classList.toggle('hidden');
-    
-    if (!infoPanel.classList.contains('hidden')) {
-      renderImportantData();
+    const saveDataBtn = document.getElementById('saveData');
+    if (saveDataBtn) {
+        saveDataBtn.addEventListener('click', function() {
+            if (saveData()) {
+                alert('✅ Dados salvos com sucesso!');
+            } else {
+                alert('❌ Erro ao salvar dados!');
+            }
+        });
     }
-  });
 
-  document.getElementById('closeInfoPanel').addEventListener('click', function() {
-    document.getElementById('infoPanel').classList.add('hidden');
-  });
-
-  document.getElementById('addImportantData').addEventListener('click', addImportantData);
-
-  // Auto-save
-  document.getElementById('autoSaveToggle').addEventListener('click', toggleAutoSave);
-
-  // Exportação
-  document.getElementById('exportImage').addEventListener('click', showExportPanel);
-
-  // Painel de Exportação
-  document.getElementById('closeExportPanel').addEventListener('click', function() {
-    document.getElementById('exportPanel').classList.add('hidden');
-  });
-
-  document.getElementById('updatePreview').addEventListener('click', updateExportSettings);
-  document.getElementById('confirmExport').addEventListener('click', exportCalendar);
-
-  // Configurações de exportação
-  document.querySelectorAll('input[name="colorScheme"], input[name="fontSize"], input[name="layout"], #includeTitle, #includeFooter, #highQuality, #landscape').forEach(input => {
-    input.addEventListener('change', updateExportSettings);
-  });
-
-  // Admin panel
-  document.getElementById('toggleDevMode').addEventListener('click', function() {
-    const designControls = document.getElementById('designControls');
-    designControls.classList.toggle('hidden');
-    
-    if (!designControls.classList.contains('hidden')) {
-      renderCalendar();
+    const infoToggle = document.getElementById('infoToggle');
+    if (infoToggle) {
+        infoToggle.addEventListener('click', function() {
+            const infoPanel = document.getElementById('infoPanel');
+            infoPanel.classList.toggle('hidden');
+            
+            if (!infoPanel.classList.contains('hidden')) {
+                renderImportantData();
+            }
+        });
     }
-  });
 
-  document.getElementById('closeAdminBtn').addEventListener('click', function() {
-    document.getElementById('adminPanel').classList.add('hidden');
-    document.body.style.paddingTop = '0';
-  });
-
-  document.getElementById('changePasswordBtn').addEventListener('click', function() {
-    const newPassword = prompt('Nova senha:');
-    if (newPassword) {
-      appState.adminPassword = newPassword;
-      alert('Senha alterada!');
+    const closeInfoPanel = document.getElementById('closeInfoPanel');
+    if (closeInfoPanel) {
+        closeInfoPanel.addEventListener('click', function() {
+            document.getElementById('infoPanel').classList.add('hidden');
+        });
     }
-  });
 
-  // Painel Admin Dashboard
-  document.getElementById('showAdminDashboard').addEventListener('click', function() {
-    updateAdminDashboard();
-    document.getElementById('adminDashboard').classList.remove('hidden');
-  });
-
-  document.getElementById('closeAdminDashboard').addEventListener('click', function() {
-    document.getElementById('adminDashboard').classList.add('hidden');
-  });
-
-  // Ações do painel admin
-  document.getElementById('backupData').addEventListener('click', backupData);
-  document.getElementById('clearOldLogs').addEventListener('click', clearOldLogs);
-  document.getElementById('resetAllData').addEventListener('click', resetAllData);
-
-  // Color pickers
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('color-picker') && appState.selectedMonth) {
-      const color = e.target.dataset.color;
-      monthsData[appState.selectedMonth].color = color;
-      renderCalendar();
-      autoSave();
+    const addImportantDataBtn = document.getElementById('addImportantData');
+    if (addImportantDataBtn) {
+        addImportantDataBtn.addEventListener('click', addImportantData);
     }
-  });
 
-  // Auto-save antes de fechar
-  window.addEventListener('beforeunload', function() {
-    if (appState.autoSave) {
-      saveData();
+    // Auto-save
+    const autoSaveToggle = document.getElementById('autoSaveToggle');
+    if (autoSaveToggle) {
+        autoSaveToggle.addEventListener('click', toggleAutoSave);
     }
-  });
+
+    // Exportação
+    const exportImage = document.getElementById('exportImage');
+    if (exportImage) {
+        exportImage.addEventListener('click', showExportPanel);
+    }
+
+    // Painel de Exportação
+    const closeExportPanel = document.getElementById('closeExportPanel');
+    if (closeExportPanel) {
+        closeExportPanel.addEventListener('click', function() {
+            document.getElementById('exportPanel').classList.add('hidden');
+        });
+    }
+
+    const updatePreview = document.getElementById('updatePreview');
+    if (updatePreview) {
+        updatePreview.addEventListener('click', updateExportSettings);
+    }
+
+    const confirmExport = document.getElementById('confirmExport');
+    if (confirmExport) {
+        confirmExport.addEventListener('click', exportCalendar);
+    }
+
+    // Configurações de exportação
+    document.querySelectorAll('input[name="colorScheme"], input[name="fontSize"], #includeTitle, #includeFooter, #highQuality').forEach(input => {
+        input.addEventListener('change', updateExportSettings);
+    });
+
+    // Admin panel
+    const closeAdminBtn = document.getElementById('closeAdminBtn');
+    if (closeAdminBtn) {
+        closeAdminBtn.addEventListener('click', function() {
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.body.style.paddingTop = '0';
+        });
+    }
+
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    if (changePasswordBtn) {
+        changePasswordBtn.addEventListener('click', function() {
+            const newPassword = prompt('Nova senha:');
+            if (newPassword) {
+                appState.adminPassword = newPassword;
+                alert('Senha alterada!');
+            }
+        });
+    }
+
+    // Painel Admin Dashboard
+    const showAdminDashboard = document.getElementById('showAdminDashboard');
+    if (showAdminDashboard) {
+        showAdminDashboard.addEventListener('click', function() {
+            updateAdminDashboard();
+            document.getElementById('adminDashboard').classList.remove('hidden');
+        });
+    }
+
+    const closeAdminDashboard = document.getElementById('closeAdminDashboard');
+    if (closeAdminDashboard) {
+        closeAdminDashboard.addEventListener('click', function() {
+            document.getElementById('adminDashboard').classList.add('hidden');
+        });
+    }
+
+    // Ações do painel admin
+    const backupDataBtn = document.getElementById('backupData');
+    if (backupDataBtn) {
+        backupDataBtn.addEventListener('click', backupData);
+    }
+
+    const clearOldLogsBtn = document.getElementById('clearOldLogs');
+    if (clearOldLogsBtn) {
+        clearOldLogsBtn.addEventListener('click', clearOldLogs);
+    }
+
+    const resetAllDataBtn = document.getElementById('resetAllData');
+    if (resetAllDataBtn) {
+        resetAllDataBtn.addEventListener('click', resetAllData);
+    }
+
+    // Auto-save antes de fechar
+    window.addEventListener('beforeunload', function() {
+        if (appState.autoSave) {
+            saveData();
+        }
+    });
 });
 </script>
 </body>
